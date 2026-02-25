@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { getBirthChartAnalysis, getCitySuggestions, reverseGeocode } from '../services/geminiService';
 import { calculateAstroData, getSignFromLongitude, getDegreeInSign } from '../services/astrologyService';
+import { calculateAstrology, calculateHumanDesign, calculateGeneKeys } from 'natalengine';
 import { logCalculation } from '../services/dbService';
 import { useSyllabusStore } from '../store';
 import { useResonance } from '../hooks/useResonance';
@@ -128,7 +129,38 @@ const BirthChartTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const utcTime = localDate.getTime() - (parseFloat(formData.offset) * 60 * 60 * 1000);
     const dateUtc = new Date(utcTime);
 
-    // Natal Engine Core Execution
+    // NatalEngine package execution (Astrology + Human Design + Gene Keys)
+    let engineAstrology: any = null;
+    let engineHumanDesign: any = null;
+    let engineGeneKeys: any = null;
+
+    try {
+      const [hourStr, minuteStr = '0'] = formData.time.split(':');
+      const hours = parseInt(hourStr, 10) || 0;
+      const minutes = parseInt(minuteStr, 10) || 0;
+      const birthHour = hours + minutes / 60;
+      const tz = parseFloat(formData.offset || '0');
+
+      engineAstrology = calculateAstrology(
+        formData.date,
+        birthHour,
+        tz,
+        selectedCity.lat,
+        selectedCity.lng
+      );
+
+      engineHumanDesign = calculateHumanDesign(
+        formData.date,
+        birthHour,
+        tz
+      );
+
+      engineGeneKeys = calculateGeneKeys(engineHumanDesign);
+    } catch (e) {
+      console.error('NatalEngine computation failed:', e);
+    }
+
+    // Existing in-house astronomy engine for planets + houses + angles
     const calculated = calculateAstroData(dateUtc, selectedCity.lat, selectedCity.lng);
 
     const points = {
@@ -158,13 +190,35 @@ const BirthChartTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       time: formData.time, 
       astrologicalPoints: points,
       settings: { city: selectedCity.fullName, houseSystem: 'Placidus' },
-      resonance: resonancePrompt
+      resonance: resonancePrompt,
+      engine: {
+        astrology: engineAstrology,
+        humanDesign: engineHumanDesign,
+        geneKeys: engineGeneKeys
+      }
     });
 
     if (analysis) {
-      setResult({ ...points, interpretation: analysis.interpretation, chart_metadata: { utc_offset: formData.offset } });
+      const enginePayload = {
+        astrology: engineAstrology,
+        humanDesign: engineHumanDesign,
+        geneKeys: engineGeneKeys
+      };
+
+      setResult({ 
+        ...points, 
+        interpretation: analysis.interpretation, 
+        chart_metadata: { 
+          utc_offset: formData.offset,
+          engine: enginePayload
+        } 
+      });
       recordCalculation();
-      logCalculation('NATAL_ENGINE', selectedCity.fullName, { ...points, interpretation: analysis.interpretation });
+      logCalculation('NATAL_ENGINE', selectedCity.fullName, { 
+        ...points, 
+        interpretation: analysis.interpretation,
+        engine: enginePayload
+      });
     } else {
       alert("Deterministic trace interrupted. Request archival retry.");
     }

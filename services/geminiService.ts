@@ -118,7 +118,10 @@ export async function* generateStream(model: string, prompt: string, systemInstr
   }
 }
 
-export const getBirthChartAnalysis = (data: any) => generateJson<BirthChartResult>(MODELS.FLASH, `Analyze the following natal configuration: ${JSON.stringify(data.astrologicalPoints)}`, {
+export const getBirthChartAnalysis = (data: any) => generateJson<BirthChartResult>(
+  MODELS.FLASH, 
+  `Analyze the following natal configuration (including raw engine output when available): ${JSON.stringify(data)}`, 
+{
   type: Type.OBJECT,
   properties: { 
     interpretation: { 
