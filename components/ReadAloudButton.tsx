@@ -2,37 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { generateSpeech } from '../services/geminiService';
 
-// --- Audio Decoding Utilities ---
-
-function decode(base64: string) {
-  const binaryString = atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes;
-}
-
-async function decodeAudioData(
-  data: Uint8Array,
-  ctx: AudioContext,
-  sampleRate: number = 24000,
-  numChannels: number = 1
-): Promise<AudioBuffer> {
-  const dataInt16 = new Int16Array(data.buffer);
-  const frameCount = dataInt16.length / numChannels;
-  const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
-
-  for (let channel = 0; channel < numChannels; channel++) {
-    const channelData = buffer.getChannelData(channel);
-    for (let i = 0; i < frameCount; i++) {
-      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
-    }
-  }
-  return buffer;
-}
-
 interface ReadAloudProps {
   text: string;
   className?: string;
@@ -42,17 +11,12 @@ interface ReadAloudProps {
 export const ReadAloudButton: React.FC<ReadAloudProps> = ({ text, className, label }) => {
   const [loading, setLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const stopAudio = () => {
-    if (sourceRef.current) {
-      try {
-        sourceRef.current.stop();
-      } catch (e) {
-        // Ignore errors if already stopped
-      }
-      sourceRef.current = null;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
     setIsPlaying(false);
   };
@@ -68,33 +32,22 @@ export const ReadAloudButton: React.FC<ReadAloudProps> = ({ text, className, lab
     setLoading(true);
 
     try {
-      const base64Audio = await generateSpeech(text);
-      if (!base64Audio) {
+      const audioUrl = await generateSpeech(text);
+      if (!audioUrl) {
         throw new Error("No audio data returned");
       }
 
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      if (!audioRef.current) {
+        audioRef.current = new Audio();
       }
 
-      const ctx = audioContextRef.current;
-      if (ctx.state === 'suspended') {
-        await ctx.resume();
-      }
-
-      const bytes = decode(base64Audio);
-      const audioBuffer = await decodeAudioData(bytes, ctx, 24000, 1);
-
-      const source = ctx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(ctx.destination);
-      source.onended = () => {
+      audioRef.current.src = audioUrl;
+      audioRef.current.onended = () => {
         setIsPlaying(false);
-        sourceRef.current = null;
+        audioRef.current = null;
       };
 
-      sourceRef.current = source;
-      source.start();
+      await audioRef.current.play();
       setIsPlaying(true);
     } catch (error) {
       console.error("Audio Playback Error:", error);
@@ -107,9 +60,6 @@ export const ReadAloudButton: React.FC<ReadAloudProps> = ({ text, className, lab
   useEffect(() => {
     return () => {
       stopAudio();
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
     };
   }, []);
 

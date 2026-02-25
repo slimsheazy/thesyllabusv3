@@ -36,15 +36,9 @@ export const HomeView = memo(({ onEnter }: { onEnter: () => void }) => {
                </div>
              )}
            </div>
-           <h1 className="title-main text-5xl md:text-7xl text-marker-green leading-none lowercase tracking-tighter">
-             {userIdentity ? (
-               <>
-                 {userIdentity.split(' ')[0]}<span className="opacity-20">'s</span> notes
-               </>
-             ) : (
-               'the syllabus'
-             )}
-           </h1>
+          <h1 className="title-main text-5xl md:text-7xl text-marker-green leading-none lowercase tracking-tighter">
+            the syllabus
+          </h1>
            <p className="handwritten text-base sm:text-lg text-marker-black/60 leading-relaxed max-w-md mx-auto">
              A bunch of easy tools and shared tips to help you figure out the big stuff in life.
            </p>

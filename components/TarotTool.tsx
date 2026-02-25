@@ -32,6 +32,13 @@ const SPREAD_CONFIGS: Record<SpreadType, string[]> = {
   ]
 };
 
+const DECK_LABELS: Record<DeckTheme, string> = {
+  [DeckTheme.CLASSIC]: 'Rider–Waite–Smith',
+  [DeckTheme.ALCHEMICAL]: 'Thoth Tarot',
+  [DeckTheme.SHADOW]: 'Tarot de Marseille',
+  [DeckTheme.COSMIC]: 'Smith–Waite Centennial'
+};
+
 export const TarotTool = ({ onBack }: { onBack: () => void }) => {
   const [question, setQuestion] = useState('');
   const [spreadType, setSpreadType] = useState<SpreadType>(SpreadType.TRINITY);
@@ -79,8 +86,10 @@ export const TarotTool = ({ onBack }: { onBack: () => void }) => {
 
     setDrawnCards(selected);
 
+    const deckLabel = DECK_LABELS[deckTheme];
+
     selected.forEach(async (card, index) => {
-      const url = await generateTarotImage(card.name, deckTheme);
+      const url = await generateTarotImage(card.name, deckLabel);
       if (url) {
         setDrawnCards(prev => {
           const next = [...prev];
@@ -93,7 +102,7 @@ export const TarotTool = ({ onBack }: { onBack: () => void }) => {
     });
 
     const systemInstruction = `You are a friendly tarot reader in 'The Lax Instructor' voice. 
-Theme: ${deckTheme}. 
+Deck: ${deckLabel} (publicly available). 
 Spread: ${spreadType}. 
 Tell a story with these cards. Don't just list them. Explain how they connect. 
 Use simple, grounded language. Like talking to a friend over a drink.
@@ -151,12 +160,12 @@ Finish with 'ADVICE:' and a simple 5-word takeaway.${resonancePrompt}`;
                  </select>
                </div>
                <div className="space-y-1">
-                 <label className="handwritten text-[8px] font-black uppercase opacity-40 ml-1">Art Style</label>
+                 <label className="handwritten text-[8px] font-black uppercase opacity-40 ml-1">Deck</label>
                  <select value={deckTheme} onChange={e => setDeckTheme(e.target.value as DeckTheme)} className="w-full p-3 bg-surface italic outline-none rounded-lg">
-                   <option value={DeckTheme.CLASSIC}>Standard</option>
-                   <option value={DeckTheme.ALCHEMICAL}>Old School Chemistry</option>
-                   <option value={DeckTheme.SHADOW}>Dark and Moody</option>
-                   <option value={DeckTheme.COSMIC}>Space Vibes</option>
+                   <option value={DeckTheme.CLASSIC}>Rider–Waite–Smith</option>
+                   <option value={DeckTheme.ALCHEMICAL}>Thoth Tarot</option>
+                   <option value={DeckTheme.SHADOW}>Tarot de Marseille</option>
+                   <option value={DeckTheme.COSMIC}>Smith–Waite Centennial</option>
                  </select>
                </div>
              </div>
