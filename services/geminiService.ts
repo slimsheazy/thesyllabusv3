@@ -43,10 +43,11 @@ const OBJECTIVE_INSTRUCTOR_BASE = `You are the 'Objective Instructor'. You are a
 Your tone is neutral, descriptive, and clear. Avoid flowery or mystical taglines. 
 When analyzing a birth chart, explain the 'Final Dispositor' as the planetary authority of the chart.
 Rules:
-1. Speak neutrally.
-2. Use traditional symbols (☉, ☽, ♂, ♀, ♃, ♄, ♅, ♆, ♇) for conceptual clarity in data blocks.
-3. In the final written synthesis, ALWAYS use full names (e.g., 'Mars in Aries' NOT '♂ in ♈').
-4. Be structured and precise.`;
+1. Speak neutrally and analytically, in the third person, not directly to the reader.
+2. Avoid conversational fillers, rhetorical questions, jokes, and casual phrases.
+3. Use traditional symbols (☉, ☽, ♂, ♀, ♃, ♄, ♅, ♆, ♇) only in internal data blocks; in prose ALWAYS use full names (e.g., 'Mars in Aries' NOT '♂ in ♈').
+4. Keep the final synthesis concise and structured (2–3 short paragraphs or a brief list), focused on clear factual description.
+5. Do not use marketing language, affirmations, or coaching-style advice.`;
 
 async function retry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   let lastError: any;
@@ -76,6 +77,34 @@ function sanitizeJson(text: string): string {
   return match ? match[0].trim() : text.trim();
 }
 
+function stripMarkdown(text: string): string {
+  // Remove fenced code block markers but keep inner content
+  let cleaned = text.replace(/```([\s\S]*?)```/g, '$1');
+  // Bold/italic markers (**text**, *text*, __text__, _text_)
+  cleaned = cleaned.replace(/(\*\*|__)(.*?)\1/g, '$2');
+  cleaned = cleaned.replace(/(\*|_)(.*?)\1/g, '$2');
+  // Inline code `code`
+  cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
+  // Headings "# Title"
+  cleaned = cleaned.replace(/^#{1,6}\s+/gm, '');
+  // List bullets "- item", "* item", "+ item"
+  cleaned = cleaned.replace(/^\s*[-*+]\s+/gm, '');
+  return cleaned.trim();
+}
+
+function stripMarkdownDeep(value: unknown): unknown {
+  if (typeof value === 'string') return stripMarkdown(value);
+  if (Array.isArray(value)) return value.map(stripMarkdownDeep);
+  if (value && typeof value === 'object') {
+    const result: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(value)) {
+      result[key] = stripMarkdownDeep(val);
+    }
+    return result;
+  }
+  return value;
+}
+
 export async function generateJson<T>(
   model: string, 
   prompt: any, 
@@ -96,7 +125,8 @@ export async function generateJson<T>(
     const response = (await retry(() => ai.models.generateContent({ model, contents: prompt, config }))) as GenerateContentResponse;
     const text = response.text;
     if (!text) return null;
-    return JSON.parse(sanitizeJson(text)) as T;
+    const parsed = JSON.parse(sanitizeJson(text)) as T;
+    return stripMarkdownDeep(parsed) as T;
   } catch (error) {
     console.error("API Error (JSON):", error);
     return null;
@@ -176,12 +206,30 @@ export const getBirthChartAnalysis = (data: BirthChartAnalysisInput) => {
 
 // Other service functions (Tarot, Sigil, etc.) should similarly use retry() and follow the persona.
 
-export const generateTarotImage = async (cardName: string, theme: string) => {
+const DECK_STYLE_HINTS: Record<string, string> = {
+  'Rider–Waite–Smith':
+    '1909 Rider–Waite–Smith deck illustrated by Pamela Colman Smith: flat colors, bold linework, simple backgrounds, classic yellow sky and patterned borders.',
+  'Thoth Tarot':
+    'Thoth Tarot by Aleister Crowley and Lady Frieda Harris: esoteric, geometric, Art Deco feel, rich jewel tones, layered symbols, no white borders.',
+  'Tarot de Marseille':
+    'Traditional Tarot de Marseille woodcut style: limited primary colors, thick black outlines, simple medieval figures, French titles, minimal background detail.',
+  'Smith–Waite Centennial':
+    'Smith–Waite Centennial Edition: muted vintage palette, textured paper look, faithful to Pamela Colman Smith art with softer colors and aged print quality.'
+};
+
+export const generateTarotImage = async (cardName: string, deckName: string) => {
   try {
+    const styleHint = DECK_STYLE_HINTS[deckName] || 'traditional Rider–Waite–Smith tarot illustration style.';
+
     const response = (await retry(() => ai.models.generateContent({
       model: MODELS.IMAGE,
       contents: {
-        parts: [{ text: `Tarot card: ${cardName}. Art Style: ${theme}, bold geometric neon esoteric.` }],
+        parts: [{
+          text: `Tarot card: ${cardName} from the ${deckName} tarot deck. 
+Style: ${styleHint}
+Requirements: Match the traditional composition, symbolism, and approximate color palette of this deck. 
+Keep the figure poses, props, and layout recognizable to someone who owns the physical ${deckName} deck. Do not redesign the card from scratch.`
+        }],
       },
       config: { imageConfig: { aspectRatio: "3:4" } }
     }))) as GenerateContentResponse;
@@ -216,9 +264,25 @@ export const generateSigil = async (intention: string, feeling: string) => {
 
 export const generateSpeech = async (text: string) => {
   try {
-    const res = (await retry(() => ai.models.generateContent({ model: MODELS.TTS, contents: [{ parts: [{ text }] }], config: { responseModalities: [Modality.AUDIO], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } } } }))) as GenerateContentResponse;
-    return res.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data || null;
-  } catch { return null; }
+    const res = (await retry(() => ai.models.generateContent({
+      model: MODELS.TTS,
+      contents: [{ parts: [{ text }] }],
+      config: {
+        responseModalities: [Modality.AUDIO],
+        speechConfig: {
+          voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
+        }
+      }
+    }))) as GenerateContentResponse;
+
+    const raw = res.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (!raw) return null;
+
+    // Wrap raw base64 audio bytes in a data URL for HTMLAudioElement
+    return `data:audio/mp3;base64,${raw}`;
+  } catch {
+    return null;
+  }
 };
 
 export const getWordDefinition = (word: string) => generateJson<GlossaryDefinition>(MODELS.FLASH, `Define: ${word}`, {
