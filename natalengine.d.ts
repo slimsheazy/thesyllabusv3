@@ -1,7 +1,19 @@
 declare module 'natalengine' {
+  export interface NatalAstrologyData {
+    [key: string]: any;
+  }
+
+  export interface HumanDesignData {
+    [key: string]: any;
+  }
+
+  export interface GeneKeysData {
+    [key: string]: any;
+  }
+
   /**
    * Calculates a Western natal chart.
-   * 
+   *
    * @param birthDate - YYYY-MM-DD (local calendar date of birth)
    * @param birthHour - Decimal hours in local time (e.g. 14.5 = 2:30 PM)
    * @param timezone - UTC offset (e.g. -5 for EST)
@@ -14,7 +26,7 @@ declare module 'natalengine' {
     timezone: number,
     latitude?: number,
     longitude?: number
-  ): any;
+  ): NatalAstrologyData;
 
   /**
    * Calculates a Human Design chart.
@@ -23,11 +35,11 @@ declare module 'natalengine' {
     birthDate: string,
     birthHour: number,
     timezone: number
-  ): any;
+  ): HumanDesignData;
 
   /**
    * Calculates a Gene Keys profile from Human Design data.
    */
-  export function calculateGeneKeys(humanDesignData: any): any;
+  export function calculateGeneKeys(humanDesignData: HumanDesignData): GeneKeysData;
 }
 

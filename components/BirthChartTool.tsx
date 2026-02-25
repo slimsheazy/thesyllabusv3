@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { getBirthChartAnalysis, getCitySuggestions, reverseGeocode } from '../services/geminiService';
 import { calculateAstroData, getSignFromLongitude, getDegreeInSign } from '../services/astrologyService';
 import { calculateAstrology, calculateHumanDesign, calculateGeneKeys } from 'natalengine';
+import type { NatalAstrologyData, HumanDesignData, GeneKeysData } from 'natalengine';
+import { calculateAstroCoreChart } from '../services/astroCoreService';
 import { logCalculation } from '../services/dbService';
 import { useSyllabusStore } from '../store';
 import { useResonance } from '../hooks/useResonance';
@@ -130,9 +132,9 @@ const BirthChartTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const dateUtc = new Date(utcTime);
 
     // NatalEngine package execution (Astrology + Human Design + Gene Keys)
-    let engineAstrology: any = null;
-    let engineHumanDesign: any = null;
-    let engineGeneKeys: any = null;
+    let engineAstrology: NatalAstrologyData | null = null;
+    let engineHumanDesign: HumanDesignData | null = null;
+    let engineGeneKeys: GeneKeysData | null = null;
 
     try {
       const [hourStr, minuteStr = '0'] = formData.time.split(':');
@@ -163,6 +165,14 @@ const BirthChartTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     // Existing in-house astronomy engine for planets + houses + angles
     const calculated = calculateAstroData(dateUtc, selectedCity.lat, selectedCity.lng);
 
+    // Astro-core high-precision chart (Swiss Ephemeris)
+    let astroCoreChart: unknown = null;
+    try {
+      astroCoreChart = await calculateAstroCoreChart(dateUtc, selectedCity.lat, selectedCity.lng);
+    } catch (e) {
+      console.error('Astro-core chart computation failed:', e);
+    }
+
     const points = {
       planets: calculated.planets.map(p => ({ 
         planet: p.name, 
@@ -185,25 +195,25 @@ const BirthChartTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       }
     };
 
+    const enginePayload = {
+      astrology: engineAstrology,
+      humanDesign: engineHumanDesign,
+      geneKeys: engineGeneKeys,
+      astroCore: astroCoreChart
+    };
+
     const analysis = await getBirthChartAnalysis({ 
-      date: formData.date, 
-      time: formData.time, 
       astrologicalPoints: points,
-      settings: { city: selectedCity.fullName, houseSystem: 'Placidus' },
-      resonance: resonancePrompt,
-      engine: {
-        astrology: engineAstrology,
-        humanDesign: engineHumanDesign,
-        geneKeys: engineGeneKeys
+      engine: enginePayload,
+      metadata: {
+        date: formData.date,
+        time: formData.time,
+        utcOffset: parseFloat(formData.offset || '0'),
+        houseSystem: 'Placidus'
       }
     });
 
     if (analysis) {
-      const enginePayload = {
-        astrology: engineAstrology,
-        humanDesign: engineHumanDesign,
-        geneKeys: engineGeneKeys
-      };
 
       setResult({ 
         ...points, 
