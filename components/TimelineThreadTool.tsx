@@ -1,6 +1,5 @@
 
 import React, { useState, useCallback, memo, useEffect } from 'react';
-import { Target, Activity, History, ChevronLeft, Zap, Database, Search, ArrowDown } from 'lucide-react';
 import { useSyllabusStore } from '../store';
 import { logCalculation, getLogs } from '../services/dbService';
 import { getAkashicAnalysis, getQuantumTimelineScan } from '../services/geminiService';
@@ -37,7 +36,7 @@ const SignalGrid = memo(({ selected, onToggle, disabled }: { selected: string[],
       </div>
     </div>
     <div className="font-mono text-[9px] text-marker-black font-black tracking-[0.3em] uppercase opacity-40">
-      {selected.length === 3 ? "Establishing Link..." : `Select 3 Anchors: ${selected.length}/3`}
+      {selected.length === 3 ? 'Establishing Link...' : `Select 3 Anchors: ${selected.length}/3`}
     </div>
   </div>
 ));
@@ -45,10 +44,10 @@ const SignalGrid = memo(({ selected, onToggle, disabled }: { selected: string[],
 const ThreadRecallSection = memo(({ recall }: { recall: AkashicResult }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-700">
     <div className="flex items-center gap-3 border-b border-marker-black/10 pb-4">
-      <Database size={18} className="text-marker-blue" />
+      <span className="text-marker-blue text-[10px]">DB</span>
       <span className="font-mono text-[10px] font-black uppercase tracking-[0.4em] text-marker-blue">Recorded Baseline (Deep Recall)</span>
     </div>
-    
+
     <div className="p-10 marker-border border-marker-blue bg-white shadow-2xl relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-4 opacity-[0.02] pointer-events-none heading-marker text-[10rem] italic select-none">ROOT</div>
       <div className="flex justify-between items-start mb-6">
@@ -64,17 +63,17 @@ const ThreadRecallSection = memo(({ recall }: { recall: AkashicResult }) => (
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="p-6 bg-black/5 border border-black/5 space-y-4">
-         <span className="font-mono text-[9px] opacity-30 uppercase tracking-widest block border-b border-black/5 pb-2">Sensory Impressions</span>
-         {/* Fix: changed specificSynchronicities to sensoryImpressions to match AkashicResult type */}
-         <p className="handwritten text-base italic text-marker-black/70">· Chroma: {recall.sensoryImpressions.chroma}</p>
-         <p className="handwritten text-base italic text-marker-black/70">· Texture: {recall.sensoryImpressions.texture}</p>
-         <p className="handwritten text-base italic text-marker-black/70">· Aroma: {recall.sensoryImpressions.aroma}</p>
+        <span className="font-mono text-[9px] opacity-30 uppercase tracking-widest block border-b border-black/5 pb-2">Sensory Impressions</span>
+        {/* Fix: changed specificSynchronicities to sensoryImpressions to match AkashicResult type */}
+        <p className="handwritten text-base italic text-marker-black/70">· Chroma: {recall.sensoryImpressions.chroma}</p>
+        <p className="handwritten text-base italic text-marker-black/70">· Texture: {recall.sensoryImpressions.texture}</p>
+        <p className="handwritten text-base italic text-marker-black/70">· Aroma: {recall.sensoryImpressions.aroma}</p>
       </div>
       <div className="p-6 bg-black/5 border border-black/5 space-y-4">
-         <span className="font-mono text-[9px] opacity-30 uppercase tracking-widest block border-b border-black/5 pb-2">Archival Context</span>
-         {/* Fix: changed temporalAnchors to emotionalResonance/filingMetadata to match AkashicResult type */}
-         <p className="handwritten text-base italic text-marker-black/70">· Resonance: {recall.emotionalResonance}</p>
-         <p className="handwritten text-base italic text-marker-black/70">· Filing: {recall.filingMetadata}</p>
+        <span className="font-mono text-[9px] opacity-30 uppercase tracking-widest block border-b border-black/5 pb-2">Archival Context</span>
+        {/* Fix: changed temporalAnchors to emotionalResonance/filingMetadata to match AkashicResult type */}
+        <p className="handwritten text-base italic text-marker-black/70">· Resonance: {recall.emotionalResonance}</p>
+        <p className="handwritten text-base italic text-marker-black/70">· Filing: {recall.filingMetadata}</p>
       </div>
     </div>
   </div>
@@ -83,7 +82,7 @@ const ThreadRecallSection = memo(({ recall }: { recall: AkashicResult }) => (
 const ThreadProjectionSection = memo(({ projection }: { projection: QuantumTimelineResult }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-32">
     <div className="flex items-center gap-3 border-b border-marker-black/10 pb-4">
-      <Target size={18} className="text-tactical-cyan" />
+      <span className="text-tactical-cyan text-[10px]">⚡</span>
       <span className="font-mono text-[10px] font-black uppercase tracking-[0.4em] text-tactical-cyan">Projected Vector (Target Reality)</span>
     </div>
 
@@ -115,19 +114,21 @@ const TimelineThreadTool: React.FC<ToolProps> = ({ onBack }) => {
   const { recordCalculation } = useSyllabusStore();
 
   useEffect(() => {
-    const load = async () => {
+    const load = async() => {
       const logs = await getLogs('TIMELINE_THREAD') as any[];
-      if (logs?.length > 0) setHistory(logs.map(l => JSON.parse(l.result)));
+      if (logs?.length > 0) {
+        setHistory(logs.map(l => JSON.parse(l.result)));
+      }
     };
     load();
   }, []);
 
-  const executeThreadScan = useCallback(async (nodes: string[]) => {
+  const executeThreadScan = useCallback(async(nodes: string[]) => {
     setLoading(true);
     audioManager.playRustle();
     const sig = nodes.join('-');
-    const intent = "Neural Convergence Trace";
-    
+    const intent = 'Neural Convergence Trace';
+
     try {
       // Parallel execution for the "Merged" logic
       const [recallRes, projectionRes] = await Promise.all([
@@ -149,21 +150,27 @@ const TimelineThreadTool: React.FC<ToolProps> = ({ onBack }) => {
         logCalculation('TIMELINE_THREAD', sig, state);
         setViewMode('thread');
       }
-    } catch { 
-      alert('Field instability detected. Archival link failed.'); 
-    } finally { 
-      setLoading(false); 
+    } catch {
+      alert('Field instability detected. Archival link failed.');
+    } finally {
+      setLoading(false);
     }
   }, [recordCalculation]);
 
   const handleToggleNode = useCallback((id: string) => {
     setSelectedNodes(prev => {
-      if (prev.includes(id)) return prev.filter(n => n !== id);
-      if (prev.length >= 3) return prev;
-      
+      if (prev.includes(id)) {
+        return prev.filter(n => n !== id);
+      }
+      if (prev.length >= 3) {
+        return prev;
+      }
+
       const next = [...prev, id];
       audioManager.playPenScratch(0.08);
-      if (next.length === 3) executeThreadScan(next);
+      if (next.length === 3) {
+        executeThreadScan(next);
+      }
       return next;
     });
   }, [executeThreadScan]);
@@ -171,33 +178,33 @@ const TimelineThreadTool: React.FC<ToolProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen flex flex-col items-center py-12 px-6 md:px-12 relative max-w-7xl mx-auto">
       <button onClick={onBack} className="fixed top-6 right-6 brutalist-button !text-[10px] z-[100] flex items-center gap-2">
-        <ChevronLeft size={12} /> Index
+        <span className="text-[10px]">←</span> Index
       </button>
 
       <div className="w-full flex flex-col lg:flex-row gap-16 items-start pt-16">
         <aside className="w-full lg:w-[350px] space-y-10 lg:sticky lg:top-12">
           <header className="space-y-4">
             <div className="flex items-center gap-3 text-marker-black">
-              <Activity size={24} className="text-marker-blue" />
-              <h2 className="heading-marker text-7xl lowercase">Thread</h2>
+              <span className="text-marker-blue text-[10px]">⚡</span>
+            <h2 className="heading-marker text-7xl text-marker-amber lowercase">Thread</h2>
             </div>
             <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest italic">Protocol: Past-Future Synthesis</p>
           </header>
-          
+
           <nav className="flex flex-col gap-2">
             {[
-              { id: 'calibrate', icon: Target, label: 'Calibration' },
-              { id: 'thread', icon: Activity, label: 'Active Thread', disabled: !currentThread },
-              { id: 'archive', icon: History, label: 'Vault' }
+              { id: 'calibrate', icon: 'Target', label: 'Calibration' },
+              { id: 'thread', icon: 'Activity', label: 'Active Thread', disabled: !currentThread },
+              { id: 'archive', icon: 'History', label: 'Vault' }
             ].map(m => (
-              <button 
+              <button
                 key={m.id}
                 disabled={m.disabled}
                 onClick={() => setViewMode(m.id as any)}
                 className={`flex items-center justify-between p-5 border transition-all ${viewMode === m.id ? 'bg-black/10 border-marker-black text-marker-black shadow-lg' : 'bg-black/5 border-black/10 text-marker-black/40 hover:text-marker-black disabled:opacity-10'}`}
               >
                 <div className="flex items-center gap-4">
-                  <m.icon size={16} />
+                  <span className="text-[10px]">{m.icon}</span>
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest">{m.label}</span>
                 </div>
               </button>
@@ -208,54 +215,56 @@ const TimelineThreadTool: React.FC<ToolProps> = ({ onBack }) => {
         <main className="flex-1 w-full">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-40 gap-10 animate-pulse">
-               <div className="w-24 h-1 bg-black/10 relative overflow-hidden">
-                 <div className="absolute inset-0 bg-marker-blue animate-[shimmer_2s_infinite]"></div>
-               </div>
-               <span className="font-mono text-[10px] text-marker-blue uppercase tracking-[0.5em] font-black italic">Synchronizing Temporal Nodes...</span>
+              <div className="w-24 h-1 bg-black/10 relative overflow-hidden">
+                <div className="absolute inset-0 bg-marker-blue animate-[shimmer_2s_infinite]"></div>
+              </div>
+              <span className="font-mono text-[10px] text-marker-blue uppercase tracking-[0.5em] font-black italic">Synchronizing Temporal Nodes...</span>
             </div>
           ) : viewMode === 'calibrate' ? (
             <div className="space-y-12 animate-in fade-in duration-500 max-w-2xl mx-auto">
-               <div className="p-10 space-y-10">
-                  <div className="text-center space-y-4">
-                    <p className="handwritten text-2xl italic text-marker-black/60">Identify three spatial anchors to weave the past and future threads.</p>
-                  </div>
-                  <SignalGrid selected={selectedNodes} onToggle={handleToggleNode} />
-               </div>
+              <div className="p-10 space-y-10">
+                <div className="text-center space-y-4">
+                  <p className="handwritten text-2xl italic text-marker-black/60">Identify three spatial anchors to weave the past and future threads.</p>
+                </div>
+                <SignalGrid selected={selectedNodes} onToggle={handleToggleNode} />
+              </div>
             </div>
           ) : viewMode === 'thread' && currentThread ? (
             <div className="space-y-12 animate-in fade-in duration-700 max-w-4xl mx-auto relative">
-               <ThreadRecallSection recall={currentThread.recall} />
-               
-               <div className="relative h-48 flex items-center justify-center">
-                  <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px border-l-2 border-dashed border-marker-black/10"></div>
-                  <div className="relative z-10 flex flex-col items-center gap-6">
-                    <div className="p-6 bg-white border-2 border-marker-black rounded-full shadow-2xl group animate-bounce">
-                      <ArrowDown className="text-marker-red" size={32} />
-                    </div>
-                    <div className="bg-white p-6 marker-border border-marker-red shadow-xl text-center space-y-2 max-w-sm">
-                      <span className="font-mono text-[10px] font-black uppercase text-marker-red tracking-widest">Behavioral Delta (The Catalyst)</span>
-                      <p className="heading-marker text-2xl lowercase italic leading-tight">"{currentThread.projection.quantumJump.behavioralDelta}"</p>
-                      <p className="font-mono text-[9px] opacity-40 uppercase tracking-tighter">Bridge Action: {currentThread.projection.quantumJump.bridgeAction}</p>
-                    </div>
-                  </div>
-               </div>
+              <ThreadRecallSection recall={currentThread.recall} />
 
-               <ThreadProjectionSection projection={currentThread.projection} />
+              <div className="relative h-48 flex items-center justify-center">
+                <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px border-l-2 border-dashed border-marker-black/10"></div>
+                <div className="relative z-10 flex flex-col items-center gap-6">
+                  <div className="p-6 bg-white border-2 border-marker-black rounded-full shadow-2xl group animate-bounce">
+                    <span className="text-marker-red text-[10px]">↓</span>
+                  </div>
+                  <div className="bg-white p-6 marker-border border-marker-red shadow-xl text-center space-y-2 max-w-sm">
+                    <span className="font-mono text-[10px] font-black uppercase text-marker-red tracking-widest">Behavioral Delta (The Catalyst)</span>
+                    <p className="heading-marker text-2xl lowercase italic leading-tight">"{currentThread.projection.quantumJump.behavioralDelta}"</p>
+                    <p className="font-mono text-[9px] opacity-40 uppercase tracking-tighter">Bridge Action: {currentThread.projection.quantumJump.bridgeAction}</p>
+                  </div>
+                </div>
+              </div>
+
+              <ThreadProjectionSection projection={currentThread.projection} />
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4">
-               {history.length === 0 ? (
-                 <div className="text-center py-40 opacity-10 font-display text-5xl lowercase">Archive Empty</div>
-               ) : history.map(h => (
-                 <div 
-                   key={h.id} 
-                   onClick={() => { setCurrentThread(h); setViewMode('thread'); audioManager.playRustle(); }}
-                   className="p-8 border border-black/5 bg-black/5 cursor-pointer hover:border-marker-blue group transition-all"
-                 >
-                   <h4 className="font-display text-4xl group-hover:text-marker-blue transition-colors truncate lowercase italic">Archival Trace: {h.signature}</h4>
-                   <p className="font-mono text-[9px] opacity-40 uppercase mt-2 tracking-widest">Captured: {new Date(h.timestamp).toLocaleString()}</p>
-                 </div>
-               ))}
+              {history.length === 0 ? (
+                <div className="text-center py-40 opacity-10 font-display text-5xl lowercase">Archive Empty</div>
+              ) : history.map(h => (
+                <div
+                  key={h.id}
+                  onClick={() => {
+                    setCurrentThread(h); setViewMode('thread'); audioManager.playRustle();
+                  }}
+                  className="p-8 border border-black/5 bg-black/5 cursor-pointer hover:border-marker-blue group transition-all"
+                >
+                  <h4 className="font-display text-4xl group-hover:text-marker-blue transition-colors truncate lowercase italic">Archival Trace: {h.signature}</h4>
+                  <p className="font-mono text-[9px] opacity-40 uppercase mt-2 tracking-widest">Captured: {new Date(h.timestamp).toLocaleString()}</p>
+                </div>
+              ))}
             </div>
           )}
         </main>

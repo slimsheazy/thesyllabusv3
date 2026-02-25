@@ -4,18 +4,18 @@ import { GlossaryTerm } from './GlossaryEngine';
 import { WritingEffect } from './WritingEffect';
 import { audioManager } from './AudioManager';
 
-const SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
-const PLANETS = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
+const SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+const PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'];
 
 const RULERS: Record<string, string> = {
-  "Aries": "Mars", "Taurus": "Venus", "Gemini": "Mercury", "Cancer": "Moon",
-  "Leo": "Sun", "Virgo": "Mercury", "Libra": "Venus", "Scorpio": "Mars",
-  "Sagittarius": "Jupiter", "Capricorn": "Saturn", "Aquarius": "Saturn", "Pisces": "Jupiter"
+  'Aries': 'Mars', 'Taurus': 'Venus', 'Gemini': 'Mercury', 'Cancer': 'Moon',
+  'Leo': 'Sun', 'Virgo': 'Mercury', 'Libra': 'Venus', 'Scorpio': 'Mars',
+  'Sagittarius': 'Jupiter', 'Capricorn': 'Saturn', 'Aquarius': 'Saturn', 'Pisces': 'Jupiter'
 };
 
 const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [positions, setPositions] = useState<Record<string, string>>(
-    PLANETS.reduce((acc, p) => ({ ...acc, [p]: "Aries" }), {})
+    PLANETS.reduce((acc, p) => ({ ...acc, [p]: 'Aries' }), {})
   );
   const [view, setView] = useState<'input' | 'analysis'>('input');
 
@@ -26,7 +26,9 @@ const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
   const analysis = useMemo(() => {
     const tree: Record<string, string> = {};
-    PLANETS.forEach(p => { tree[p] = RULERS[positions[p]]; });
+    PLANETS.forEach(p => {
+      tree[p] = RULERS[positions[p]];
+    });
 
     const findChain = (startPlanet: string) => {
       const path = [startPlanet];
@@ -34,7 +36,9 @@ const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       while (true) {
         const next = tree[current];
         if (path.includes(next)) {
-          if (next === current) return { type: 'ruler', planet: next, path };
+          if (next === current) {
+            return { type: 'ruler', planet: next, path };
+          }
           return { type: 'loop', planets: path.slice(path.indexOf(next)), path };
         }
         path.push(next);
@@ -55,7 +59,7 @@ const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       <div className="w-full flex flex-col lg:flex-row gap-10 lg:gap-20 items-start">
         <div className="w-full lg:w-[400px] space-y-10 lg:sticky lg:top-20">
           <header className="space-y-4">
-            <h2 className="heading-marker text-5xl sm:text-7xl text-marker-red lowercase leading-none">Chart <GlossaryTerm word="Rulership">Rulership</GlossaryTerm></h2>
+            <h2 className="heading-marker text-5xl sm:text-7xl text-marker-yellow lowercase leading-none">Chart <GlossaryTerm word="Rulership">Rulership</GlossaryTerm></h2>
             <p className="handwritten text-lg text-marker-red opacity-40 font-bold uppercase tracking-widest italic">Authority Patterning</p>
           </header>
 
@@ -66,7 +70,7 @@ const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 {PLANETS.map(p => (
                   <div key={p} className="flex items-center justify-between gap-4 group">
                     <label className="heading-marker text-xl text-marker-black lowercase w-20">{p}</label>
-                    <select 
+                    <select
                       value={positions[p]}
                       onChange={(e) => updatePosition(p, e.target.value)}
                       className="flex-1 p-2 marker-border bg-surface italic text-sm outline-none focus:border-marker-red"
@@ -76,8 +80,10 @@ const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   </div>
                 ))}
               </div>
-              <button 
-                onClick={() => { setView('analysis'); audioManager.playRustle(); }}
+              <button
+                onClick={() => {
+                  setView('analysis'); audioManager.playRustle();
+                }}
                 className="brutalist-button w-full !mt-8 !py-4 !text-xl !bg-marker-red text-white border-marker-red"
               >
                 Analyze Power
@@ -94,7 +100,7 @@ const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <h3 className="heading-marker text-4xl sm:text-5xl text-marker-black lowercase">Authority Nodes</h3>
                   <button onClick={() => setView('input')} className="text-[10px] font-bold uppercase text-marker-black/40 hover:text-marker-red transition-colors">Edit Parameters</button>
                 </div>
-                
+
                 <div className="grid grid-cols-1 gap-6">
                   {analysis.uniqueEnds.map((endJson, i) => {
                     const end = JSON.parse(endJson);
@@ -105,9 +111,9 @@ const RulershipTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         <span className="handwritten text-[10px] font-bold uppercase text-marker-red tracking-[0.4em] block mb-4">{isSingle ? 'Final Dispositor' : 'Mutual Dispositors'}</span>
                         <h4 className="heading-marker text-5xl sm:text-7xl text-marker-black lowercase">{isSingle ? end : end.join(' + ')}</h4>
                         <div className="handwritten text-xl italic text-marker-black/60 mt-4 leading-relaxed max-w-md">
-                          <WritingEffect text={isSingle 
-                            ? `Energy reports to ${end}. This node acts as the final governor, translating all systemic friction into a singular directive.` 
-                            : `Power is shared in a closed-loop system between ${end.join(' and ')}. They serve as a collaborative governing body, where each planet's expression is contingent upon the other's resonance.`} 
+                          <WritingEffect text={isSingle
+                            ? `Energy reports to ${end}. This node acts as the final governor, translating all systemic friction into a singular directive.`
+                            : `Power is shared in a closed-loop system between ${end.join(' and ')}. They serve as a collaborative governing body, where each planet's expression is contingent upon the other's resonance.`}
                           />
                         </div>
                       </div>

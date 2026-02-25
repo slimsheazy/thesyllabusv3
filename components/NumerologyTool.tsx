@@ -7,12 +7,11 @@ import { WritingEffect } from './WritingEffect';
 import { audioManager } from './AudioManager';
 import { useSyllabusStore } from '../store';
 import { NumerologyResult, PsychometryResult } from '../types';
-import { Fingerprint, Search, Zap, History, ChevronLeft } from 'lucide-react';
 
 const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState<'identity' | 'psychometry'>('identity');
   const { userIdentity, setUserIdentity, recordCalculation } = useSyllabusStore();
-  
+
   // Identity State
   const [name, setName] = useState(userIdentity || '');
   const [birthday, setBirthday] = useState('');
@@ -29,30 +28,34 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  const calculateIdentity = async () => {
-    if (!name || !birthday) return;
+  const calculateIdentity = async() => {
+    if (!name || !birthday) {
+      return;
+    }
     setIdentityLoading(true);
     setIdentityResult(null);
     audioManager.playRustle();
-    
+
     // Sync with global identity
     setUserIdentity(name);
-    
+
     const analysis = await getNumerologyAnalysis(name, birthday, system);
     if (analysis) {
       setIdentityResult(analysis);
     } else {
-      alert("Something went wrong with the numbers. Try again?");
+      alert('Something went wrong with the numbers. Try again?');
     }
     setIdentityLoading(false);
   };
 
   const startContact = useCallback(() => {
-    if (!objectName || psychometryLoading) return;
+    if (!objectName || psychometryLoading) {
+      return;
+    }
     setIsTouching(true);
     startTimeRef.current = Date.now();
     audioManager.playPenScratch(2);
-    
+
     let current = 0;
     const interval = setInterval(() => {
       current += 2;
@@ -77,17 +80,17 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     }
   }, [contactProgress]);
 
-  const handlePsychometryAnalyze = async () => {
+  const handlePsychometryAnalyze = async() => {
     const duration = Date.now() - startTimeRef.current;
     setPsychometryLoading(true);
     setPsychometryResult(null);
     audioManager.playRustle();
-    
+
     const analysis = await getPsychometryAnalysis(objectName, duration);
     if (analysis) {
       setPsychometryResult(analysis);
     } else {
-      alert("Couldn't read the object. Give it another shot.");
+      alert('Couldn\'t read the object. Give it another shot.');
     }
     setPsychometryLoading(false);
     setContactProgress(0);
@@ -96,7 +99,7 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   return (
     <div className="min-h-full flex flex-col items-center justify-start py-12 px-4 md:px-8 relative max-w-7xl mx-auto pb-32">
       <button onClick={onBack} className="fixed top-4 right-4 sm:top-8 sm:right-8 brutalist-button !text-[10px] sm:!text-sm !px-3 sm:!px-4 !py-1 z-50 bg-surface shadow-xl flex items-center gap-2">
-        <ChevronLeft size={14} /> Back
+        Left Back
       </button>
 
       <div className="w-full flex flex-col gap-12">
@@ -107,18 +110,18 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           </div>
 
           <div className="flex gap-4 border-b border-marker-black/5 pb-4">
-            <button 
+            <button
               onClick={() => setActiveTab('identity')}
               className={`flex items-center gap-3 px-6 py-3 transition-all ${activeTab === 'identity' ? 'text-marker-teal border-b-2 border-marker-teal font-bold' : 'text-marker-black/40 hover:text-marker-black'}`}
             >
-              <Fingerprint size={18} />
+              Search
               <span className="font-mono text-xs uppercase tracking-widest">Reading You</span>
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('psychometry')}
               className={`flex items-center gap-3 px-6 py-3 transition-all ${activeTab === 'psychometry' ? 'text-marker-purple border-b-2 border-marker-purple font-bold' : 'text-marker-black/40 hover:text-marker-black'}`}
             >
-              <Zap size={18} />
+              Lightning
               <span className="font-mono text-xs uppercase tracking-widest">Object Energy</span>
             </button>
           </div>
@@ -131,14 +134,18 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <div className="space-y-3">
                   <label className="handwritten text-[10px] text-marker-black opacity-40 block ml-2 uppercase tracking-widest font-bold">Calculation System</label>
                   <div className="flex gap-2 p-1 bg-surface rounded-xl marker-border">
-                    <button 
-                      onClick={() => { setSystem('pythagorean'); audioManager.playPenScratch(0.05); }} 
+                    <button
+                      onClick={() => {
+                        setSystem('pythagorean'); audioManager.playPenScratch(0.05);
+                      }}
                       className={`flex-1 py-3 px-2 transition-all rounded-lg handwritten text-[10px] font-bold uppercase tracking-widest ${system === 'pythagorean' ? 'bg-marker-teal text-white shadow-md' : 'text-marker-teal/40 hover:text-marker-teal'}`}
                     >
                       System: Pythagorean
                     </button>
-                    <button 
-                      onClick={() => { setSystem('chaldean'); audioManager.playPenScratch(0.05); }} 
+                    <button
+                      onClick={() => {
+                        setSystem('chaldean'); audioManager.playPenScratch(0.05);
+                      }}
                       className={`flex-1 py-3 px-2 transition-all rounded-lg handwritten text-[10px] font-bold uppercase tracking-widest ${system === 'chaldean' ? 'bg-marker-teal text-white shadow-md' : 'text-marker-teal/40 hover:text-marker-teal'}`}
                     >
                       System: Chaldean
@@ -147,31 +154,31 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <p className="px-2 text-[8px] italic opacity-40">Choose Pythagorean for modern clarity or Chaldean for ancient resonance.</p>
                 </div>
                 <div className="space-y-2">
-                  <label className="handwritten text-[10px] font-bold uppercase text-marker-black opacity-40 block ml-2 tracking-widest">Your Full Name</label>
+                  <label className="handwritten text-[10px] font-bold uppercase text-marker-black opacity-40 block ml-2 tracking-widest">Full Name</label>
                   <input type="text" placeholder="e.g. John Doe" className="w-full p-4 text-marker-black text-xl italic bg-surface/50 rounded-lg outline-none border border-transparent focus:border-marker-teal" value={name} onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <label className="handwritten text-[10px] font-bold uppercase text-marker-black opacity-40 block ml-2 tracking-widest">When were you born?</label>
+                  <label className="handwritten text-[10px] font-bold uppercase text-marker-black opacity-40 block ml-2 tracking-widest">Birth Date</label>
                   <input type="date" className="w-full p-4 text-marker-black text-xl italic bg-surface/50 rounded-lg outline-none border border-transparent focus:border-marker-teal" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
                 </div>
-                <button onClick={calculateIdentity} disabled={identityLoading || !name || !birthday} className={`brutalist-button w-full !py-6 !text-2xl transition-all ${!name || !birthday ? 'opacity-30' : '!bg-marker-teal text-white shadow-xl'}`}>{identityLoading ? 'Crunching numbers...' : 'Check My Path'}</button>
+                <button onClick={calculateIdentity} disabled={identityLoading || !name || !birthday} className={`brutalist-button w-full !py-6 !text-2xl transition-all ${!name || !birthday ? 'opacity-30' : '!bg-marker-teal text-white shadow-xl'}`}>{identityLoading ? 'Calculating...' : 'Calculate Path'}</button>
               </div>
             ) : (
               <div className="space-y-8 p-6 bg-white border border-marker-purple/10 shadow-sm rounded-2xl animate-in fade-in slide-in-from-left-4 duration-300">
                 <div className="space-y-2">
-                  <label className="handwritten text-[10px] font-bold uppercase text-marker-black opacity-40 block ml-2 tracking-widest">What are you holding?</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. My grandma's ring" 
-                    className="w-full p-4 text-marker-black text-xl italic bg-surface/50 rounded-lg outline-none border border-transparent focus:border-marker-purple" 
-                    value={objectName} 
-                    onChange={(e) => setObjectName(e.target.value)} 
+                  <label className="handwritten text-[10px] font-bold uppercase text-marker-black opacity-40 block ml-2 tracking-widest">Object Description</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Ring, key, photograph"
+                    className="w-full p-4 text-marker-black text-xl italic bg-surface/50 rounded-lg outline-none border border-transparent focus:border-marker-purple"
+                    value={objectName}
+                    onChange={(e) => setObjectName(e.target.value)}
                   />
                 </div>
-                
+
                 <div className="space-y-4">
                   <label className="handwritten text-[10px] font-bold uppercase text-marker-black opacity-40 block ml-2 tracking-widest">Hold to Establish Link</label>
-                  <div 
+                  <div
                     className="relative aspect-square w-full rounded-full bg-black/5 border-4 border-dashed border-marker-purple/20 flex items-center justify-center group cursor-pointer overflow-hidden select-none"
                     onMouseDown={startContact}
                     onMouseUp={endContact}
@@ -179,7 +186,7 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     onTouchStart={startContact}
                     onTouchEnd={endContact}
                   >
-                    <div 
+                    <div
                       className="absolute inset-0 bg-marker-purple/10 transition-all duration-300"
                       style={{ clipPath: `inset(${100 - contactProgress}% 0 0 0)` }}
                     />
@@ -220,12 +227,12 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     <div className="absolute top-0 right-0 p-4 opacity-[0.03] text-8xl heading-marker italic uppercase pointer-events-none">Results</div>
                     <div className="flex justify-between items-center mb-6 border-b-2 border-marker-blue/10 pb-4 relative z-10">
                       <div className="flex flex-col gap-1">
-                        <span className="handwritten text-[10px] font-bold uppercase text-marker-blue tracking-widest">Your Narrative</span>
+                        <span className="handwritten text-[10px] font-bold uppercase text-marker-blue tracking-widest">Analysis</span>
                         <div className="flex items-center gap-2">
-                           <span className="text-[10px] font-mono text-marker-teal">✦</span>
-                           <span className="text-[9px] font-black text-white bg-marker-teal px-2 py-1 rounded-full uppercase tracking-tighter shadow-sm">
+                          <span className="text-[10px] font-mono text-marker-teal">✦</span>
+                          <span className="text-[9px] font-black text-white bg-marker-teal px-2 py-1 rounded-full uppercase tracking-tighter shadow-sm">
                              ACTIVE: {system === 'pythagorean' ? 'Pythagorean System' : 'Chaldean System'}
-                           </span>
+                          </span>
                         </div>
                       </div>
                       <ReadAloudButton text={identityResult.meaning} className="!py-1 !px-2 !text-[10px] bg-marker-blue/10 border-marker-blue/20 text-marker-blue" />

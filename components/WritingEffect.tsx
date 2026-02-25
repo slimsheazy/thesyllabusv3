@@ -12,12 +12,12 @@ interface WritingEffectProps {
 
 const sanitize = (t: string) => t.replace(/[*#`[\]()]/g, '').trim();
 
-export const WritingEffect: React.FC<WritingEffectProps> = memo(({ 
-  text, 
-  className = "", 
-  speed = 15, 
+export const WritingEffect: React.FC<WritingEffectProps> = memo(({
+  text,
+  className = '',
+  speed = 15,
   onComplete,
-  playAudio = true 
+  playAudio = true
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
@@ -31,10 +31,14 @@ export const WritingEffect: React.FC<WritingEffectProps> = memo(({
     setDisplayedText('');
     setIsComplete(false);
     indexRef.current = 0;
-    if (playAudio && cleanText.current.length > 0) audioManager.playPenScratch(0.1);
+    if (playAudio && cleanText.current.length > 0) {
+      audioManager.playPenScratch(0.1);
+    }
 
     const step = (time: number) => {
-      if (!lastTimeRef.current) lastTimeRef.current = time;
+      if (!lastTimeRef.current) {
+        lastTimeRef.current = time;
+      }
       const progress = time - lastTimeRef.current;
 
       if (progress >= speed) {
@@ -46,7 +50,9 @@ export const WritingEffect: React.FC<WritingEffectProps> = memo(({
           lastTimeRef.current = time;
         } else {
           setIsComplete(true);
-          if (onComplete) onComplete();
+          if (onComplete) {
+            onComplete();
+          }
           return;
         }
       }
@@ -56,7 +62,9 @@ export const WritingEffect: React.FC<WritingEffectProps> = memo(({
     rafRef.current = requestAnimationFrame(step);
     return () => {
       cancelAnimationFrame(rafRef.current);
-      if (playAudio) audioManager.stopPenScratch();
+      if (playAudio) {
+        audioManager.stopPenScratch();
+      }
     };
   }, [text, speed, onComplete, playAudio]);
 

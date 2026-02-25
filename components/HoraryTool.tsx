@@ -9,20 +9,19 @@ import { audioManager } from './AudioManager';
 import { ReadAloudButton } from './ReadAloudButton';
 import { HoraryResult } from '../types';
 import { ZodiacWheel } from './ZodiacWheel';
-import { MapPin } from 'lucide-react';
 
-const HoraryInput = memo(({ 
-  question, setQuestion, location, detecting, onDetect, onQuery, loading 
-}: { 
-  question: string, setQuestion: (v: string) => void, 
-  location: { lat: number, lng: number } | null, 
-  detecting: boolean, onDetect: () => void, 
-  onQuery: () => void, loading: boolean 
+const HoraryInput = memo(({
+  question, setQuestion, location, detecting, onDetect, onQuery, loading
+}: {
+  question: string, setQuestion: (v: string) => void,
+  location: { lat: number, lng: number } | null,
+  detecting: boolean, onDetect: () => void,
+  onQuery: () => void, loading: boolean
 }) => (
   <div className="space-y-6">
     <div className="space-y-2">
       <label className="handwritten text-[10px] uppercase font-bold text-marker-black/40 tracking-widest ml-1">What's on your mind?</label>
-      <textarea 
+      <textarea
         value={question}
         onChange={e => setQuestion(e.target.value)}
         placeholder="Ask a specific question you need an answer to right now..."
@@ -32,7 +31,7 @@ const HoraryInput = memo(({
 
     <div className="space-y-2">
       <label className="handwritten text-[10px] uppercase font-bold text-marker-black/40 tracking-widest ml-1">Pinpoint where you are</label>
-      <button 
+      <button
         onClick={onDetect}
         disabled={detecting}
         className={`w-full p-4 marker-border flex items-center justify-center gap-3 transition-all ${location ? 'bg-marker-green/5 border-marker-green text-marker-green' : 'bg-surface hover:bg-marker-black/5'}`}
@@ -47,7 +46,7 @@ const HoraryInput = memo(({
       </button>
     </div>
 
-    <button 
+    <button
       onClick={onQuery}
       disabled={loading || !question || !location}
       className={`brutalist-button w-full !py-6 !text-2xl transition-all ${!location || !question ? 'opacity-30' : '!bg-marker-blue text-white shadow-xl hover:scale-[1.02]'}`}
@@ -58,7 +57,7 @@ const HoraryInput = memo(({
 ));
 
 const HoraryResultDisplay = memo(({ reading }: { reading: HoraryResult }) => {
-  const SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+  const SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
   const processedPlanets = reading.chartData.planets.map(p => ({
     name: p.name,
     degree: p.degree % 30,
@@ -84,11 +83,11 @@ const HoraryResultDisplay = memo(({ reading }: { reading: HoraryResult }) => {
       </section>
 
       <section className="space-y-6">
-         <span className="handwritten text-[10px] font-bold uppercase text-marker-black/50 tracking-[0.4em] block border-b border-marker-black/5 pb-2 italic">How it looks up there</span>
-         <ZodiacWheel 
-            planets={processedPlanets} 
-            ascendantDegree={reading.chartData.ascendant}
-         />
+        <span className="handwritten text-[10px] font-bold uppercase text-marker-black/50 tracking-[0.4em] block border-b border-marker-black/5 pb-2 italic">How it looks up there</span>
+        <ZodiacWheel
+          planets={processedPlanets}
+          ascendantDegree={reading.chartData.ascendant}
+        />
       </section>
 
       <div className="grid grid-cols-1 gap-8">
@@ -108,12 +107,12 @@ const HoraryTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [loading, setLoading] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [reading, setReading] = useState<HoraryResult | null>(null);
-  
+
   const { recordCalculation, userLocation, setUserLocation } = useSyllabusStore();
 
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
-      alert("Can't find your location on this browser.");
+      alert('Can\'t find your location on this browser.');
       return;
     }
     setDetecting(true);
@@ -124,15 +123,17 @@ const HoraryTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         audioManager.playRustle();
       },
       (err) => {
-        alert("Couldn't lock onto your spot.");
+        alert('Couldn\'t lock onto your spot.');
         setDetecting(false);
       },
       { timeout: 10000 }
     );
   };
 
-  const handleQuery = async () => {
-    if (!question.trim() || !userLocation) return;
+  const handleQuery = async() => {
+    if (!question.trim() || !userLocation) {
+      return;
+    }
     setLoading(true);
     setReading(null);
     audioManager.playRustle();
@@ -145,7 +146,7 @@ const HoraryTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         logCalculation('HORARY', question, result);
       }
     } catch (err) {
-      alert("Lost the signal. Give it a second.");
+      alert('Lost the signal. Give it a second.');
     } finally {
       setLoading(false);
     }
@@ -161,21 +162,21 @@ const HoraryTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <h2 className="heading-marker text-5xl sm:text-7xl text-marker-blue lowercase leading-none">Instant <GlossaryTerm word="Horary">Answer</GlossaryTerm></h2>
             <p className="handwritten text-lg sm:text-xl text-marker-blue opacity-40 font-bold uppercase tracking-widest italic">Checking the vibe right now</p>
           </header>
-          <HoraryInput 
-            question={question} setQuestion={setQuestion} location={userLocation} 
-            detecting={detecting} onDetect={handleDetectLocation} onQuery={handleQuery} loading={loading} 
+          <HoraryInput
+            question={question} setQuestion={setQuestion} location={userLocation}
+            detecting={detecting} onDetect={handleDetectLocation} onQuery={handleQuery} loading={loading}
           />
         </div>
 
         <div className="flex-1 w-full min-h-[500px] pb-32">
           {loading ? (
-             <div className="flex flex-col items-center justify-center py-40 gap-10 animate-in fade-in">
-                <div className="relative">
-                   <div className="w-20 h-20 border-2 border-marker-blue border-t-transparent animate-spin rounded-full"></div>
-                   <div className="absolute inset-0 flex items-center justify-center heading-marker text-2xl opacity-20 italic">☉</div>
-                </div>
-                <span className="handwritten text-xl text-marker-blue font-black animate-pulse uppercase tracking-[0.4em]">Let's see what the stars say...</span>
-             </div>
+            <div className="flex flex-col items-center justify-center py-40 gap-10 animate-in fade-in">
+              <div className="relative">
+                <div className="w-20 h-20 border-2 border-marker-blue border-t-transparent animate-spin rounded-full"></div>
+                <div className="absolute inset-0 flex items-center justify-center heading-marker text-2xl opacity-20 italic">☉</div>
+              </div>
+              <span className="handwritten text-xl text-marker-blue font-black animate-pulse uppercase tracking-[0.4em]">Let's see what the stars say...</span>
+            </div>
           ) : reading ? (
             <HoraryResultDisplay reading={reading} />
           ) : (
