@@ -10,7 +10,23 @@ interface WritingEffectProps {
   playAudio?: boolean;
 }
 
-const sanitize = (t: string) => t.replace(/[*#`[\]()]/g, '').trim();
+const sanitize = (t: string) => {
+  return t
+    // Remove markdown headers
+    .replace(/^#{1,6}\s+/gm, '')
+    // Remove bold/italic
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    // Remove inline code
+    .replace(/`(.*?)`/g, '$1')
+    // Remove links
+    .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+    // Remove brackets
+    .replace(/[\[\]{}()]/g, '')
+    // Clean up extra whitespace
+    .replace(/\s+/g, ' ')
+    .trim();
+};
 
 export const WritingEffect: React.FC<WritingEffectProps> = memo(({
   text,
