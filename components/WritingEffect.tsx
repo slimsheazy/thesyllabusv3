@@ -31,7 +31,7 @@ const sanitize = (t: string) => {
 export const WritingEffect: React.FC<WritingEffectProps> = memo(({
   text,
   className = '',
-  speed = 15,
+  speed = 3,
   onComplete,
   playAudio = true
 }) => {
@@ -59,7 +59,7 @@ export const WritingEffect: React.FC<WritingEffectProps> = memo(({
 
       if (progress >= speed) {
         if (indexRef.current < cleanText.current.length) {
-          const chunk = Math.random() > 0.9 ? 2 : 1;
+          const chunk = Math.random() > 0.7 ? 4 : 3;
           const next = cleanText.current.slice(0, indexRef.current + chunk);
           setDisplayedText(next);
           indexRef.current += chunk;

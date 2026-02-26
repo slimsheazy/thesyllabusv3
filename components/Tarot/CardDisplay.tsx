@@ -144,7 +144,7 @@ export const TarotCardDisplay: React.FC<CardDisplayProps> = ({ cards, text, read
 
       <section className="space-y-6">
         <div className="flex justify-between items-end border-b border-marker-black/10 pb-4">
-          <h3 className="heading-marker text-4xl text-marker-black lowercase">Synthesis of Arcs</h3>
+          <h3 className="heading-marker text-4xl text-marker-black lowercase">Synthesis</h3>
           {reading && <ReadAloudButton text={reading.interpretation} className="!py-1 !px-2 !text-[10px]" />}
         </div>
         <div className="p-8 md:p-10 bg-surface shadow-2xl rounded-2xl relative overflow-hidden">

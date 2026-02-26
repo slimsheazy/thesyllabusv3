@@ -27,7 +27,7 @@ const MENU_CATEGORIES: MenuCategory[] = [
       { name: 'Design a Layout', page: Page.SPREAD_GENERATOR },
       { name: 'The Photo Reader', page: Page.PHOTO_SCRYER },
       { name: 'Read the Cards', page: Page.TAROT },
-      { name: 'The Random Oracle', page: Page.SABIAN_SYMBOLS },
+      { name: 'Sabian Symbols', page: Page.SABIAN_SYMBOLS },
       { name: 'The Coincidence Decoder', page: Page.SYNCHRONICITY_DECODER },
       { name: 'Ask the Stars Right Now', page: Page.HORARY },
       { name: 'Throwing the Charms', page: Page.CHARM_CASTING },
