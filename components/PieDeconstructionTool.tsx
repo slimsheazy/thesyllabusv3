@@ -60,7 +60,7 @@ const PieDeconstructionTool: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                   {result.semanticTrace.map((step, i) => (
                     <div key={i} className="flex items-center gap-4">
                       <span className="heading-marker text-xl sm:text-2xl">{step}</span>
-                      {i < result.semanticTrace.length - 1 && <span className="opacity-20 text-2xl">Right</span>}
+                      {i < result.semanticTrace.length - 1 && <span className="opacity-20 text-2xl text-white">→</span>}
                     </div>
                   ))}
                 </div>
