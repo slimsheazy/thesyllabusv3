@@ -216,7 +216,7 @@ const AMATool: React.FC<ToolProps> = ({ onBack }) => {
                             </div>
                           </div>
                         ) : (
-                          <button onClick={() => setAnsweringId(inq.id)} className="text-[10px] font-bold uppercase text-marker-red underline decoration-2 underline-offset-4">Provide Response Right</button>
+                          <button onClick={() => setAnsweringId(inq.id)} className="text-[10px] font-bold uppercase text-marker-red underline decoration-2 underline-offset-4">Provide Response →</button>
                         )}
                       </div>
                     ))}
