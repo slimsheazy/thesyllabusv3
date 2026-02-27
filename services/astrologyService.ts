@@ -49,7 +49,7 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
 
   const planets: CalculatedPlanet[] = bodies.map(body => {
     // Correct: Ecliptic(body, AstroTime)
-    const ecl = Ecliptic(body, time) as { elon: number; elat: number; r: number; /* Add other properties from Ecliptic result */ };
+    const ecl = Ecliptic(body, time) as { elon: number; elat: number; r: number; };
 
     // Retrograde check via 6-hour delta
     const datePlus = new Date(date.getTime() + 6 * 60 * 60 * 1000);
