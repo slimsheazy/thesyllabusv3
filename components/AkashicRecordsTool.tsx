@@ -180,7 +180,7 @@ const AkashicRecordsTool: React.FC<ToolProps> = ({ onBack }) => {
             ].map(m => (
               <button
                 key={m.id}
-                onClick={() => setView(m.id as any)}
+                onClick={() => setView(m.id)}
                 className={`flex items-center justify-between p-6 border transition-all duration-300 ${view === m.id ? 'bg-marker-black border-marker-black text-white shadow-2xl scale-[1.02]' : 'bg-white border-marker-black/10 text-marker-black/40 hover:text-marker-black hover:border-marker-black/20'}`}
               >
                 <div className="flex items-center gap-4">
