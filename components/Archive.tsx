@@ -229,7 +229,7 @@ const Archive: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <h5 className="heading-marker text-2xl md:text-3xl lowercase leading-tight group-hover:text-marker-blue">"{log.query}"</h5>
               </div>
               <div className="shrink-0 opacity-0 group-hover:opacity-100">
-                <span className="text-[10px] font-bold uppercase underline decoration-2 underline-offset-4 decoration-marker-blue/20">Recall Right</span>
+                <span className="text-[10px] font-bold uppercase underline decoration-2 underline-offset-4 decoration-marker-blue/20">Recall →</span>
               </div>
             </div>
           ))}
