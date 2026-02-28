@@ -17,57 +17,57 @@ interface SectorInfo {
 
 const SECTORS: Record<string, SectorInfo> = {
   'N': {
-    star: 8, label: 'North', color: 'text-marker-blue', icon: <TrendingUp size={20}/>,
+    star: 8, label: 'North', color: 'text-marker-blue', icon: <span className="text-lg">↗️</span>,
     vibe: 'The Money Maker',
     instructorTalk: 'Look, this is basically the VIP lounge of your house right now. If you\'ve got a laptop and some ambition, sit here. It\'s the current \'gold star\' zone.',
     remedy: 'Keep it clean. No laundry piles. Prosperity doesn\'t like tripping over socks.'
   },
   'S': {
-    star: 7, label: 'South', color: 'text-marker-red', icon: <AlertTriangle size={20}/>,
+    star: 7, label: 'South', color: 'text-marker-red', icon: <span className="text-lg">⚠️</span>,
     vibe: 'The Gossip Trap',
-    instructorTalk: 'This corner\'s got a bit of a sharp tongue. Watch your mouth in this room, or you\'ll end up in a fight about the dishes that lasts three days.',
-    remedy: 'Quiet energy. Maybe a bowl of still water to cool the temper down.'
+    instructorTalk: 'This corner\'s got a bit of a sharp tongue. Watch your mouth in this room, or you\'ll end up in a fight about dishes that lasts three days.',
+    remedy: 'Quiet energy. Maybe a bowl of still water to cool temper down.'
   },
   'E': {
-    star: 1, label: 'East', color: 'text-marker-green', icon: <Sparkles size={20}/>,
+    star: 1, label: 'East', color: 'text-marker-green', icon: <span className="text-lg">✨</span>,
     vibe: 'The Fresh Start',
     instructorTalk: 'Decent vibes. Good for writing emails or finally starting that hobby you\'ll quit in two weeks. It\'s \'new leaf\' energy.',
     remedy: 'Open a window. Let the air move. Stagnation is the enemy here.'
   },
   'W': {
-    star: 5, label: 'West', color: 'text-yellow-600', icon: <ShieldAlert size={20}/>,
+    star: 5, label: 'West', color: 'text-yellow-600', icon: <span className="text-lg">🛡️</span>,
     vibe: 'The Danger Zone',
-    instructorTalk: 'Treat this square like a sleeping tiger. Don\'t renovate, don\'t bang nails into the wall, and honestly? Maybe don\'t even look at it too hard.',
+    instructorTalk: 'Treat this square like a sleeping tiger. Don\'t renovate, don\'t bang nails into wall, and honestly? Maybe don\'t even look at it too hard.',
     remedy: 'Metal. Heavy metal. A brass bowl or just... absolute silence.'
   },
   'NE': {
-    star: 6, label: 'Northeast', color: 'text-marker-black', icon: <ShieldAlert size={20}/>,
+    star: 6, label: 'Northeast', color: 'text-marker-black', icon: <span className="text-lg">🛡️</span>,
     vibe: 'The Disciplinarian',
-    instructorTalk: 'Very stiff-upper-lip energy here. Good for taxes or doing things you don\'t want to do. It\'s the \'Boss\' star, and he\'s watching the clock.',
+    instructorTalk: 'Very stiff-upper-lip energy here. Good for taxes or doing things you don\'t want to do. It\'s \'Boss\' star, and he\'s watching the clock.',
     remedy: 'Organize your files. This sector hates chaos more than anything.'
   },
   'NW': {
-    star: 4, label: 'Northwest', color: 'text-marker-teal', icon: <Sparkles size={20}/>,
+    star: 4, label: 'Northwest', color: 'text-marker-teal', icon: <span className="text-lg">✨</span>,
     vibe: 'The Romantic',
     instructorTalk: 'It\'s sexy and it knows it. If you\'re single, hang out here. If you\'re writing a screenplay, also hang out here. It\'s creative juice.',
     remedy: 'Fresh flowers. Four stalks of bamboo. Keep it pretty.'
   },
   'SE': {
-    star: 2, label: 'Southeast', color: 'text-orange-800', icon: <Info size={20}/>,
+    star: 2, label: 'Southeast', color: 'text-orange-800', icon: <span className="text-lg">ℹ️</span>,
     vibe: 'The Sick Bed',
-    instructorTalk: 'This sector\'s a bit under the weather. It\'s the \'nap corner,\' but not the good kind. If you feel sluggish here, blame the 2-star.',
+    instructorTalk: 'This sector\'s a bit under the weather. It\'s \'nap corner,\' but not good kind. If you feel sluggish here, blame 2-star.',
     remedy: 'A salt water cure. Or just, you know, some actual sunlight.'
   },
   'SW': {
-    star: 9, label: 'Southwest', color: 'text-marker-purple', icon: <TrendingUp size={20}/>,
+    star: 9, label: 'Southwest', color: 'text-marker-purple', icon: <span className="text-lg">↗️</span>,
     vibe: 'The Rising Star',
     instructorTalk: 'The next big thing. Happy, flashy, and a little bit loud. Great for parties or just feeling like you\'ve actually got your life together.',
     remedy: 'Bright lights. Red accents. Let this place glow.'
   },
   'C': {
-    star: 3, label: 'Center', color: 'text-marker-teal', icon: <Coffee size={20}/>,
+    star: 3, label: 'Center', color: 'text-marker-teal', icon: <span className="text-lg">☕</span>,
     vibe: 'The Argumentative',
-    instructorTalk: 'The heart of the home is feeling a little cranky. Expect some bickering near the kitchen island. It\'s \'wood\' energy trying to break out.',
+    instructorTalk: 'The heart of the home is feeling a little cranky. Expect some bickering near kitchen island. It\'s \'wood\' energy trying to break out.',
     remedy: 'A red rug or a candle. Burn off that nervous friction.'
   }
 };
@@ -144,7 +144,7 @@ const FlyingStarTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   onClick={syncCompass}
                   className={`flex items-center gap-2 px-3 py-1 marker-border !text-[9px] font-black uppercase transition-all ${compassActive ? 'bg-marker-teal text-white border-marker-teal' : 'hover:bg-marker-teal/10'}`}
                 >
-                  <Compass size={12} className={compassActive ? 'animate-spin' : ''} /> {compassActive ? 'Synced' : 'Use Compass'}
+                  <span className={`text-lg ${compassActive ? 'animate-spin' : ''}`}>🧭</span> {compassActive ? 'Synced' : 'Use Compass'}
                 </button>
               </div>
               <div className="flex items-center gap-6">
@@ -171,7 +171,7 @@ const FlyingStarTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
           {userLocation && (
             <div className="flex items-center gap-2 opacity-30 justify-center">
-              <Home size={12} />
+              <span className="text-lg">🏠</span>
               <span className="font-mono text-[8px] uppercase font-bold tracking-tighter">Current Lat: {userLocation.lat.toFixed(2)}N</span>
             </div>
           )}

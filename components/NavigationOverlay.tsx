@@ -204,7 +204,7 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
                   </div>
                   <div className="space-y-2">
                     <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
-                      <Clock size={10} /> Time
+                      <span className="text-lg">⏰</span> Time
                     </label>
                     <input
                       type="time"
@@ -224,7 +224,7 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
                   }}
                   className="w-full brutalist-button !py-3 !text-[10px] flex items-center justify-center gap-2"
                 >
-                  <MapPin size={12} /> {userLocation ? 'Update Coordinates' : 'Grab My Location'}
+                  <span className="text-lg">📍</span> {userLocation ? 'Update Coordinates' : 'Grab My Location'}
                 </button>
                 <button onClick={() => setIsEditingProfile(false)} className="w-full text-[10px] font-black uppercase opacity-40 hover:opacity-100">Save and Close</button>
               </div>
@@ -236,14 +236,14 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
                 <div className="flex flex-col gap-2">
                   {userBirthday && (
                     <span className="flex items-center gap-2 text-sm italic opacity-60">
-                      <Calendar size={14} className="opacity-40" /> Born: {userBirthday} {userBirthTime && `@ ${userBirthTime}`}
+                      <span className="text-lg opacity-40">📅</span> Born: {userBirthday} {userBirthTime && `@ ${userBirthTime}`}
                     </span>
                   )}
-                  {userLocation && <span className="flex items-center gap-2 text-sm italic opacity-60"><MapPin size={14} className="opacity-40" /> Location: {userLocation.name || 'Synced'}</span>}
+                  {userLocation && <span className="flex items-center gap-2 text-sm italic opacity-60"><span className="text-lg opacity-40">📍</span> Location: {userLocation.name || 'Synced'}</span>}
                 </div>
                 {isCalibrated && (
                   <div className="flex items-center gap-2 text-[9px] font-black text-marker-green uppercase tracking-widest pt-2 border-t border-marker-black/5">
-                    <Check size={12} /> Sync Locked ♁
+                    <span className="text-lg">✓</span> Sync Locked ♁
                   </div>
                 )}
               </div>

@@ -39,7 +39,7 @@ const HoraryInput = memo(({
         {detecting ? (
           <div className="w-4 h-4 border-2 border-marker-black border-t-transparent animate-spin rounded-full"></div>
         ) : location ? (
-          <span className="flex items-center gap-2 font-mono text-[10px] uppercase font-bold"><MapPin size={14} /> Got you: {location.lat.toFixed(2)}N, {location.lng.toFixed(2)}E</span>
+          <span className="flex items-center gap-2 font-mono text-[10px] uppercase font-bold">📍 Got you: {location.lat.toFixed(2)}N, {location.lng.toFixed(2)}E</span>
         ) : (
           <span>Find My Spot</span>
         )}

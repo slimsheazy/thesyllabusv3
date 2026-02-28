@@ -8,6 +8,17 @@ import { WritingEffect } from './WritingEffect';
 import { ReadAloudButton } from './ReadAloudButton';
 import { SpreadDefinition, TarotCard, ToolProps } from '../types';
 
+// Polyfill for AbortController if not available
+if (typeof AbortController === 'undefined') {
+  (globalThis as any).AbortController = class AbortController {
+    signal: any;
+    aborted: boolean = false;
+    abort() {
+      this.aborted = true;
+    }
+  };
+}
+
 const MAJOR_ARCANA = [
   'The Fool', 'The Magician', 'The High Priestess', 'The Empress', 'The Emperor',
   'The Hierophant', 'The Lovers', 'The Chariot', 'Strength', 'The Hermit',
