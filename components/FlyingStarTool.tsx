@@ -220,7 +220,7 @@ const FlyingStarTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
                 <div className="p-6 bg-marker-red/5 marker-border border-marker-red/10 flex flex-col md:flex-row gap-6 items-start md:items-center">
                   <div className="shrink-0 flex items-center gap-2 font-mono text-[9px] font-black uppercase text-marker-red tracking-widest">
-                    <ShieldAlert size={14} /> Fixing the vibe
+                    🛡️ Fixing the vibe
                   </div>
                   <p className="handwritten text-lg text-marker-red/80 font-bold italic">
                          "{SECTORS[selectedSector].remedy}"
