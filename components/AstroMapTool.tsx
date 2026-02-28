@@ -104,7 +104,7 @@ const AstroMapTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       <div className="w-full space-y-10">
         <header className="space-y-4 pt-12 md:pt-0">
           <div className="flex items-center gap-4 text-marker-blue">
-            <MapIcon size={48} strokeWidth={1} />
+            <span className="text-4xl">🗺️</span>
             <h2 className="heading-marker text-6xl md:text-8xl lowercase leading-none">Living Map</h2>
           </div>
           <p className="handwritten text-xl opacity-40 uppercase tracking-[0.3em] italic max-w-2xl leading-tight">
@@ -114,7 +114,7 @@ const AstroMapTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
         {!isCalibrated ? (
           <div className="p-12 marker-border border-marker-red bg-marker-red/[0.02] flex flex-col items-center gap-6 text-center animate-in fade-in">
-            <AlertCircle size={40} className="text-marker-red opacity-40" />
+            <span className="text-4xl text-marker-red opacity-40">⚠️</span>
             <div className="space-y-2">
               <h3 className="heading-marker text-3xl lowercase">Resonance Required</h3>
               <p className="handwritten text-lg italic opacity-60">"I can't draw your lines without your arrival data. Open the menu and calibrate your frequency first."</p>
@@ -234,7 +234,7 @@ const AstroMapTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   </div>
                 ) : (
                   <div className="py-20 text-center opacity-[0.03] select-none pointer-events-none flex flex-col items-center gap-8">
-                    <Search size={80} strokeWidth={1} />
+                    <span className="text-6xl opacity-20">🔍</span>
                     <p className="handwritten text-4xl uppercase tracking-[0.2em]">Tap the map to<br/>start scrying</p>
                   </div>
                 )}

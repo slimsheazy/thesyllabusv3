@@ -1,16 +1,50 @@
+interface LogEntry {
+  id: number;
+  module: string;
+  query: string;
+  result: string;
+  timestamp: string;
+}
 
-// @ts-ignore
-import initSqlJs from 'https://esm.sh/sql.js@1.13.0';
+interface Database {
+  run(sql: string, ...params: unknown[]): void;
+  exec(sql: string, ...params: unknown[]): QueryResult[];
+  export(): Uint8Array;
+  prepare(sql: string): Statement;
+  close(): void;
+}
 
-let db: any = null;
+interface Statement {
+  run(...params: unknown[]): void;
+  get(...params: unknown[]): unknown;
+  all(...params: unknown[]): unknown[];
+  bind(...params: unknown[]): void;
+  free(): void;
+}
+
+interface QueryResult {
+  columns: string[];
+  values: unknown[][];
+}
+
+interface SqlJsConfig {
+  locateFile?: (file: string) => string;
+  wasmBinary?: ArrayBuffer;
+}
+
+interface SqlJsStatic {
+  Database: new (data?: Uint8Array) => Database;
+}
+
+let db: Database | null = null;
 
 const init = async(data: Uint8Array | null) => {
   const wasmUrl = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.wasm';
   const wasmResponse = await fetch(wasmUrl);
   const wasmBinary = await wasmResponse.arrayBuffer();
 
-  const initFn = typeof initSqlJs === 'function' ? initSqlJs : (initSqlJs as any).default;
-  const SQL = await initFn({ wasmBinary });
+  const initSqlJs = (await import('https://esm.sh/sql.js@1.13.0')).default;
+  const SQL = await initSqlJs({ wasmBinary });
 
   if (data) {
     db = new SQL.Database(data);
@@ -33,12 +67,13 @@ self.onmessage = async(e: MessageEvent) => {
 
   try {
     switch (type) {
-    case 'INIT':
+    case 'INIT': {
       await init(payload);
       self.postMessage({ id, type: 'SUCCESS' });
       break;
+    }
 
-    case 'LOG':
+    case 'LOG': {
       if (!db) {
         throw new Error('DB not initialized');
       }
@@ -50,8 +85,9 @@ self.onmessage = async(e: MessageEvent) => {
       self.postMessage({ type: 'PERSIST', payload: binary });
       self.postMessage({ id, type: 'SUCCESS' });
       break;
+    }
 
-    case 'GET':
+    case 'GET': {
       if (!db) {
         throw new Error('DB not initialized');
       }
@@ -65,18 +101,20 @@ self.onmessage = async(e: MessageEvent) => {
       const logs = [];
       if (res.length > 0) {
         const columns = res[0].columns;
-        logs.push(...res[0].values.map((row: any) => {
-          const obj: any = {};
+        logs.push(...res[0].values.map((row: unknown[]) => {
+          const obj: Record<string, unknown> = {};
           columns.forEach((col: string, i: number) => {
             obj[col] = row[i];
           });
-          return obj;
+          return obj as unknown as LogEntry;
         }));
       }
       self.postMessage({ id, type: 'SUCCESS', payload: logs });
       break;
     }
-  } catch (error: any) {
-    self.postMessage({ id, type: 'ERROR', error: error.message });
+    }
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    self.postMessage({ id, type: 'ERROR', error: errorMessage });
   }
 };

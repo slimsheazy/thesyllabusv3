@@ -29,7 +29,7 @@ const SearchChecklist = memo(({ spots }: { spots: string[] }) => {
             className={`flex items-center gap-3 p-4 marker-border text-left transition-all ${checked[i] ? 'bg-marker-green/5 border-marker-green/30 opacity-40' : 'bg-surface hover:border-marker-purple shadow-sm'}`}
           >
             <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${checked[i] ? 'bg-marker-green border-marker-green' : 'border-marker-black/20'}`}>
-              {checked[i] && <CheckCircle2 size={12} className="text-white" />}
+              {checked[i] && <span className="text-white text-lg">✓</span>}
             </div>
             <span className={`handwritten text-lg italic ${checked[i] ? 'line-through' : 'text-marker-black'}`}>{spot}</span>
           </button>
@@ -172,7 +172,7 @@ const LostItemFinder: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   value={inputs.itemName}
                   onChange={e => setInputs({ ...inputs, itemName: e.target.value })}
                 />
-                <Search className="absolute right-6 top-1/2 -translate-y-1/2 opacity-20" size={24} />
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 opacity-20" size={24}>🔍</span>
               </div>
             </div>
 
@@ -227,7 +227,7 @@ const LostItemFinder: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             >
               {loading ? (
                 <>
-                  <RefreshCw className="animate-spin" size={24} />
+                  <span className="animate-spin text-lg">🔄</span>
                   Scanning Nodes...
                 </>
               ) : (
@@ -251,26 +251,26 @@ const LostItemFinder: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   <p className="handwritten text-sm text-marker-black/40 uppercase tracking-widest italic">{result.interpretation.roomType}</p>
                 </div>
                 <button onClick={handleReset} className="mt-12 text-[10px] font-black uppercase tracking-widest opacity-20 hover:opacity-100 flex items-center gap-2 transition-opacity">
-                  <RefreshCw size={10} /> New Inquiry
+                  <span className="text-lg">🔄</span> New Inquiry
                 </button>
               </div>
 
               {/* Archetype Breakdown */}
               <div className="p-8 marker-border border-marker-black/10 bg-black/[0.02] grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><MapPin size={8} /> Elevation</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">📍</span> Elevation</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.height}</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><Package size={8} /> Container Type</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">📦</span> Container Type</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.containers}</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><Clock size={8} /> Search Timing</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">⏰</span> Search Timing</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.timing}</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><Layers size={8} /> Local Material</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">📚</span> Local Material</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.materials}</p>
                 </div>
               </div>

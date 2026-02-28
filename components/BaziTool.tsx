@@ -16,7 +16,7 @@ const PillarModal = ({ pillar, onClose }: { pillar: BaziPillar, onClose: () => v
       <div className="relative w-full max-w-2xl bg-surface marker-border border-marker-black shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         <header className="bg-marker-black p-6 flex justify-between items-center text-white">
           <span className="font-mono text-[10px] uppercase tracking-[0.4em] font-black">The {pillar.type} Pillar Node</span>
-          <button onClick={onClose} className="p-2 hover:bg-white/10 transition-colors"><X size={20} /></button>
+          <button onClick={onClose} className="p-2 hover:bg-white/10 transition-colors"><span className="text-white text-lg font-bold">×</span></button>
         </header>
 
         <div className="p-8 md:p-12 space-y-10">
@@ -134,7 +134,7 @@ const BaziResultDisplay = memo(({ result, onPillarClick }: { result: BaziResult,
             }}
             className="p-6 marker-border border-marker-black/10 bg-white flex flex-col items-center text-center group hover:border-marker-red transition-all hover:scale-[1.02] shadow-sm hover:shadow-xl relative"
           >
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-20 transition-opacity"><Info size={14} /></div>
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-20 transition-opacity"><span className="text-xs">ℹ️</span></div>
             <span className="handwritten text-[10px] font-bold uppercase text-marker-black/30 mb-4">{p.type} Node</span>
             <div className="heading-marker text-3xl text-marker-black lowercase group-hover:text-marker-red transition-colors">{p.stem}</div>
             <div className="w-full h-px bg-marker-black/5 my-2"></div>

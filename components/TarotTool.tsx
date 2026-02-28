@@ -1,13 +1,23 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { generateStream, generateTarotImage } from '../services/geminiService';
-import { GlossaryTerm } from './GlossaryEngine';
 import { logCalculation } from '../services/dbService';
 import { useSyllabusStore } from '../store';
 import { useResonance } from '../hooks/useResonance';
 import { audioManager } from './AudioManager';
 import { TarotCardDisplay } from './Tarot/CardDisplay';
 import { SpreadType, DeckTheme, TarotCard } from '../types';
+
+// Polyfill for AbortController if not available
+if (typeof AbortController === 'undefined') {
+  (globalThis as any).AbortController = class AbortController {
+    signal: any;
+    aborted: boolean = false;
+    abort() {
+      this.aborted = true;
+    }
+  };
+}
 
 const MAJOR_ARCANA = [
   'The Fool', 'The Magician', 'The High Priestess', 'The Empress', 'The Emperor',

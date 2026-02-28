@@ -1,31 +1,8 @@
 
-import { GoogleGenAI, Type, Modality, GenerateContentResponse } from '@google/genai';
-import {
-  GlossaryDefinition,
-  QuantumTimelineResult,
-  PhotoScryerResult,
-  AkashicResult,
-  BaziResult,
-  BioDepreciationResult,
-  FlyingStarResult,
-  HoraryResult,
-  ElectionalResult,
-  BirthChartResult,
-  NumerologyResult,
-  PsychometryResult,
-  PieResult,
-  ColorPaletteResult,
-  RelocationResult,
-  SabianResult,
-  RitualResult,
-  SynastryResult,
-  BrainstormResult,
-  SpreadDefinition,
-  // Added CharmData to the import list
-  CharmData
-} from '../types';
+// Secure backend API service for Gemini AI
+// All API calls go through our secure backend to protect API keys
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const API_BASE_URL = '/api/gemini';
 
 const MODELS = {
   FLASH: 'gemini-3-flash-preview',
