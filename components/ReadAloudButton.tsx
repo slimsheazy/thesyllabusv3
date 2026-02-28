@@ -1,6 +1,5 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { generateSpeech } from '../services/geminiService';
 
 interface ReadAloudProps {
   text: string;
@@ -11,46 +10,50 @@ interface ReadAloudProps {
 export const ReadAloudButton: React.FC<ReadAloudProps> = ({ text, className, label }) => {
   const [loading, setLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const speechRef = useRef<any>(null);
 
-  const stopAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+  const stopSpeech = () => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
     }
     setIsPlaying(false);
   };
 
-  const playAudio = async () => {
-    if (!text) return;
-    
+  const playSpeech = async() => {
+    if (!text || !window.speechSynthesis) {
+      return;
+    }
+
     if (isPlaying) {
-      stopAudio();
+      stopSpeech();
       return;
     }
 
     setLoading(true);
 
     try {
-      const audioUrl = await generateSpeech(text);
-      if (!audioUrl) {
-        throw new Error("No audio data returned");
-      }
+      // Cancel any existing speech
+      window.speechSynthesis.cancel();
 
-      if (!audioRef.current) {
-        audioRef.current = new Audio();
-      }
+      const utterance = new (window as any).SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
 
-      audioRef.current.src = audioUrl;
-      audioRef.current.onended = () => {
+      utterance.onend = () => {
         setIsPlaying(false);
-        audioRef.current = null;
       };
 
-      await audioRef.current.play();
+      utterance.onerror = (event: any) => {
+        console.error('Speech synthesis error:', event);
+        setIsPlaying(false);
+      };
+
+      speechRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
       setIsPlaying(true);
     } catch (error) {
-      console.error("Audio Playback Error:", error);
+      console.error('Speech Playback Error:', error);
     } finally {
       setLoading(false);
     }
@@ -59,13 +62,13 @@ export const ReadAloudButton: React.FC<ReadAloudProps> = ({ text, className, lab
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      stopAudio();
+      stopSpeech();
     };
   }, []);
 
   return (
-    <button 
-      onClick={playAudio} 
+    <button
+      onClick={playSpeech}
       disabled={loading || !text}
       className={`brutalist-button flex items-center gap-2 !py-2 !px-4 !text-sm group hover:scale-105 transition-all ${className || ''}`}
       title="Read Aloud"
@@ -74,9 +77,9 @@ export const ReadAloudButton: React.FC<ReadAloudProps> = ({ text, className, lab
         <div className="w-4 h-4 border-2 border-marker-black border-t-transparent animate-spin rounded-full"></div>
       ) : isPlaying ? (
         <div className="flex gap-1 items-end h-4">
-           <div className="w-1 bg-marker-black h-2 animate-[bounce_0.8s_infinite]"></div>
-           <div className="w-1 bg-marker-black h-4 animate-[bounce_0.6s_infinite]"></div>
-           <div className="w-1 bg-marker-black h-3 animate-[bounce_1.0s_infinite]"></div>
+          <div className="w-1 bg-marker-black h-2 animate-[bounce_0.8s_infinite]"></div>
+          <div className="w-1 bg-marker-black h-4 animate-[bounce_0.6s_infinite]"></div>
+          <div className="w-1 bg-marker-black h-3 animate-[bounce_1.0s_infinite]"></div>
         </div>
       ) : (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

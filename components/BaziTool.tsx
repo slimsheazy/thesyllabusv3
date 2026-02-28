@@ -8,7 +8,6 @@ import { WritingEffect } from './WritingEffect';
 import { audioManager } from './AudioManager';
 import { ReadAloudButton } from './ReadAloudButton';
 import { BaziResult, BaziPillar } from '../types';
-import { X, Info } from 'lucide-react';
 
 const PillarModal = ({ pillar, onClose }: { pillar: BaziPillar, onClose: () => void }) => {
   return (
@@ -19,7 +18,7 @@ const PillarModal = ({ pillar, onClose }: { pillar: BaziPillar, onClose: () => v
           <span className="font-mono text-[10px] uppercase tracking-[0.4em] font-black">The {pillar.type} Pillar Node</span>
           <button onClick={onClose} className="p-2 hover:bg-white/10 transition-colors"><X size={20} /></button>
         </header>
-        
+
         <div className="p-8 md:p-12 space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-4">
@@ -46,11 +45,11 @@ const PillarModal = ({ pillar, onClose }: { pillar: BaziPillar, onClose: () => v
           </div>
 
           <div className="pt-8 border-t border-marker-black/5 flex justify-between items-center">
-             <div className="space-y-1">
-                <span className="text-[8px] font-black uppercase text-marker-black/30 tracking-widest">Relationship Context</span>
-                <p className="heading-marker text-2xl lowercase">{pillar.tenGod}</p>
-             </div>
-             <ReadAloudButton text={`${pillar.type} Pillar. The element flavor is ${pillar.stem}. The animal is ${pillar.branch}.`} className="!py-1 !px-3 !text-[10px]" />
+            <div className="space-y-1">
+              <span className="text-[8px] font-black uppercase text-marker-black/30 tracking-widest">Relationship Context</span>
+              <p className="heading-marker text-2xl lowercase">{pillar.tenGod}</p>
+            </div>
+            <ReadAloudButton text={`${pillar.type} Pillar. The element flavor is ${pillar.stem}. The animal is ${pillar.branch}.`} className="!py-1 !px-3 !text-[10px]" />
           </div>
         </div>
       </div>
@@ -58,26 +57,26 @@ const PillarModal = ({ pillar, onClose }: { pillar: BaziPillar, onClose: () => v
   );
 };
 
-const BaziInput = memo(({ 
-  birthDate, 
-  setBirthDate, 
-  birthTime, 
-  setBirthTime, 
-  onAnalyze, 
-  loading 
-}: { 
-  birthDate: string, 
-  setBirthDate: (v: string) => void, 
-  birthTime: string, 
-  setBirthTime: (v: string) => void, 
-  onAnalyze: () => void, 
-  loading: boolean 
+const BaziInput = memo(({
+  birthDate,
+  setBirthDate,
+  birthTime,
+  setBirthTime,
+  onAnalyze,
+  loading
+}: {
+  birthDate: string,
+  setBirthDate: (v: string) => void,
+  birthTime: string,
+  setBirthTime: (v: string) => void,
+  onAnalyze: () => void,
+  loading: boolean
 }) => (
   <div className="space-y-6 p-6 marker-border border-marker-red/10 bg-white shadow-sm">
     <div className="space-y-2">
       <label className="handwritten text-[10px] font-bold uppercase text-marker-black/40 tracking-widest ml-1">When did you arrive?</label>
-      <input 
-        type="date" 
+      <input
+        type="date"
         value={birthDate}
         onChange={e => setBirthDate(e.target.value)}
         className="w-full p-4 marker-border bg-white italic text-xl outline-none focus:border-marker-red"
@@ -85,14 +84,14 @@ const BaziInput = memo(({
     </div>
     <div className="space-y-2">
       <label className="handwritten text-[10px] font-bold uppercase text-marker-black/40 tracking-widest ml-1">What time? (Don't sweat the exactness)</label>
-      <input 
-        type="time" 
+      <input
+        type="time"
         value={birthTime}
         onChange={e => setBirthTime(e.target.value)}
         className="w-full p-4 marker-border bg-white italic text-xl outline-none focus:border-marker-red"
       />
     </div>
-    <button 
+    <button
       onClick={onAnalyze}
       disabled={loading || !birthDate || !birthTime}
       className={`brutalist-button w-full !py-6 !text-2xl transition-all ${!birthDate ? 'opacity-30' : '!bg-marker-red text-white shadow-xl'}`}
@@ -128,17 +127,19 @@ const BaziResultDisplay = memo(({ result, onPillarClick }: { result: BaziResult,
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {result.pillars.map((p, i) => (
-          <button 
-            key={i} 
-            onClick={() => { audioManager.playPenScratch(0.1); onPillarClick(p); }}
+          <button
+            key={i}
+            onClick={() => {
+              audioManager.playPenScratch(0.1); onPillarClick(p);
+            }}
             className="p-6 marker-border border-marker-black/10 bg-white flex flex-col items-center text-center group hover:border-marker-red transition-all hover:scale-[1.02] shadow-sm hover:shadow-xl relative"
           >
-             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-20 transition-opacity"><Info size={14} /></div>
-             <span className="handwritten text-[10px] font-bold uppercase text-marker-black/30 mb-4">{p.type} Node</span>
-             <div className="heading-marker text-3xl text-marker-black lowercase group-hover:text-marker-red transition-colors">{p.stem}</div>
-             <div className="w-full h-px bg-marker-black/5 my-2"></div>
-             <div className="heading-marker text-3xl text-marker-black lowercase group-hover:text-marker-blue transition-colors">{p.branch}</div>
-             <span className="mt-4 text-[10px] font-bold text-marker-red uppercase tracking-tighter">{p.tenGod}</span>
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-20 transition-opacity"><Info size={14} /></div>
+            <span className="handwritten text-[10px] font-bold uppercase text-marker-black/30 mb-4">{p.type} Node</span>
+            <div className="heading-marker text-3xl text-marker-black lowercase group-hover:text-marker-red transition-colors">{p.stem}</div>
+            <div className="w-full h-px bg-marker-black/5 my-2"></div>
+            <div className="heading-marker text-3xl text-marker-black lowercase group-hover:text-marker-blue transition-colors">{p.branch}</div>
+            <span className="mt-4 text-[10px] font-bold text-marker-red uppercase tracking-tighter">{p.tenGod}</span>
           </button>
         ))}
       </div>
@@ -163,8 +164,10 @@ const BaziTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [selectedPillar, setSelectedPillar] = useState<BaziPillar | null>(null);
   const { recordCalculation } = useSyllabusStore();
 
-  const handleAnalyze = async () => {
-    if (!birthDate || !birthTime) return;
+  const handleAnalyze = async() => {
+    if (!birthDate || !birthTime) {
+      return;
+    }
     setLoading(true);
     setResult(null);
     audioManager.playRustle();
@@ -177,7 +180,7 @@ const BaziTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         logCalculation('FOUR_PILLARS', `${birthDate} ${birthTime}`, data);
       }
     } catch (err) {
-      alert("Technical glitch. Double check your arrival info.");
+      alert('Technical glitch. Double check your arrival info.');
     } finally {
       setLoading(false);
     }
@@ -196,13 +199,13 @@ const BaziTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <p className="handwritten text-lg sm:text-xl text-marker-red opacity-40 font-bold uppercase tracking-widest italic leading-tight">Think of these like the energetic flavors of the year, month, day, and hour you showed up here.</p>
           </header>
 
-          <BaziInput 
-            birthDate={birthDate} 
-            setBirthDate={setBirthDate} 
-            birthTime={birthTime} 
-            setBirthTime={setBirthTime} 
-            onAnalyze={handleAnalyze} 
-            loading={loading} 
+          <BaziInput
+            birthDate={birthDate}
+            setBirthDate={setBirthDate}
+            birthTime={birthTime}
+            setBirthTime={setBirthTime}
+            onAnalyze={handleAnalyze}
+            loading={loading}
           />
         </div>
 

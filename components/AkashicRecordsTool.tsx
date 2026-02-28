@@ -1,6 +1,5 @@
 
 import React, { useState, useCallback, memo, useEffect } from 'react';
-import { Book, Lock, Search, History, ChevronLeft, MapPin, Eye, Wind, Layers } from 'lucide-react';
 import { getAkashicAnalysis } from '../services/geminiService';
 import { useSyllabusStore } from '../store';
 import { logCalculation, getLogs } from '../services/dbService';
@@ -27,9 +26,9 @@ const LibraryGrid = memo(({ selected, onToggle }: { selected: string[], onToggle
           const id = `${LABELS[Math.floor(i / 5)]}${i % 5 + 1}`;
           const active = selected.includes(id);
           return (
-            <button 
-              key={id} 
-              onClick={() => onToggle(id)} 
+            <button
+              key={id}
+              onClick={() => onToggle(id)}
               className="relative flex items-center justify-center aspect-square transition-all"
             >
               <div className={`w-8 h-8 flex items-center justify-center border transition-all duration-500 font-mono text-[8px] ${active ? 'bg-marker-black text-white border-marker-black scale-110 shadow-lg' : 'bg-transparent border-marker-black/10 text-marker-black/20 hover:border-marker-black/40'}`}>
@@ -51,9 +50,9 @@ const MemorySnapshotViewer = memo(({ current }: { current: AkashicReading }) => 
   <div className="space-y-12 animate-in fade-in duration-1000 pb-48 max-w-4xl mx-auto">
     {/* Metadata Ribbon */}
     <div className="flex flex-wrap justify-between items-center gap-4 opacity-40 border-b border-marker-black/10 pb-4 italic">
-       <span className="text-[10px] font-mono uppercase tracking-tighter">ID: {current.id}</span>
-       <span className="text-[10px] font-mono uppercase tracking-tighter">LOC: {current.filingMetadata}</span>
-       <span className="text-[10px] font-mono uppercase tracking-tighter">EPOCH: {new Date(current.timestamp).toLocaleDateString()}</span>
+      <span className="text-[10px] font-mono uppercase tracking-tighter">ID: {current.id}</span>
+      <span className="text-[10px] font-mono uppercase tracking-tighter">LOC: {current.filingMetadata}</span>
+      <span className="text-[10px] font-mono uppercase tracking-tighter">EPOCH: {new Date(current.timestamp).toLocaleDateString()}</span>
     </div>
 
     {/* The Core Memory */}
@@ -72,7 +71,7 @@ const MemorySnapshotViewer = memo(({ current }: { current: AkashicReading }) => 
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="p-8 marker-border border-marker-black/10 bg-white space-y-4 hover:shadow-lg transition-shadow">
         <div className="flex items-center gap-3 font-black text-[10px] text-marker-purple uppercase tracking-widest border-b border-marker-black/5 pb-2">
-          <Eye size={14} /> Chroma (Visage)
+          Eye Chroma (Visage)
         </div>
         <p className="handwritten text-xl italic text-marker-black/80 leading-relaxed">
           {current.sensoryImpressions.chroma}
@@ -81,7 +80,7 @@ const MemorySnapshotViewer = memo(({ current }: { current: AkashicReading }) => 
 
       <div className="p-8 marker-border border-marker-black/10 bg-white space-y-4 hover:shadow-lg transition-shadow">
         <div className="flex items-center gap-3 font-black text-[10px] text-marker-green uppercase tracking-widest border-b border-marker-black/5 pb-2">
-          <Wind size={14} /> Aroma (Vapor)
+          Wind Aroma (Vapor)
         </div>
         <p className="handwritten text-xl italic text-marker-black/80 leading-relaxed">
           {current.sensoryImpressions.aroma}
@@ -90,7 +89,7 @@ const MemorySnapshotViewer = memo(({ current }: { current: AkashicReading }) => 
 
       <div className="p-8 marker-border border-marker-black/10 bg-white space-y-4 hover:shadow-lg transition-shadow">
         <div className="flex items-center gap-3 font-black text-[10px] text-marker-red uppercase tracking-widest border-b border-marker-black/5 pb-2">
-          <Layers size={14} /> Texture (Tactile)
+          Books Texture (Tactile)
         </div>
         <p className="handwritten text-xl italic text-marker-black/80 leading-relaxed">
           {current.sensoryImpressions.texture}
@@ -100,11 +99,11 @@ const MemorySnapshotViewer = memo(({ current }: { current: AkashicReading }) => 
 
     {/* Emotional Residue */}
     <div className="p-12 marker-border border-marker-black bg-marker-black/[0.02] text-center relative overflow-hidden group">
-       <div className="absolute top-0 left-0 w-full h-1 bg-marker-black/10"></div>
-       <span className="handwritten text-[10px] text-marker-black opacity-30 uppercase tracking-[0.8em] block mb-6 font-black italic">Emotional Resonance</span>
-       <p className="heading-marker text-3xl md:text-5xl lowercase text-marker-black italic leading-snug">
+      <div className="absolute top-0 left-0 w-full h-1 bg-marker-black/10"></div>
+      <span className="handwritten text-[10px] text-marker-black opacity-30 uppercase tracking-[0.8em] block mb-6 font-black italic">Emotional Resonance</span>
+      <p className="heading-marker text-3xl md:text-5xl lowercase text-marker-black italic leading-snug">
          "{current.emotionalResonance}"
-       </p>
+      </p>
     </div>
   </div>
 ));
@@ -118,24 +117,34 @@ const AkashicRecordsTool: React.FC<ToolProps> = ({ onBack }) => {
   const [current, setCurrent] = useState<AkashicReading | null>(null);
   const { recordCalculation, userIdentity } = useSyllabusStore();
 
-  useEffect(() => { loadHistory(); }, []);
+  useEffect(() => {
+    loadHistory();
+  }, []);
 
-  const loadHistory = async () => {
+  const loadHistory = async() => {
     const logs = await getLogs('AKASHIC_ACCESS') as any[];
-    if (logs) setReadings(logs.map(l => JSON.parse(l.result)));
+    if (logs) {
+      setReadings(logs.map(l => JSON.parse(l.result)));
+    }
   };
 
   const handleToggle = useCallback((id: string) => {
     setSelected(prev => {
-      if (prev.includes(id)) return prev.filter(n => n !== id);
-      if (prev.length >= 3) return prev;
+      if (prev.includes(id)) {
+        return prev.filter(n => n !== id);
+      }
+      if (prev.length >= 3) {
+        return prev;
+      }
       audioManager.playPenScratch(0.12);
       return [...prev, id];
     });
   }, []);
 
-  const handleLink = async () => {
-    if (selected.length < 3) return;
+  const handleLink = async() => {
+    if (selected.length < 3) {
+      return;
+    }
     setLoading(true);
     audioManager.playRustle();
     const sig = `NODE-${selected.sort().join('-')}`;
@@ -163,15 +172,15 @@ const AkashicRecordsTool: React.FC<ToolProps> = ({ onBack }) => {
             </div>
             <p className="handwritten text-lg opacity-40 uppercase tracking-widest italic leading-tight">Archives of the Unspoken {userIdentity ? `for ${userIdentity.split(' ')[0]}` : ''}</p>
           </header>
-          
+
           <nav className="flex flex-col gap-2">
             {[
               { id: 'enter', icon: Search, label: 'Access Memoir' },
               { id: 'vault', icon: History, label: 'Archival Vault' }
             ].map(m => (
-              <button 
-                key={m.id} 
-                onClick={() => setView(m.id as any)} 
+              <button
+                key={m.id}
+                onClick={() => setView(m.id)}
                 className={`flex items-center justify-between p-6 border transition-all duration-300 ${view === m.id ? 'bg-marker-black border-marker-black text-white shadow-2xl scale-[1.02]' : 'bg-white border-marker-black/10 text-marker-black/40 hover:text-marker-black hover:border-marker-black/20'}`}
               >
                 <div className="flex items-center gap-4">
@@ -184,37 +193,37 @@ const AkashicRecordsTool: React.FC<ToolProps> = ({ onBack }) => {
           </nav>
 
           <div className="p-8 marker-border border-dashed border-marker-black/10 bg-marker-black/[0.01] space-y-4">
-             <span className="handwritten text-[9px] font-black uppercase text-marker-black tracking-[0.3em] opacity-40 italic">Librarian Protocol</span>
-             <p className="handwritten text-sm italic text-marker-black/40 leading-relaxed">
+            <span className="handwritten text-[9px] font-black uppercase text-marker-black tracking-[0.3em] opacity-40 italic">Librarian Protocol</span>
+            <p className="handwritten text-sm italic text-marker-black/40 leading-relaxed">
                Recalling memories requires specific spatial anchors. Select nodes to stabilize the thematic impression.
-             </p>
+            </p>
           </div>
         </aside>
 
         <main className="flex-1 w-full">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-48 gap-12 text-center">
-               <div className="w-16 h-16 border-t-2 border-marker-black animate-spin rounded-full"></div>
-               <div className="space-y-2">
-                 <span className="heading-marker text-3xl lowercase italic text-marker-black/60 animate-pulse">Entering the stacks...</span>
-                 <p className="handwritten text-xs uppercase tracking-[0.4em] opacity-30">Indexing Impressionistic Nodes</p>
-               </div>
+              <div className="w-16 h-16 border-t-2 border-marker-black animate-spin rounded-full"></div>
+              <div className="space-y-2">
+                <span className="heading-marker text-3xl lowercase italic text-marker-black/60 animate-pulse">Entering the stacks...</span>
+                <p className="handwritten text-xs uppercase tracking-[0.4em] opacity-30">Indexing Impressionistic Nodes</p>
+              </div>
             </div>
           ) : view === 'enter' ? (
             <div className="space-y-12 animate-in fade-in duration-500 max-w-2xl mx-auto pb-48">
               <LibraryGrid selected={selected} onToggle={handleToggle} />
               <div className="space-y-4">
                 <label className="handwritten text-[10px] font-black text-marker-black/40 uppercase tracking-widest ml-1 italic">Atmospheric Intent</label>
-                <textarea 
-                  value={intent} 
-                  onChange={e => setIntent(e.target.value)} 
-                  className="w-full p-10 marker-border border-marker-black/10 bg-white font-display text-4xl italic outline-none focus:border-marker-black transition-all h-48 resize-none shadow-inner" 
-                  placeholder="Set the focal mood..." 
+                <textarea
+                  value={intent}
+                  onChange={e => setIntent(e.target.value)}
+                  className="w-full p-10 marker-border border-marker-black/10 bg-white font-display text-4xl italic outline-none focus:border-marker-black transition-all h-48 resize-none shadow-inner"
+                  placeholder="Set the focal mood..."
                 />
               </div>
-              <button 
-                onClick={handleLink} 
-                disabled={selected.length < 3 || loading} 
+              <button
+                onClick={handleLink}
+                disabled={selected.length < 3 || loading}
                 className={`brutalist-button w-full !py-8 !text-2xl !bg-marker-black !text-white !border-marker-black shadow-2xl transition-all ${selected.length < 3 ? 'opacity-20 grayscale' : 'hover:scale-[1.01]'}`}
               >
                 Recall Fragment
@@ -228,11 +237,13 @@ const AkashicRecordsTool: React.FC<ToolProps> = ({ onBack }) => {
                 <div className="text-center py-48 opacity-[0.03] select-none pointer-events-none">
                   <div className="text-[12rem] heading-marker italic leading-none">Empty</div>
                   <p className="handwritten text-4xl uppercase tracking-[0.4em]">Vault Unindexed</p>
-                </div> 
+                </div>
               ) : readings.map(r => (
-                <div 
-                  key={r.id} 
-                  onClick={() => { setCurrent(r); setView('reading'); audioManager.playRustle(); }} 
+                <div
+                  key={r.id}
+                  onClick={() => {
+                    setCurrent(r); setView('reading'); audioManager.playRustle();
+                  }}
                   className="p-10 marker-border border-marker-black/5 bg-white cursor-pointer hover:border-marker-black group transition-all shadow-sm hover:shadow-xl"
                 >
                   <div className="flex justify-between items-start">

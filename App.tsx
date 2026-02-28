@@ -87,15 +87,15 @@ const App: React.FC = () => {
 
   useEffect(() => {
     updateLastAccess();
-    initDB(); 
+    initDB();
 
     // Initial Geolocation Hydration
-    if ("geolocation" in navigator) {
+    if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         },
-        (err) => console.warn("Geolocation denied. Manual override available in tools."),
+        (err) => console.warn('Geolocation denied. Manual override available in tools.'),
         { enableHighAccuracy: false, timeout: 10000 }
       );
     }
@@ -112,7 +112,9 @@ const App: React.FC = () => {
   }, []);
 
   const CurrentToolComponent = useMemo(() => {
-    if (currentPage === Page.HOME) return null;
+    if (currentPage === Page.HOME) {
+      return null;
+    }
     return TOOL_COMPONENTS[currentPage];
   }, [currentPage]);
 

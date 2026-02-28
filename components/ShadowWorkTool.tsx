@@ -1,6 +1,6 @@
 
 import React, { useState, memo } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type } from '@google/genai';
 import { useSyllabusStore } from '../store';
 import { logCalculation } from '../services/dbService';
 import { audioManager } from './AudioManager';
@@ -11,13 +11,15 @@ import { ReadAloudButton } from './ReadAloudButton';
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const ShadowWorkTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-  const [inquiry, setInquiry] = useState('');
+  const [inquiry, setInquiry] = useState('Current life patterns and obstacles');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ analysis: string; inquiries: string[]; affirmation: string } | null>(null);
   const { recordCalculation } = useSyllabusStore();
 
-  const handleDeepScan = async () => {
-    if (!inquiry.trim()) return;
+  const handleDeepScan = async() => {
+    if (!inquiry.trim()) {
+      return;
+    }
     setLoading(true);
     setResult(null);
     audioManager.playRustle();
@@ -27,15 +29,15 @@ const ShadowWorkTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         model: 'gemini-3-pro-preview',
         contents: `I am looking at my "shadow" side. I'm reflecting on: "${inquiry}". Give me a grounded explanation of what's really going on beneath the surface, 3 direct questions I should ask myself, and a helpful reminder to close.`,
         config: {
-          responseMimeType: "application/json",
+          responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
             properties: {
-              analysis: { type: Type.STRING, description: "Honest explanation of this behavior" },
-              inquiries: { type: Type.ARRAY, items: { type: Type.STRING }, description: "3 questions for honest reflection" },
-              affirmation: { type: Type.STRING, description: "A grounded closing reminder" }
+              analysis: { type: Type.STRING, description: 'Honest explanation of this behavior' },
+              inquiries: { type: Type.ARRAY, items: { type: Type.STRING }, description: '3 questions for honest reflection' },
+              affirmation: { type: Type.STRING, description: 'A grounded closing reminder' }
             },
-            required: ["analysis", "inquiries", "affirmation"]
+            required: ['analysis', 'inquiries', 'affirmation']
           }
         }
       });
@@ -46,7 +48,7 @@ const ShadowWorkTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       logCalculation('SHADOW_WORK', inquiry.slice(0, 30), data);
     } catch (err) {
       console.error(err);
-      alert("Something went wrong. Take a breath and try again.");
+      alert('Something went wrong. Take a breath and try again.');
     } finally {
       setLoading(false);
     }
@@ -58,64 +60,66 @@ const ShadowWorkTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
       <div className="w-full space-y-12 pt-12 md:pt-0">
         <header className="space-y-4 text-center">
-          <h2 className="heading-marker text-6xl sm:text-8xl text-marker-black lowercase leading-none">The stuff you're hiding</h2>
-          <p className="handwritten text-lg sm:text-xl opacity-40 font-bold uppercase tracking-[0.4em] italic">Dealing with your own mess</p>
+          <h2 className="heading-marker text-6xl sm:text-8xl text-marker-black lowercase leading-none">Shadow Analysis</h2>
+          <p className="handwritten text-lg sm:text-xl opacity-40 font-bold uppercase tracking-[0.4em] italic">Examination of unconscious patterns</p>
           <div className="w-32 h-1 bg-marker-black/20 mx-auto rounded-full"></div>
         </header>
 
         {!result ? (
           <div className="max-w-2xl mx-auto w-full space-y-8 animate-in fade-in duration-1000">
             <div className="space-y-2">
-              <label className="handwritten text-[10px] font-bold uppercase opacity-40 tracking-widest ml-1">What's bugging you or holding you back today?</label>
-              <textarea 
+              <label className="handwritten text-[10px] font-bold uppercase opacity-40 tracking-widest ml-1">Identify current obstacles or patterns</label>
+              <textarea
                 value={inquiry}
                 onChange={e => setInquiry(e.target.value)}
-                placeholder="Be honest. Nobody else is reading this."
+                placeholder="Enter analysis subject..."
                 className="w-full p-8 marker-border bg-marker-black/[0.03] italic text-2xl outline-none focus:bg-white transition-all h-64 resize-none shadow-inner"
               />
             </div>
-            <button 
+            <button
               onClick={handleDeepScan}
               disabled={loading || !inquiry.trim()}
               className="brutalist-button w-full !py-8 !text-2xl !bg-black text-white shadow-2xl hover:bg-marker-red transition-all"
             >
-              {loading ? 'Getting deep...' : 'Look Inside'}
+              {loading ? 'Processing...' : 'Analyze'}
             </button>
-            <p className="handwritten text-center text-xs opacity-30 italic">"Your shadow is just the person you'd rather not be."</p>
+            <p className="handwritten text-center text-xs opacity-30 italic">"The shadow represents unconscious behavioral patterns."</p>
           </div>
         ) : (
           <div className="space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 max-w-4xl mx-auto">
             <section className="space-y-6">
-               <div className="flex justify-between items-end border-b border-marker-black/10 pb-4">
-                 <h3 className="heading-marker text-4xl text-marker-black lowercase">What's actually happening</h3>
-                 <ReadAloudButton text={result.analysis} className="!bg-black !text-white !py-1 !text-[10px]" />
-               </div>
-               <div className="p-8 md:p-12 marker-border border-marker-black bg-black text-white shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-8 opacity-[0.05] select-none pointer-events-none text-9xl font-bold italic">REVEAL</div>
-                  <p className="handwritten text-xl md:text-2xl leading-relaxed italic font-medium relative z-10">
-                    <WritingEffect text={result.analysis} speed={20} playAudio={true} />
-                  </p>
-               </div>
+              <div className="flex justify-between items-end border-b border-marker-black/10 pb-4">
+                <h3 className="heading-marker text-4xl text-marker-black lowercase">Analysis Results</h3>
+                <ReadAloudButton text={result.analysis} className="!bg-black !text-white !py-1 !text-[10px]" />
+              </div>
+              <div className="p-8 md:p-12 marker-border border-marker-black bg-black text-white shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.05] select-none pointer-events-none text-9xl font-bold italic">REVEAL</div>
+                <p className="handwritten text-xl md:text-2xl leading-relaxed italic font-medium relative z-10">
+                  <WritingEffect text={result.analysis} speed={20} playAudio={true} />
+                </p>
+              </div>
             </section>
 
             <section className="space-y-8">
-               <span className="handwritten text-[10px] font-bold uppercase tracking-[0.5em] opacity-40 block border-b border-marker-black/5 pb-2">3 things to think about</span>
-               <div className="grid grid-cols-1 gap-6">
-                 {result.inquiries.map((q, i) => (
-                   <div key={i} className="p-8 marker-border border-marker-black/10 bg-white shadow-sm flex gap-6 items-start group hover:border-black transition-all">
-                      <span className="heading-marker text-4xl opacity-10 group-hover:opacity-40 transition-opacity">0{i+1}</span>
-                      <p className="handwritten text-2xl italic text-marker-black leading-snug">{q}</p>
-                   </div>
-                 ))}
-               </div>
+              <span className="handwritten text-[10px] font-bold uppercase tracking-[0.5em] opacity-40 block border-b border-marker-black/5 pb-2">3 things to think about</span>
+              <div className="grid grid-cols-1 gap-6">
+                {result.inquiries.map((q, i) => (
+                  <div key={i} className="p-8 marker-border border-marker-black/10 bg-white shadow-sm flex gap-6 items-start group hover:border-black transition-all">
+                    <span className="heading-marker text-4xl opacity-10 group-hover:opacity-40 transition-opacity">0{i + 1}</span>
+                    <p className="handwritten text-2xl italic text-marker-black leading-snug">{q}</p>
+                  </div>
+                ))}
+              </div>
             </section>
 
             <section className="p-12 marker-border border-marker-black/20 bg-surface shadow-md text-center space-y-6 animate-in zoom-in duration-1000 delay-500">
-               <span className="handwritten text-[10px] font-black uppercase text-marker-black tracking-[0.6em] opacity-40">Final thought</span>
-               <p className="heading-marker text-3xl md:text-4xl text-marker-black lowercase leading-tight">
+              <span className="handwritten text-[10px] font-black uppercase text-marker-black tracking-[0.6em] opacity-40">Final thought</span>
+              <p className="heading-marker text-3xl md:text-4xl text-marker-black lowercase leading-tight">
                  "{result.affirmation}"
-               </p>
-               <button onClick={() => { setResult(null); setInquiry(''); }} className="text-[10px] font-bold uppercase tracking-widest text-marker-black opacity-40 hover:opacity-100 hover:text-marker-red transition-all">Clear and Restart</button>
+              </p>
+              <button onClick={() => {
+                setResult(null); setInquiry('');
+              }} className="text-[10px] font-bold uppercase tracking-widest text-marker-black opacity-40 hover:opacity-100 hover:text-marker-red transition-all">Clear and Restart</button>
             </section>
           </div>
         )}

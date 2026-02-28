@@ -42,129 +42,133 @@ export interface NumberInterpretation {
 
 const INTERPRETATIONS: Record<number, NumberInterpretation> = {
   1: {
-    direction: "East (Front Area)",
+    direction: 'East (Front Area)',
     angle: 90,
-    keywords: ["High Visibility", "Main Entrance", "Morning Sun"],
-    roomType: "Entryway, Front Porch, Foyer",
-    height: "Eye Level / Console Height",
-    containers: "Wall hooks, Key racks, Open surfaces",
-    materials: "Gold, Brass, Polished Metal",
-    specificSpots: ["Entry table", "Mail pile", "Coat rack", "Front door mat", "Sunlit window sill", "Dashboard of car"],
-    timing: "Dawn / Morning Check",
-    clues: "Look where you first set things down upon entering. It is likely not covered.",
-    icon: "🌅"
+    keywords: ['High Visibility', 'Main Entrance', 'Morning Sun'],
+    roomType: 'Entryway, Front Porch, Foyer',
+    height: 'Eye Level / Console Height',
+    containers: 'Wall hooks, Key racks, Open surfaces',
+    materials: 'Gold, Brass, Polished Metal',
+    specificSpots: ['Entry table', 'Mail pile', 'Coat rack', 'Front door mat', 'Sunlit window sill', 'Dashboard of car'],
+    timing: 'Dawn / Morning Check',
+    clues: 'Look where you first set things down upon entering. It is likely not covered.',
+    icon: '🌅'
   },
   2: {
-    direction: "North (Private Area)",
+    direction: 'North (Private Area)',
     angle: 0,
-    keywords: ["Hidden/Tucked", "Soft Surfaces", "Paired Items"],
-    roomType: "Bedroom, Private Den, Bathroom",
-    height: "Low / Below Waist",
-    containers: "Soft bags, Drawers, Pockets, Laundry",
-    materials: "Silver, Fabric, Glass",
-    specificSpots: ["Between cushions", "Under the bed", "Bedside drawer", "Inside a pillowcase", "Bathroom cabinet", "Laundry hamper"],
-    timing: "Evening / Night Routine",
-    clues: "Search among soft items or tucked into a fold of fabric. It may be obscured by other items.",
-    icon: "🌙"
+    keywords: ['Hidden/Tucked', 'Soft Surfaces', 'Paired Items'],
+    roomType: 'Bedroom, Private Den, Bathroom',
+    height: 'Low / Below Waist',
+    containers: 'Soft bags, Drawers, Pockets, Laundry',
+    materials: 'Silver, Fabric, Glass',
+    specificSpots: ['Between cushions', 'Under the bed', 'Bedside drawer', 'Inside a pillowcase', 'Bathroom cabinet', 'Laundry hamper'],
+    timing: 'Evening / Night Routine',
+    clues: 'Search among soft items or tucked into a fold of fabric. It may be obscured by other items.',
+    icon: '🌙'
   },
   3: {
-    direction: "Northeast (Social Area)",
+    direction: 'Northeast (Social Area)',
     angle: 45,
-    keywords: ["Gathering Space", "Books/Media", "Active Workspace"],
-    roomType: "Living Room, Common Area",
-    height: "Table Height / Mid-Level",
-    containers: "Shelves, File folders, Tech bags",
-    materials: "Wood, Paper, Plastic",
-    specificSpots: ["Coffee table", "Bookshelf", "Near a computer/phone", "Entertainment center", "Stack of papers", "Craft area"],
-    timing: "Active Hours / Daytime",
-    clues: "Check areas where you were recently talking or reading. It might be 'filed' away by accident.",
-    icon: "📐"
+    keywords: ['Gathering Space', 'Books/Media', 'Active Workspace'],
+    roomType: 'Living Room, Common Area',
+    height: 'Table Height / Mid-Level',
+    containers: 'Shelves, File folders, Tech bags',
+    materials: 'Wood, Paper, Plastic',
+    specificSpots: ['Coffee table', 'Bookshelf', 'Near a computer/phone', 'Entertainment center', 'Stack of papers', 'Craft area'],
+    timing: 'Active Hours / Daytime',
+    clues: 'Check areas where you were recently talking or reading. It might be \'filed\' away by accident.',
+    icon: '📐'
   },
   4: {
-    direction: "West (Utility Area)",
+    direction: 'West (Utility Area)',
     angle: 270,
-    keywords: ["Grounded/Heavy", "Storage", "Maintenance"],
-    roomType: "Office, Garage, Workshop, Basement",
-    height: "Floor Level / Bottom Shelf",
-    containers: "Heavy boxes, Filing cabinets, Toolboxes",
-    materials: "Stone, Iron, Dark Wood",
-    specificSpots: ["Bottom drawer", "Garage workbench", "Storage bin", "Room corner", "Floor near heavy furniture", "Basement storage"],
-    timing: "Afternoon / Deep Search",
-    clues: "Look in the heavy, stationary parts of the house. It's likely in a 'bottom' position.",
-    icon: "🔲"
+    keywords: ['Grounded/Heavy', 'Storage', 'Maintenance'],
+    roomType: 'Office, Garage, Workshop, Basement',
+    height: 'Floor Level / Bottom Shelf',
+    containers: 'Heavy boxes, Filing cabinets, Toolboxes',
+    materials: 'Stone, Iron, Dark Wood',
+    specificSpots: ['Bottom drawer', 'Garage workbench', 'Storage bin', 'Room corner', 'Floor near heavy furniture', 'Basement storage'],
+    timing: 'Afternoon / Deep Search',
+    clues: 'Look in the heavy, stationary parts of the house. It\'s likely in a \'bottom\' position.',
+    icon: '🔲'
   },
   5: {
-    direction: "Center (Transit Area)",
-    angle: -1, 
-    keywords: ["Busy Path", "Temporary Stop", "Transit"],
-    roomType: "Hallway, Stairs, Center Island",
-    height: "Variable / Quick Access",
-    containers: "Purses, Backpacks, Quick Piles",
-    materials: "Synthetic, Bright, Mixed",
-    specificSpots: ["Hallway table", "Stair landing", "Car center console", "Kitchen island", "Coat pocket", "Travel bag"],
-    timing: "Midday / Moving Around",
-    clues: "You likely dropped it while moving between rooms. Retrace your steps through the main thoroughfares.",
-    icon: "🌪️"
+    direction: 'Center (Transit Area)',
+    angle: -1,
+    keywords: ['Busy Path', 'Temporary Stop', 'Transit'],
+    roomType: 'Hallway, Stairs, Center Island',
+    height: 'Variable / Quick Access',
+    containers: 'Purses, Backpacks, Quick Piles',
+    materials: 'Synthetic, Bright, Mixed',
+    specificSpots: ['Hallway table', 'Stair landing', 'Car center console', 'Kitchen island', 'Coat pocket', 'Travel bag'],
+    timing: 'Midday / Moving Around',
+    clues: 'You likely dropped it while moving between rooms. Retrace your steps through the main thoroughfares.',
+    icon: '🌪️'
   },
   6: {
-    direction: "Northwest (Service Area)",
+    direction: 'Northwest (Service Area)',
     angle: 315,
-    keywords: ["Daily Task", "Cleanliness", "Nourishment"],
-    roomType: "Kitchen, Dining, Pantry, Laundry Room",
-    height: "Counter Height / Waist Level",
-    containers: "Ceramic bowls, Baskets, Appliance area",
-    materials: "Ceramic, Copper, Stainless Steel",
-    specificSpots: ["Kitchen counter", "Pantry shelf", "Dining room sideboard", "Pet area", "Medicine cabinet", "Linen closet"],
-    timing: "Evening Prep / Cleaning",
-    clues: "Look near where you do daily chores or prepare food. Check inside decorative containers.",
-    icon: "🏠"
+    keywords: ['Daily Task', 'Cleanliness', 'Nourishment'],
+    roomType: 'Kitchen, Dining, Pantry, Laundry Room',
+    height: 'Counter Height / Waist Level',
+    containers: 'Ceramic bowls, Baskets, Appliance area',
+    materials: 'Ceramic, Copper, Stainless Steel',
+    specificSpots: ['Kitchen counter', 'Pantry shelf', 'Dining room sideboard', 'Pet area', 'Medicine cabinet', 'Linen closet'],
+    timing: 'Evening Prep / Cleaning',
+    clues: 'Look near where you do daily chores or prepare food. Check inside decorative containers.',
+    icon: '🏠'
   },
   7: {
-    direction: "South (Quiet Area)",
+    direction: 'South (Quiet Area)',
     angle: 180,
-    keywords: ["High Storage", "Insulation", "Out of Reach"],
-    roomType: "Attic, High Shelf, Private Study",
-    height: "High / Overhead",
-    containers: "Folders, High boxes, Secure safes",
-    materials: "Glass, Mirrors, Paper",
-    specificSpots: ["Top of wardrobe", "Behind a mirror", "Private desk drawer", "Attic corner", "High kitchen cabinets", "Inside a box"],
-    timing: "Night / Stillness",
-    clues: "It is likely high up or tucked behind something used for deep storage. Check vertical spaces.",
-    icon: "🕯️"
+    keywords: ['High Storage', 'Insulation', 'Out of Reach'],
+    roomType: 'Attic, High Shelf, Private Study',
+    height: 'High / Overhead',
+    containers: 'Folders, High boxes, Secure safes',
+    materials: 'Glass, Mirrors, Paper',
+    specificSpots: ['Top of wardrobe', 'Behind a mirror', 'Private desk drawer', 'Attic corner', 'High kitchen cabinets', 'Inside a box'],
+    timing: 'Night / Stillness',
+    clues: 'It is likely high up or tucked behind something used for deep storage. Check vertical spaces.',
+    icon: '🕯️'
   },
   8: {
-    direction: "Southeast (Valuable Area)",
+    direction: 'Southeast (Valuable Area)',
     angle: 135,
-    keywords: ["Orderly", "Financial", "Structured Storage"],
-    roomType: "Office, Walk-in Closet, Safe room",
-    height: "Organized / Mid-High",
-    containers: "Wallets, Briefcases, Jewelry boxes",
-    materials: "Leather, Fabric, Valuables",
-    specificSpots: ["Safe", "Wallet/Purse", "Office desk", "Walk-in closet", "Near financial docs", "Inside a jacket pocket"],
-    timing: "Working Hours / Morning",
-    clues: "Check among items of value or where you keep important documents. It is in an organized spot.",
-    icon: "💼"
+    keywords: ['Orderly', 'Financial', 'Structured Storage'],
+    roomType: 'Office, Walk-in Closet, Safe room',
+    height: 'Organized / Mid-High',
+    containers: 'Wallets, Briefcases, Jewelry boxes',
+    materials: 'Leather, Fabric, Valuables',
+    specificSpots: ['Safe', 'Wallet/Purse', 'Office desk', 'Walk-in closet', 'Near financial docs', 'Inside a jacket pocket'],
+    timing: 'Working Hours / Morning',
+    clues: 'Check among items of value or where you keep important documents. It is in an organized spot.',
+    icon: '💼'
   },
   9: {
-    direction: "Southwest (Boundary Area)",
+    direction: 'Southwest (Boundary Area)',
     angle: 225,
-    keywords: ["Discarded", "Boundary", "Exterior/Garden"],
-    roomType: "Mudroom, Back Porch, Storage, Yard",
-    height: "Floor Level / Outer Edge",
-    containers: "Baskets, Trash bins, Outdoor bins",
-    materials: "Earthy, Recycled, Canvas",
-    specificSpots: ["Recycling bin", "Junk drawer", "Near the back door", "Garden area", "Outdoor shed", "Laundry room floor"],
-    timing: "Twilight / End of Day",
-    clues: "Check the 'exit' points of your home or areas where items are set aside to be thrown out.",
-    icon: "🏁"
+    keywords: ['Discarded', 'Boundary', 'Exterior/Garden'],
+    roomType: 'Mudroom, Back Porch, Storage, Yard',
+    height: 'Floor Level / Outer Edge',
+    containers: 'Baskets, Trash bins, Outdoor bins',
+    materials: 'Earthy, Recycled, Canvas',
+    specificSpots: ['Recycling bin', 'Junk drawer', 'Near the back door', 'Garden area', 'Outdoor shed', 'Laundry room floor'],
+    timing: 'Twilight / End of Day',
+    clues: 'Check the \'exit\' points of your home or areas where items are set aside to be thrown out.',
+    icon: '🏁'
   }
 };
 
 // --- Logic Helpers ---
 
 const fadicReduce = (num: number): number => {
-  if (num === 0) return 0;
-  if (num % 9 === 0) return 9;
+  if (num === 0) {
+    return 0;
+  }
+  if (num % 9 === 0) {
+    return 9;
+  }
   return num % 9;
 };
 

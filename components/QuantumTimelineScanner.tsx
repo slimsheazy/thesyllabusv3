@@ -1,6 +1,5 @@
 
 import React, { useState, useCallback, memo, useEffect } from 'react';
-import { Target, Activity, History, ChevronLeft, Zap, RefreshCcw } from 'lucide-react';
 import { useSyllabusStore } from '../store';
 import { logCalculation, getLogs } from '../services/dbService';
 import { getQuantumTimelineScan } from '../services/geminiService';
@@ -37,24 +36,24 @@ const SignalGrid = memo(({ selected, onToggle, disabled }: { selected: string[],
       </div>
     </div>
     <div className="font-mono text-[9px] text-marker-black font-black tracking-[0.3em] uppercase opacity-40">
-      {selected.length === 3 ? "Locking in..." : `Picking: ${selected.length}/3`}
+      {selected.length === 3 ? 'Locking in...' : `Picking: ${selected.length}/3`}
     </div>
   </div>
 ));
 
-const RealityTrack = memo(({ 
-  reality, 
-  label, 
-  isActive, 
-  onJump 
-}: { 
-  reality: any, 
-  label: string, 
-  isActive: boolean, 
-  onJump?: () => void 
+const RealityTrack = memo(({
+  reality,
+  label,
+  isActive,
+  onJump
+}: {
+  reality: any,
+  label: string,
+  isActive: boolean,
+  onJump?: () => void
 }) => {
-  const isDesired = label === "New";
-  
+  const isDesired = label === 'New';
+
   return (
     <div className={`relative w-full p-8 border transition-all duration-500 ${isActive ? 'bg-white border-marker-black shadow-xl z-20 scale-100' : 'bg-black/5 border-black/10 opacity-40 scale-[0.98] z-10'}`}>
       <div className="flex justify-between items-start mb-6">
@@ -62,7 +61,7 @@ const RealityTrack = memo(({
           <span className={`font-mono text-[9px] uppercase tracking-widest font-bold ${isActive ? 'text-tactical-cyan' : 'text-black/40'}`}>
             {label} Way of Seeing
           </span>
-          <h4 className="font-display text-3xl lowercase italic">{reality.stateLabel || reality.entropyLevel || "Normal"}</h4>
+          <h4 className="font-display text-3xl lowercase italic">{reality.stateLabel || reality.entropyLevel || 'Normal'}</h4>
         </div>
         <div className="text-right">
           <span className="font-mono text-[9px] opacity-30 uppercase block">The Vibe</span>
@@ -84,7 +83,7 @@ const RealityTrack = memo(({
       {isDesired && !isActive && onJump && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-[2px] opacity-0 hover:opacity-100 transition-opacity">
           <button onClick={onJump} className="brutalist-button !py-4 !px-8 flex items-center gap-3 !bg-tactical-cyan !text-white !border-tactical-cyan">
-            <Zap size={16} /> Switch Your View
+            Lightning Switch Your View
           </button>
         </div>
       )}
@@ -107,9 +106,9 @@ const TimelineNavigator = memo(({ quantumState, onSwitch }: { quantumState: Quan
 
   return (
     <div className={`space-y-4 animate-in fade-in duration-700 pb-48 relative ${glitching ? 'animate-glitch' : ''}`}>
-      <RealityTrack 
-        reality={quantumState.desiredReality} 
-        label="New" 
+      <RealityTrack
+        reality={quantumState.desiredReality}
+        label="New"
         isActive={timelineIndex === 1}
         onJump={handleJump}
       />
@@ -117,36 +116,36 @@ const TimelineNavigator = memo(({ quantumState, onSwitch }: { quantumState: Quan
       <div className="relative h-24 flex items-center justify-center">
         <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-gradient-to-b from-marker-black/5 via-marker-black/20 to-marker-black/5"></div>
         <div className="relative z-10 flex flex-col items-center gap-2">
-           <div className="p-4 bg-white border border-marker-black rounded-full shadow-lg group hover:scale-110 transition-transform cursor-pointer" onClick={handleJump}>
-             {timelineIndex === 0 ? <Zap className="text-tactical-cyan" size={24} /> : <RefreshCcw className="text-marker-black/40" size={24} />}
-           </div>
-           <span className="font-mono text-[8px] font-black uppercase tracking-[0.4em] opacity-30 italic">The Bridge</span>
+          <div className="p-4 bg-white border border-marker-black rounded-full shadow-lg group hover:scale-110 transition-transform cursor-pointer" onClick={handleJump}>
+            {timelineIndex === 0 ? <span className="text-tactical-cyan text-[10px]">⚡</span> : <span className="text-marker-black/40 text-[10px]">↻</span>}
+          </div>
+          <span className="font-mono text-[8px] font-black uppercase tracking-[0.4em] opacity-30 italic">The Bridge</span>
         </div>
       </div>
 
-      <RealityTrack 
-        reality={quantumState.currentReality} 
-        label="Old" 
+      <RealityTrack
+        reality={quantumState.currentReality}
+        label="Old"
         isActive={timelineIndex === 0}
         onJump={timelineIndex === 1 ? handleJump : undefined}
       />
 
       <div className="mt-12 p-10 bg-white border border-marker-black shadow-2xl relative overflow-hidden group">
-         <div className="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none font-display text-8xl italic uppercase">Change</div>
-         <span className="font-mono text-[10px] font-bold text-tactical-cyan tracking-[0.4em] block mb-6 italic">How to change things (The Catalyst)</span>
-         <p className="font-display text-4xl text-marker-black leading-tight italic max-w-2xl">
-            <WritingEffect text={quantumState.quantumJump.behavioralDelta} speed={25} />
-         </p>
-         <div className="mt-8 pt-8 border-t border-marker-black/10 flex justify-between items-center">
-            <div className="space-y-1">
-               <span className="font-mono text-[9px] opacity-30 uppercase block">What to do</span>
-               <p className="font-mono text-xs font-bold italic">{quantumState.quantumJump.bridgeAction}</p>
-            </div>
-            <div className="text-right space-y-1">
-               <span className="font-mono text-[9px] opacity-30 uppercase block">Target Energy</span>
-               <p className="font-mono text-xs font-bold text-tactical-cyan">{quantumState.quantumJump.shiftFrequency}</p>
-            </div>
-         </div>
+        <div className="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none font-display text-8xl italic uppercase">Change</div>
+        <span className="font-mono text-[10px] font-bold text-tactical-cyan tracking-[0.4em] block mb-6 italic">How to change things (The Catalyst)</span>
+        <p className="font-display text-4xl text-marker-black leading-tight italic max-w-2xl">
+          <WritingEffect text={quantumState.quantumJump.behavioralDelta} speed={25} />
+        </p>
+        <div className="mt-8 pt-8 border-t border-marker-black/10 flex justify-between items-center">
+          <div className="space-y-1">
+            <span className="font-mono text-[9px] opacity-30 uppercase block">What to do</span>
+            <p className="font-mono text-xs font-bold italic">{quantumState.quantumJump.bridgeAction}</p>
+          </div>
+          <div className="text-right space-y-1">
+            <span className="font-mono text-[9px] opacity-30 uppercase block">Target Energy</span>
+            <p className="font-mono text-xs font-bold text-tactical-cyan">{quantumState.quantumJump.shiftFrequency}</p>
+          </div>
+        </div>
       </div>
 
       <style>{`
@@ -176,28 +175,30 @@ const QuantumTimelineScanner: React.FC<ToolProps> = ({ onBack }) => {
   const { recordCalculation } = useSyllabusStore();
 
   useEffect(() => {
-    const load = async () => {
+    const load = async() => {
       const logs = await getLogs('QUANTUM_SCAN') as any[];
-      if (logs?.length > 0) setReadings(logs.map(l => JSON.parse(l.result)));
+      if (logs?.length > 0) {
+        setReadings(logs.map(l => JSON.parse(l.result)));
+      }
     };
     load();
   }, []);
 
-  const performScan = useCallback(async (nodes: string[]) => {
+  const performScan = useCallback(async(nodes: string[]) => {
     setLoading(true);
     audioManager.playRustle();
     const sig = nodes.join('-');
-    const intent = "Shifting your perspective"; 
+    const intent = 'Perspective analysis';
     try {
       const res = await getQuantumTimelineScan({ intent, signature: sig });
       if (res) {
-        const state: QuantumState = { 
-          id: Date.now().toString(), 
-          timestamp: new Date().toISOString(), 
-          intent, 
-          signature: sig, 
+        const state: QuantumState = {
+          id: Date.now().toString(),
+          timestamp: new Date().toISOString(),
+          intent,
+          signature: sig,
           timelineIndex: 0,
-          ...res 
+          ...res
         };
         setActiveQuantumState(state);
         setReadings(prev => [state, ...prev]);
@@ -205,17 +206,25 @@ const QuantumTimelineScanner: React.FC<ToolProps> = ({ onBack }) => {
         logCalculation('QUANTUM_SCAN', intent, state);
         setViewMode('navigator');
       }
-    } catch { alert('Lost the thread. Try again.'); } finally { setLoading(false); }
+    } catch {
+      alert('Lost the thread. Try again.');
+    } finally {
+      setLoading(false);
+    }
   }, [recordCalculation]);
 
   const handleToggleNode = useCallback((id: string) => {
     setSelectedNodes(prev => {
-      if (prev.includes(id)) return prev.filter(n => n !== id);
-      if (prev.length >= 3) return prev;
-      
+      if (prev.includes(id)) {
+        return prev.filter(n => n !== id);
+      }
+      if (prev.length >= 3) {
+        return prev;
+      }
+
       const next = [...prev, id];
       audioManager.playPenScratch(0.08);
-      
+
       if (next.length === 3) {
         performScan(next);
       }
@@ -224,42 +233,46 @@ const QuantumTimelineScanner: React.FC<ToolProps> = ({ onBack }) => {
   }, [performScan]);
 
   const handleSwitchTimeline = (idx: number) => {
-    if (!activeQuantumState) return;
+    if (!activeQuantumState) {
+      return;
+    }
     setActiveQuantumState({ ...activeQuantumState, timelineIndex: idx });
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center py-12 px-6 md:px-12 relative max-w-7xl mx-auto">
       <button onClick={onBack} className="fixed top-6 right-6 brutalist-button !text-[10px] z-[100] flex items-center gap-2">
-        <ChevronLeft size={12} /> Index
+        <span className="text-[10px]">←</span> Index
       </button>
 
       <div className="w-full flex flex-col lg:flex-row gap-16 items-start pt-16">
         <aside className="w-full lg:w-[350px] space-y-10 lg:sticky lg:top-12">
           <header className="space-y-4">
             <div className="flex items-center gap-3 text-tactical-cyan">
-              <Activity size={24} />
+              <span className="text-[10px]">⚡</span>
               <h2 className="heading-marker text-7xl lowercase">Shifter</h2>
             </div>
             <p className="font-mono text-[10px] text-marker-black opacity-40 uppercase tracking-widest italic">Changing the vibe</p>
           </header>
           <nav className="flex flex-col gap-2">
             {[
-              { id: 'calibrate', icon: Target, label: 'Calibration' },
-              { id: 'navigator', icon: Activity, label: 'The Shift', disabled: !activeQuantumState },
-              { id: 'history', icon: History, label: 'Past Looks' }
+              { id: 'calibrate', icon: 'Target', label: 'Calibration' },
+              { id: 'navigator', icon: 'Activity', label: 'The Shift', disabled: !activeQuantumState },
+              { id: 'history', icon: 'History', label: 'Past Looks' }
             ].map(m => (
-              <button 
+              <button
                 key={m.id}
                 disabled={m.disabled}
                 onClick={() => {
                   setViewMode(m.id as any);
-                  if (m.id === 'calibrate') setSelectedNodes([]); 
+                  if (m.id === 'calibrate') {
+                    setSelectedNodes([]);
+                  }
                 }}
                 className={`flex items-center justify-between p-5 border transition-all ${viewMode === m.id ? 'bg-black/10 border-marker-black text-marker-black shadow-lg' : 'bg-black/5 border-black/10 text-marker-black/40 hover:text-marker-black disabled:opacity-10'}`}
               >
                 <div className="flex items-center gap-4">
-                  <m.icon size={16} />
+                  <span className="text-[10px]">{m.icon}</span>
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest">{m.label}</span>
                 </div>
               </button>
@@ -270,32 +283,34 @@ const QuantumTimelineScanner: React.FC<ToolProps> = ({ onBack }) => {
         <main className="flex-1 w-full">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-40 gap-10">
-               <div className="w-32 h-1 bg-black/10 relative overflow-hidden">
-                 <div className="absolute inset-0 bg-tactical-cyan animate-[shimmer_1.5s_infinite]"></div>
-               </div>
-               <span className="font-mono text-[10px] text-tactical-cyan animate-pulse uppercase tracking-[1em] font-black italic">Thinking it through...</span>
+              <div className="w-32 h-1 bg-black/10 relative overflow-hidden">
+                <div className="absolute inset-0 bg-tactical-cyan animate-[shimmer_1.5s_infinite]"></div>
+              </div>
+              <span className="font-mono text-[10px] text-tactical-cyan animate-pulse uppercase tracking-[1em] font-black italic">Thinking it through...</span>
             </div>
           ) : viewMode === 'calibrate' ? (
             <div className="space-y-12 animate-in fade-in duration-500 max-w-2xl mx-auto">
-               <div className="p-10 space-y-10">
-                  <div className="text-center space-y-2">
-                    <p className="handwritten text-xl italic text-marker-black/60">Pick three dots to start shifting your perspective.</p>
-                  </div>
-                  <SignalGrid selected={selectedNodes} onToggle={handleToggleNode} />
-               </div>
+              <div className="p-10 space-y-10">
+                <div className="text-center space-y-2">
+                  <p className="handwritten text-xl italic text-marker-black/60">Select three nodes to begin analysis.</p>
+                </div>
+                <SignalGrid selected={selectedNodes} onToggle={handleToggleNode} />
+              </div>
             </div>
           ) : viewMode === 'navigator' && activeQuantumState ? (
             <TimelineNavigator quantumState={activeQuantumState} onSwitch={handleSwitchTimeline} />
           ) : (
             <div className="grid grid-cols-1 gap-4">
-               {readings.length === 0 ? <div className="text-center py-40 opacity-10 font-display text-5xl lowercase italic">Nothing yet</div>
-               : readings.map((r, idx) => (
-                   <div key={r.id || idx} onClick={() => { setActiveQuantumState(r); setViewMode('navigator'); audioManager.playRustle(); }} className="p-8 border border-black/5 bg-black/5 cursor-pointer hover:border-tactical-cyan group transition-all">
-                      <h4 className="font-display text-4xl group-hover:text-tactical-cyan transition-colors truncate lowercase italic">Look at: {r.signature}</h4>
-                      <p className="font-mono text-[9px] text-marker-black opacity-40 uppercase tracking-widest mt-2">Signature: {r.signature}</p>
-                   </div>
-                 ))
-               }
+              {readings.length === 0 ? <div className="text-center py-40 opacity-10 font-display text-5xl lowercase italic">Nothing yet</div>
+                : readings.map((r, idx) => (
+                  <div key={r.id || idx} onClick={() => {
+                    setActiveQuantumState(r); setViewMode('navigator'); audioManager.playRustle();
+                  }} className="p-8 border border-black/5 bg-black/5 cursor-pointer hover:border-tactical-cyan group transition-all">
+                    <h4 className="font-display text-4xl group-hover:text-tactical-cyan transition-colors truncate lowercase italic">Look at: {r.signature}</h4>
+                    <p className="font-mono text-[9px] text-marker-black opacity-40 uppercase tracking-widest mt-2">Signature: {r.signature}</p>
+                  </div>
+                ))
+              }
             </div>
           )}
         </main>
