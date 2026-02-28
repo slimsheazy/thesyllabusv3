@@ -193,7 +193,7 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
-                      <Calendar size={10} /> Arrival Date
+                      📅 Arrival Date
                     </label>
                     <input
                       type="date"
