@@ -1,8 +1,33 @@
 
-// Secure backend API service for Gemini AI
-// All API calls go through our secure backend to protect API keys
+import { GoogleGenAI, Type, Modality, GenerateContentResponse } from "@google/genai";
+import { 
+  GlossaryDefinition, 
+  QuantumTimelineResult, 
+  PhotoScryerResult, 
+  AkashicResult,
+  BaziResult,
+  BioDepreciationResult,
+  FlyingStarResult,
+  HoraryResult,
+  ElectionalResult,
+  BirthChartResult,
+  NumerologyResult,
+  PsychometryResult,
+  PieResult,
+  ColorPaletteResult,
+  RelocationResult,
+  SabianResult,
+  RitualResult,
+  SynastryResult,
+  BrainstormResult,
+  SpreadDefinition,
+  // Added CharmData to the import list
+  CharmData
+} from "../types";
 
-const API_BASE_URL = '/api/gemini';
+const ai = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY
+});
 
 const MODELS = {
   FLASH: 'gemini-3-flash-preview',
