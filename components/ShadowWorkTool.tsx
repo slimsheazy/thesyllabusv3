@@ -1,6 +1,5 @@
 
 import React, { useState, memo } from 'react';
-import { GoogleGenAI, Type } from '@google/genai';
 import { useSyllabusStore } from '../store';
 import { logCalculation } from '../services/dbService';
 import { audioManager } from './AudioManager';
@@ -8,7 +7,22 @@ import { GlossaryTerm } from './GlossaryEngine';
 import { WritingEffect } from './WritingEffect';
 import { ReadAloudButton } from './ReadAloudButton';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const getShadowWorkAnalysis = async (inquiry: string) => {
+  const response = await fetch('/api/gemini', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'gemini-3-pro-preview',
+      prompt: `I am looking at my "shadow" side. I'm reflecting on: "${inquiry}". Give me a grounded explanation of what's really going on beneath the surface, 3 direct questions I should ask myself, and a helpful reminder to close. Return as JSON with keys: analysis, inquiries (array of 3 strings), affirmation.`
+    })
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to get analysis');
+  }
+  return JSON.parse(data.response);
+};
 
 const ShadowWorkTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [inquiry, setInquiry] = useState('Current life patterns and obstacles');
@@ -25,24 +39,7 @@ const ShadowWorkTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     audioManager.playRustle();
 
     try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
-        contents: `I am looking at my "shadow" side. I'm reflecting on: "${inquiry}". Give me a grounded explanation of what's really going on beneath the surface, 3 direct questions I should ask myself, and a helpful reminder to close.`,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              analysis: { type: Type.STRING, description: 'Honest explanation of this behavior' },
-              inquiries: { type: Type.ARRAY, items: { type: Type.STRING }, description: '3 questions for honest reflection' },
-              affirmation: { type: Type.STRING, description: 'A grounded closing reminder' }
-            },
-            required: ['analysis', 'inquiries', 'affirmation']
-          }
-        }
-      });
-
-      const data = JSON.parse(response.text || '{}');
+      const data = await getShadowWorkAnalysis(inquiry);
       setResult(data);
       recordCalculation();
       logCalculation('SHADOW_WORK', inquiry.slice(0, 30), data);
