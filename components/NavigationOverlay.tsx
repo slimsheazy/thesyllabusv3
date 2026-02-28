@@ -173,7 +173,7 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
                 onClick={() => setIsEditingProfile(!isEditingProfile)}
                 className="text-[10px] font-black uppercase flex items-center gap-1 hover:text-marker-blue transition-colors"
               >
-                {isEditingProfile ? <X size={14}/> : <Settings2 size={14} />}
+                {isEditingProfile ? '✕' : '⚙️'}
               </button>
             </div>
 
@@ -181,7 +181,7 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
               <div className="space-y-6 animate-in fade-in duration-300 relative z-10">
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
-                    <User size={10} /> Who are you?
+                    👤 Who are you?
                   </label>
                   <input
                     className="w-full bg-surface p-3 marker-border text-lg italic outline-none focus:border-marker-blue"
