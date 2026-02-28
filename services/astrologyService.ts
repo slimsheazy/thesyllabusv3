@@ -54,7 +54,7 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
     // Retrograde check via 6-hour delta
     const datePlus = new Date(date.getTime() + 6 * 60 * 60 * 1000);
     const timePlus = new AstroTime(datePlus);
-    const eclPlus = (Ecliptic as any)(body, timePlus);
+    const eclPlus = Ecliptic(body, timePlus) as { elon: number; };
 
     let diff = eclPlus.elon - ecl.elon;
     if (diff > 180) {
