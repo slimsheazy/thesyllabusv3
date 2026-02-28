@@ -278,7 +278,7 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
             <div className="pt-8 mt-8 border-t border-marker-black/5">
               <button onClick={toggleEclipseMode} className="w-full flex items-center justify-between group p-3 hover:bg-marker-black/5 rounded-xl transition-all">
                 <div className="flex items-center gap-3">
-                  {isEclipseMode ? <Moon size={20} className="text-marker-purple" /> : <Sun size={20} className="text-marker-red" />}
+                  {isEclipseMode ? <span className="text-2xl text-marker-purple">🌙</span> : <span className="text-2xl text-marker-red">☀️</span>}
                   <span className="handwritten text-lg italic">{isEclipseMode ? 'Night Watch' : 'Day Watch'}</span>
                 </div>
                 <div className={`w-12 h-6 rounded-full border-2 relative transition-all ${isEclipseMode ? 'bg-marker-purple border-marker-purple' : 'bg-transparent border-marker-black/20'}`}>
