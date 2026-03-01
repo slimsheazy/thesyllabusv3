@@ -10,7 +10,7 @@ const CosmicMadLibs: React.FC<ToolProps> = ({ onBack }) => {
 
   const handleSubmit = async() => {
     setLoading(true);
-    const result = await generateCosmicMadLib(inputs);
+    const result = await generateCosmicMadLib(inputs, '');
     setRitual(result);
     setLoading(false);
   };

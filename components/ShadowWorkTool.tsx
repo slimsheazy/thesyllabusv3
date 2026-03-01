@@ -7,7 +7,7 @@ import { GlossaryTerm } from './GlossaryEngine';
 import { WritingEffect } from './WritingEffect';
 import { ReadAloudButton } from './ReadAloudButton';
 
-const getShadowWorkAnalysis = async (inquiry: string) => {
+const getShadowWorkAnalysis = async(inquiry: string) => {
   const response = await fetch('/api/gemini', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

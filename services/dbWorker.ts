@@ -27,15 +27,6 @@ interface QueryResult {
   values: unknown[][];
 }
 
-interface SqlJsConfig {
-  locateFile?: (file: string) => string;
-  wasmBinary?: ArrayBuffer;
-}
-
-interface SqlJsStatic {
-  Database: new (data?: Uint8Array) => Database;
-}
-
 let db: Database | null = null;
 
 const init = async(data: Uint8Array | null) => {
