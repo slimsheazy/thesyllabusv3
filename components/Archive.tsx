@@ -11,23 +11,29 @@ interface CuratorBook {
 }
 
 const extractDeepRecallText = (data: any): { body: string; guidance: string | null } => {
-  if (!data) return { body: "Empty archival fragment.", guidance: null };
-  
+  if (!data) {
+    return { body: 'Empty archival fragment.', guidance: null };
+  }
+
   const bodyKeys = [
-    'final_synthesis', 'interpretation', 'judgment', 'soulPurpose', 
+    'final_synthesis', 'interpretation', 'judgment', 'soulPurpose',
     'analysis', 'narrative', 'synthesis', 'brief', 'phrase', 'meaning'
   ];
 
-  let body = "";
+  let body = '';
   for (const key of bodyKeys) {
     const val = data[key];
-    if (typeof val === 'string' && val.length > body.length) body = val;
-    if (val && typeof val === 'object' && val.final_synthesis) body = val.final_synthesis;
+    if (typeof val === 'string' && val.length > body.length) {
+      body = val;
+    }
+    if (val && typeof val === 'object' && val.final_synthesis) {
+      body = val.final_synthesis;
+    }
   }
 
   if (!body) {
     const firstLongString = Object.values(data).find(v => typeof v === 'string' && v.length > 30);
-    body = typeof firstLongString === 'string' ? firstLongString : "Fragment metadata only.";
+    body = typeof firstLongString === 'string' ? firstLongString : 'Fragment metadata only.';
   }
 
   const guidance = data.guidance || data.suggestion || data.actionableInsight || data.finalClue || null;
@@ -40,7 +46,7 @@ const DeepRecallModal = ({ log, onClose }: { log: LogEntry, onClose: () => void 
     try {
       return { data: JSON.parse(log.result), error: null };
     } catch (e) {
-      return { data: null, error: "Corrupt fragment detected." };
+      return { data: null, error: 'Corrupt fragment detected.' };
     }
   }, [log.result]);
 
@@ -56,7 +62,7 @@ const DeepRecallModal = ({ log, onClose }: { log: LogEntry, onClose: () => void 
           <h2 className="heading-marker text-4xl md:text-5xl text-marker-black lowercase leading-tight">"{log.query}"</h2>
           <div className="text-[10px] font-mono opacity-50 uppercase">{new Date(log.timestamp).toLocaleString()}</div>
         </header>
-        
+
         <div className="space-y-12">
           {error ? (
             <div className="p-8 marker-border border-marker-red bg-marker-red/5 text-marker-red font-bold">{error}</div>
@@ -73,7 +79,7 @@ const DeepRecallModal = ({ log, onClose }: { log: LogEntry, onClose: () => void 
                 </div>
               )}
               <div className="mt-8 flex justify-end relative z-10">
-                 <ReadAloudButton text={`${body}. ${guidance || ''}`} className="!py-1 !px-3 !text-[10px]" />
+                <ReadAloudButton text={`${body}. ${guidance || ''}`} className="!py-1 !px-3 !text-[10px]" />
               </div>
             </div>
           )}
@@ -98,18 +104,30 @@ const Archive: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
   const [approxSize, setApproxSize] = useState<number>(0);
 
-  useEffect(() => { 
-    loadLibrary(); 
-    const handlePersist = (e: any) => { if (e.detail?.size) setApproxSize(e.detail.size); };
+  useEffect(() => {
+    loadLibrary();
+    const handlePersist = (e: any) => {
+      if (e.detail?.size) {
+        setApproxSize(e.detail.size);
+      }
+    };
     window.addEventListener('db_persisted', handlePersist);
-    exportDBBinary().then(bin => { if (bin) setApproxSize(bin.byteLength); });
+    exportDBBinary().then(bin => {
+      if (bin) {
+        setApproxSize(bin.byteLength);
+      }
+    });
     return () => window.removeEventListener('db_persisted', handlePersist);
   }, []);
-  
-  const loadLibrary = async () => {
-    const [bookLogs, allLogs] = await Promise.all([ getLogs('CURATOR_BOOKS'), getLogs() ]);
-    if (bookLogs) setCuratedBooks(bookLogs.map(l => JSON.parse(l.result)));
-    if (allLogs) setResearchLogs(allLogs.filter(l => l.module !== 'CURATOR_BOOKS'));
+
+  const loadLibrary = async() => {
+    const [bookLogs, allLogs] = await Promise.all([getLogs('CURATOR_BOOKS'), getLogs()]);
+    if (bookLogs) {
+      setCuratedBooks(bookLogs.map(l => JSON.parse(l.result)));
+    }
+    if (allLogs) {
+      setResearchLogs(allLogs.filter(l => l.module !== 'CURATOR_BOOKS'));
+    }
   };
 
   const modules = useMemo(() => {
@@ -118,23 +136,33 @@ const Archive: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   }, [researchLogs]);
 
   const filteredLogs = useMemo(() => {
-    if (!filterModule) return researchLogs;
+    if (!filterModule) {
+      return researchLogs;
+    }
     return researchLogs.filter(l => l.module === filterModule);
   }, [researchLogs, filterModule]);
 
-  const handlePrune = async () => {
-    if (!confirm("Keep only the most recent 20 research logs? Curator volumes will be preserved.")) return;
+  const handlePrune = async() => {
+    if (!confirm('Keep only the most recent 20 research logs? Curator volumes will be preserved.')) {
+      return;
+    }
     await pruneLogs(20); loadLibrary(); audioManager.playRustle();
-    const bin = await exportDBBinary(); if (bin) setApproxSize(bin.byteLength);
+    const bin = await exportDBBinary(); if (bin) {
+      setApproxSize(bin.byteLength);
+    }
   };
 
-  const handleClear = async () => {
-    if (!confirm("This will PERMANENTLY WIPE all logs. Are you sure?")) return;
+  const handleClear = async() => {
+    if (!confirm('This will PERMANENTLY WIPE all logs. Are you sure?')) {
+      return;
+    }
     await clearAllLogs(); loadLibrary(); audioManager.playRustle(); setApproxSize(0);
   };
 
-  const handleExport = async () => {
-    const binary = await exportDBBinary(); if (!binary) return;
+  const handleExport = async() => {
+    const binary = await exportDBBinary(); if (!binary) {
+      return;
+    }
     const blob = new Blob([binary], { type: 'application/x-sqlite3' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `syllabus_archive_${new Date().toISOString().slice(0,10)}.sqlite`;
@@ -149,9 +177,15 @@ const Archive: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         <h1 className="title-main !text-6xl md:!text-9xl text-marker-blue leading-none">the <GlossaryTerm word="Archive">shared archive</GlossaryTerm></h1>
         <div className="flex flex-col items-center gap-6">
           <div className="flex flex-wrap gap-4 justify-center">
-            <button onClick={() => { setView('curated'); audioManager.playRustle(); }} className={`px-6 py-3 marker-border text-[10px] font-bold uppercase tracking-[0.3em] transition-all ${view === 'curated' ? 'bg-marker-blue text-white shadow-xl' : 'bg-surface opacity-60 hover:opacity-100'}`}>Curated Volumes</button>
-            <button onClick={() => { setView('logs'); audioManager.playRustle(); }} className={`px-6 py-3 marker-border text-[10px] font-bold uppercase tracking-[0.3em] transition-all ${view === 'logs' ? 'bg-marker-blue text-white shadow-xl' : 'bg-surface opacity-60 hover:opacity-100'}`}>Research Logs</button>
-            <button onClick={() => { setView('management'); audioManager.playRustle(); }} className={`px-6 py-3 marker-border text-[10px] font-bold uppercase tracking-[0.3em] transition-all ${view === 'management' ? 'bg-marker-blue text-white shadow-xl' : 'bg-surface opacity-60 hover:opacity-100'}`}>Maintenance</button>
+            <button onClick={() => {
+              setView('curated'); audioManager.playRustle();
+            }} className={`px-6 py-3 marker-border text-[10px] font-bold uppercase tracking-[0.3em] transition-all ${view === 'curated' ? 'bg-marker-blue text-white shadow-xl' : 'bg-surface opacity-60 hover:opacity-100'}`}>Curated Volumes</button>
+            <button onClick={() => {
+              setView('logs'); audioManager.playRustle();
+            }} className={`px-6 py-3 marker-border text-[10px] font-bold uppercase tracking-[0.3em] transition-all ${view === 'logs' ? 'bg-marker-blue text-white shadow-xl' : 'bg-surface opacity-60 hover:opacity-100'}`}>Research Logs</button>
+            <button onClick={() => {
+              setView('management'); audioManager.playRustle();
+            }} className={`px-6 py-3 marker-border text-[10px] font-bold uppercase tracking-[0.3em] transition-all ${view === 'management' ? 'bg-marker-blue text-white shadow-xl' : 'bg-surface opacity-60 hover:opacity-100'}`}>Maintenance</button>
           </div>
           {view === 'logs' && modules.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2 max-w-3xl animate-in fade-in">
@@ -168,14 +202,14 @@ const Archive: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32 w-full animate-in fade-in duration-500">
           {curatedBooks.length === 0 ? <div className="col-span-full py-40 text-center opacity-10 italic text-3xl">Archive empty.</div> : curatedBooks.map(book => (
             <div key={book.id} className="p-8 marker-border border-marker-red bg-surface shadow-xl flex flex-col justify-between group hover:-translate-y-1 transition-all">
-               <div>
-                  <h4 className="heading-marker text-2xl md:text-3xl lowercase group-hover:text-marker-red">{book.title}</h4>
-                  <p className="handwritten text-base italic opacity-60 mb-4">{book.author}</p>
-                  <p className="handwritten text-sm leading-relaxed italic line-clamp-4">"{book.thesis}"</p>
-               </div>
-               <div className="mt-6 pt-4 border-t border-marker-black/5 flex justify-end">
-                  <ReadAloudButton text={`${book.title} by ${book.author}. ${book.thesis}`} className="!py-0.5 !px-2 !text-[9px]" />
-               </div>
+              <div>
+                <h4 className="heading-marker text-2xl md:text-3xl lowercase group-hover:text-marker-red">{book.title}</h4>
+                <p className="handwritten text-base italic opacity-60 mb-4">{book.author}</p>
+                <p className="handwritten text-sm leading-relaxed italic line-clamp-4">"{book.thesis}"</p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-marker-black/5 flex justify-end">
+                <ReadAloudButton text={`${book.title} by ${book.author}. ${book.thesis}`} className="!py-0.5 !px-2 !text-[9px]" />
+              </div>
             </div>
           ))}
         </section>
@@ -183,20 +217,22 @@ const Archive: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
       {view === 'logs' && (
         <section className="w-full space-y-6 pb-48 animate-in fade-in duration-500 max-w-5xl">
-           {filteredLogs.length === 0 ? <div className="py-40 text-center opacity-10 italic text-3xl">No logs detected.</div> : filteredLogs.map(log => (
-             <div key={log.id} onClick={() => { setSelectedLog(log); audioManager.playRustle(); }} className="p-6 md:p-8 marker-border border-marker-black bg-surface shadow-md flex flex-col md:flex-row gap-6 md:gap-8 items-center group hover:border-marker-blue cursor-pointer transition-all">
-                <div className="shrink-0 w-full md:w-40">
-                   <span className="text-[10px] font-black uppercase text-marker-blue bg-marker-blue/5 px-3 py-1 rounded block mb-2">{log.module.replace(/_/g, ' ')}</span>
-                   <span className="text-[10px] font-mono opacity-50 block uppercase">{new Date(log.timestamp).toLocaleDateString()}</span>
-                </div>
-                <div className="flex-1">
-                   <h5 className="heading-marker text-2xl md:text-3xl lowercase leading-tight group-hover:text-marker-blue">"{log.query}"</h5>
-                </div>
-                <div className="shrink-0 opacity-0 group-hover:opacity-100">
-                   <span className="text-[10px] font-bold uppercase underline decoration-2 underline-offset-4 decoration-marker-blue/20">Recall →</span>
-                </div>
-             </div>
-           ))}
+          {filteredLogs.length === 0 ? <div className="py-40 text-center opacity-10 italic text-3xl">No logs detected.</div> : filteredLogs.map(log => (
+            <div key={log.id} onClick={() => {
+              setSelectedLog(log); audioManager.playRustle();
+            }} className="p-6 md:p-8 marker-border border-marker-black bg-surface shadow-md flex flex-col md:flex-row gap-6 md:gap-8 items-center group hover:border-marker-blue cursor-pointer transition-all">
+              <div className="shrink-0 w-full md:w-40">
+                <span className="text-[10px] font-black uppercase text-marker-blue bg-marker-blue/5 px-3 py-1 rounded block mb-2">{log.module.replace(/_/g, ' ')}</span>
+                <span className="text-[10px] font-mono opacity-50 block uppercase">{new Date(log.timestamp).toLocaleDateString()}</span>
+              </div>
+              <div className="flex-1">
+                <h5 className="heading-marker text-2xl md:text-3xl lowercase leading-tight group-hover:text-marker-blue">"{log.query}"</h5>
+              </div>
+              <div className="shrink-0 opacity-0 group-hover:opacity-100">
+                <span className="text-[10px] font-bold uppercase underline decoration-2 underline-offset-4 decoration-marker-blue/20">Recall Right</span>
+              </div>
+            </div>
+          ))}
         </section>
       )}
     </div>

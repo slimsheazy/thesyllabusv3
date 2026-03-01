@@ -25,7 +25,7 @@ export const BrainstormTool: React.FC<ToolProps> = ({ onBack }) => {
     loadSessions();
   }, []);
 
-  const loadSessions = async () => {
+  const loadSessions = async() => {
     const logs = await getLogs('BRAINSTORM_SESSION') as any[];
     if (logs && logs.length > 0) {
       setSessions(logs.map(l => JSON.parse(l.result)));
@@ -37,14 +37,16 @@ export const BrainstormTool: React.FC<ToolProps> = ({ onBack }) => {
   }, []);
 
   const create = useCallback(() => {
-    if (!title || !prompt) return;
-    const ns: BrainstormSession = { 
-      id: Date.now().toString(), 
-      title, 
-      prompt, 
-      timestamp: new Date().toISOString(), 
-      ideas: [], 
-      technique 
+    if (!title || !prompt) {
+      return;
+    }
+    const ns: BrainstormSession = {
+      id: Date.now().toString(),
+      title,
+      prompt,
+      timestamp: new Date().toISOString(),
+      ideas: [],
+      technique
     };
     setSessions(prev => [ns, ...prev]);
     saveToArchive(ns);
@@ -53,12 +55,14 @@ export const BrainstormTool: React.FC<ToolProps> = ({ onBack }) => {
   }, [title, prompt, technique, saveToArchive]);
 
   const add = useCallback((text: string) => {
-    if (!activeSession || !text.trim()) return;
-    const ni = { 
-      id: Date.now().toString(), 
-      text: text.trim(), 
-      timestamp: new Date().toISOString(), 
-      starred: false 
+    if (!activeSession || !text.trim()) {
+      return;
+    }
+    const ni = {
+      id: Date.now().toString(),
+      text: text.trim(),
+      timestamp: new Date().toISOString(),
+      starred: false
     };
     const us = { ...activeSession, ideas: [ni, ...activeSession.ideas] };
     setActiveSession(us);
@@ -67,8 +71,10 @@ export const BrainstormTool: React.FC<ToolProps> = ({ onBack }) => {
     setCurrentIdea('');
   }, [activeSession, saveToArchive]);
 
-  const fetchAI = async () => {
-    if (!activeSession) return;
+  const fetchAI = async() => {
+    if (!activeSession) {
+      return;
+    }
     setLoadingSuggestions(true);
     const res = await getBrainstormSuggestions(activeSession.prompt, activeSession.ideas.map(i => i.text), activeSession.technique);
     if (res) {
@@ -151,13 +157,15 @@ export const BrainstormTool: React.FC<ToolProps> = ({ onBack }) => {
                 <div className="col-span-full py-40 text-center opacity-10 italic text-3xl">No records discovered.</div>
               ) : (
                 sessions.map(s => (
-                  <div key={s.id} onClick={() => { setActiveSession(s); setViewMode('active'); }} className="p-8 marker-border bg-surface shadow-sm cursor-pointer hover:border-marker-blue group transition-all">
-                     <h4 className="heading-marker text-4xl group-hover:text-marker-blue transition-colors">{s.title}</h4>
-                     <p className="handwritten text-sm opacity-60 italic truncate mt-2">"{s.prompt}"</p>
-                     <div className="mt-6 flex justify-between items-center opacity-30 text-[10px] uppercase font-bold tracking-widest">
-                        <span>{new Date(s.timestamp).toLocaleDateString()}</span>
-                        <span>{s.ideas.length} fragments</span>
-                     </div>
+                  <div key={s.id} onClick={() => {
+                    setActiveSession(s); setViewMode('active');
+                  }} className="p-8 marker-border bg-surface shadow-sm cursor-pointer hover:border-marker-blue group transition-all">
+                    <h4 className="heading-marker text-4xl group-hover:text-marker-blue transition-colors">{s.title}</h4>
+                    <p className="handwritten text-sm opacity-60 italic truncate mt-2">"{s.prompt}"</p>
+                    <div className="mt-6 flex justify-between items-center opacity-30 text-[10px] uppercase font-bold tracking-widest">
+                      <span>{new Date(s.timestamp).toLocaleDateString()}</span>
+                      <span>{s.ideas.length} fragments</span>
+                    </div>
                   </div>
                 ))
               )}

@@ -1,10 +1,8 @@
-import { 
+import {
   Body,
   SiderealTime,
   Ecliptic,
   Equator,
-  Horizon,
-  Observer,
   AstroTime
 } from 'astronomy-engine';
 
@@ -22,8 +20,8 @@ export interface CalculatedHouse {
 }
 
 const SIGNS = [
-  "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-  "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
 ];
 
 export const getSignFromLongitude = (longitude: number) => {
@@ -51,16 +49,20 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
 
   const planets: CalculatedPlanet[] = bodies.map(body => {
     // Correct: Ecliptic(body, AstroTime)
-    const ecl = Ecliptic(body, time);
+    const ecl = (Ecliptic as any)(body, time);
 
     // Retrograde check via 6-hour delta
     const datePlus = new Date(date.getTime() + 6 * 60 * 60 * 1000);
     const timePlus = new AstroTime(datePlus);
-    const eclPlus = Ecliptic(body, timePlus);
+    const eclPlus = (Ecliptic as any)(body, timePlus);
 
     let diff = eclPlus.elon - ecl.elon;
-    if (diff > 180) diff -= 360;
-    if (diff < -180) diff += 360;
+    if (diff > 180) {
+      diff -= 360;
+    }
+    if (diff < -180) {
+      diff += 360;
+    }
 
     return {
       name: body.toString(),
@@ -86,7 +88,9 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
   );
 
   let asc = (ascRad * 180 / Math.PI) % 360;
-  if (asc < 0) asc += 360;
+  if (asc < 0) {
+    asc += 360;
+  }
 
   // Midheaven (MC)
   const mcRad = Math.atan2(
@@ -95,7 +99,9 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
   );
 
   let mc = (mcRad * 180 / Math.PI) % 360;
-  if (mc < 0) mc += 360;
+  if (mc < 0) {
+    mc += 360;
+  }
 
   /**
    * House System Calculation (Placidus Approximation)
@@ -132,12 +138,16 @@ export const calculateMapLines = (date: Date): MapLineData[] => {
   const gmst = SiderealTime(date);
 
   return bodies.map(body => {
-    const eq = Equator(body, time);
+    const eq = Equator(body, time, { latitude: 0, longitude: 0, height: 0 }, false, true);
     const decRad = (eq.dec * Math.PI) / 180;
 
     let mcLon = (eq.ra - gmst) * 15;
-    while (mcLon <= -180) mcLon += 360;
-    while (mcLon > 180) mcLon -= 360;
+    while (mcLon <= -180) {
+      mcLon += 360;
+    }
+    while (mcLon > 180) {
+      mcLon -= 360;
+    }
 
     const icLon = mcLon > 0 ? mcLon - 180 : mcLon + 180;
 

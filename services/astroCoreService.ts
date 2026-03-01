@@ -4,9 +4,11 @@ import { SwissEphemeris } from '@swisseph/browser';
 let sweInitPromise: Promise<void> | null = null;
 
 async function ensureSwissEphemerisInitialized() {
-  if (sweInitPromise) return sweInitPromise;
+  if (sweInitPromise) {
+    return sweInitPromise;
+  }
 
-  sweInitPromise = (async () => {
+  sweInitPromise = (async() => {
     const swe = new SwissEphemeris();
     await swe.init();
     setSwissEphemeris(swe);
