@@ -13,12 +13,17 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'global': 'globalThis',
+      'exports': 'undefined'
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.')
       }
+    },
+    optimizeDeps: {
+      include: ['astronomy-engine', '@swisseph/browser']
     },
     build: {
       chunkSizeWarningLimit: 800,

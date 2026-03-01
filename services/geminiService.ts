@@ -1,9 +1,9 @@
 
-import { GoogleGenAI, Type, Modality, GenerateContentResponse } from "@google/genai";
-import { 
-  GlossaryDefinition, 
-  QuantumTimelineResult, 
-  PhotoScryerResult, 
+import { GoogleGenAI, Type, Modality, GenerateContentResponse } from '@google/genai';
+import {
+  GlossaryDefinition,
+  QuantumTimelineResult,
+  PhotoScryerResult,
   AkashicResult,
   BaziResult,
   BioDepreciationResult,
@@ -23,10 +23,10 @@ import {
   SpreadDefinition,
   // Added CharmData to the import list
   CharmData
-} from "../types";
+} from '../types';
 
 const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY || ''
 });
 
 const MODELS = {
@@ -308,7 +308,7 @@ export const getWordDefinition = (word: string) => generateJson<GlossaryDefiniti
 export const getCitySuggestions = async(input: string) => {
   try {
     const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(input)}&format=json&limit=5`);
-    return (await res.json()).map((i: any) => ({ fullName: i.display_name, lat: parseFloat(i.lat), lng: parseFloat(i.lon) }));
+    return (await res.json()).map((_i: any) => ({ fullName: _i.display_name, lat: parseFloat(_i.lat), lng: parseFloat(_i.lon) }));
   } catch {
     return [];
   }
@@ -354,37 +354,56 @@ export const getLostItemSynthesis = (i: string, d: string) => generateJson<any>(
   required: ['narrative', 'finalClue']
 }, 0, 'Provide search logic for a lost object.');
 
-export const getSynchronicityInterpretation = (d: string, c: string, e: string) => generateJson<any>(MODELS.FLASH, `Sign: ${d}`, {
+export const getSynchronicityInterpretation = (_d: string, _c: string, _e: string) => generateJson<any>(MODELS.FLASH, `Sign: ${_d}`, {
   type: Type.OBJECT,
   properties: { astrologicalResonance: { type: Type.STRING }, numerologicalRoot: { type: Type.STRING }, theWhy: { type: Type.STRING }, actionable_insight: { type: Type.STRING } },
   required: ['astrologicalResonance', 'numerologicalRoot', 'theWhy', 'actionable_insight']
 }, 0, 'Interpret symbolic alignments.');
 
-export const getBaziAnalysis = (d: string, t: string) => generateJson<BaziResult>(MODELS.FLASH, `Four Pillars for: ${d}`, {
+export const getBaziAnalysis = (d: string, _t: string) => generateJson<BaziResult>(MODELS.FLASH, `Four Pillars for: ${d}`, {
   type: Type.OBJECT,
   properties: { dayMaster: { type: Type.STRING }, densityProfile: { type: Type.STRING }, thermodynamicLogic: { type: Type.STRING }, pillars: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { type: { type: Type.STRING }, stem: { type: Type.STRING }, stemExplanation: { type: Type.STRING }, branch: { type: Type.STRING }, branchExplanation: { type: Type.STRING }, tenGod: { type: Type.STRING } }, required: ['type', 'stem', 'stemExplanation', 'branch', 'branchExplanation', 'tenGod'] } }, tenGodsAnalysis: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, vector: { type: Type.STRING }, implication: { type: Type.STRING } } } } },
   required: ['dayMaster', 'densityProfile', 'thermodynamicLogic', 'pillars', 'tenGodsAnalysis']
 }, 0, 'Calculate Bazi pillars.');
 
-export const getHoraryAnalysis = (q: string, lat: number, lng: number) => generateJson<HoraryResult>(MODELS.FLASH, `Horary: ${q}`, {
+export const getHoraryAnalysis = (q: string, _lat: number, _lng: number) => generateJson<HoraryResult>(MODELS.FLASH, `Horary: ${q}`, {
   type: Type.OBJECT,
   properties: { chartData: { type: Type.OBJECT, properties: { ascendant: { type: Type.NUMBER }, planets: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, degree: { type: Type.NUMBER } } } } } }, outcome: { type: Type.STRING }, judgment: { type: Type.STRING }, technicalNotes: { type: Type.STRING } },
   required: ['chartData', 'outcome', 'judgment', 'technicalNotes']
 }, 0, 'Deliver horary verdict.');
 
-export const getElectionalAnalysis = (intent: string, lat: number, lng: number, currentIso: string) => generateJson<ElectionalResult>(MODELS.FLASH, `Window: ${intent}`, {
+export const getElectionalAnalysis = (intent: string, _lat: number, _lng: number, _currentIso: string) => generateJson<ElectionalResult>(MODELS.FLASH, `Window: ${intent}`, {
   type: Type.OBJECT,
-  properties: { selectedDate: { type: Type.STRING }, isoDate: { type: Type.STRING }, chartData: { type: Type.OBJECT, properties: { ascendant: { type: Type.NUMBER }, planets: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, degree: { type: Type.NUMBER } } } } } } },
+  properties: {
+    selectedDate: { type: Type.STRING },
+    isoDate: { type: Type.STRING },
+    chartData: {
+      type: Type.OBJECT,
+      properties: {
+        ascendant: { type: Type.NUMBER },
+        planets: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              name: { type: Type.STRING },
+              degree: { type: Type.NUMBER }
+            }
+          }
+        }
+      }
+    }
+  },
   required: ['selectedDate', 'isoDate', 'chartData']
 }, 0, 'Identify optimal timing.');
 
-export const getRelocationAnalysis = (d: string, t: string, lat: number, lng: number) => generateJson<RelocationResult>(MODELS.FLASH, `Loc: ${lat}, ${lng}`, {
+export const getRelocationAnalysis = (_d: string, _t: string, lat: number, lng: number) => generateJson<RelocationResult>(MODELS.FLASH, `Loc: ${lat}, ${lng}`, {
   type: Type.OBJECT,
   properties: { angles: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { planet: { type: Type.STRING }, angle: { type: Type.STRING } } } }, themes: { type: Type.ARRAY, items: { type: Type.STRING } }, dominantInfluence: { type: Type.STRING }, vibeCheck: { type: Type.STRING }, planetaryPositions: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, longitude_zenith: { type: Type.NUMBER }, declination: { type: Type.NUMBER } } } } },
   required: ['angles', 'themes', 'dominantInfluence', 'vibeCheck', 'planetaryPositions']
 }, 0, 'Assess regional planetary resonance.');
 
-export const getSabianInterpretation = (l: string, p: string, m: string) => generateJson<SabianResult>(MODELS.FLASH, `Symbol: ${p}`, {
+export const getSabianInterpretation = (_l: string, p: string, _m: string) => generateJson<SabianResult>(MODELS.FLASH, `Symbol: ${p}`, {
   type: Type.OBJECT,
   properties: { phrase: { type: Type.STRING }, keywords: { type: Type.ARRAY, items: { type: Type.STRING } }, fullInterpretation: { type: Type.STRING }, light: { type: Type.STRING }, shadow: { type: Type.STRING }, guidance: { type: Type.STRING }, meditation: { type: Type.STRING } },
   required: ['phrase', 'keywords', 'fullInterpretation', 'light', 'shadow', 'guidance', 'meditation']
@@ -402,19 +421,19 @@ export const getBiologicalDepreciation = (data: any) => generateJson<BioDeprecia
   required: ['obsolescenceDate', 'accuracyProbability', 'depreciationMetrics', 'actuarialReport']
 }, 0, 'Provide biological actuarial data.');
 
-export const getFlyingStarAnalysis = (p: number, d: number) => generateJson<FlyingStarResult>(MODELS.FLASH, `Feng: P${p}`, {
+export const getFlyingStarAnalysis = (_p: number, d: number) => generateJson<FlyingStarResult>(MODELS.FLASH, `Feng: P${_p}`, {
   type: Type.OBJECT,
   properties: { palaces: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { direction: { type: Type.STRING }, baseStar: { type: Type.INTEGER }, mountainStar: { type: Type.INTEGER }, waterStar: { type: Type.INTEGER }, technicalStatus: { type: Type.STRING } } } }, spatialAdjustments: { type: Type.ARRAY, items: { type: Type.STRING } }, energyFlowSummary: { type: Type.STRING }, thermodynamicLogic: { type: Type.STRING } },
   required: ['palaces', 'spatialAdjustments', 'energyFlowSummary', 'thermodynamicLogic']
 }, 0, 'Provide Feng Shui sector analysis.');
 
-export const getPieDeconstruction = (word: string) => generateJson<PieResult>(MODELS.FLASH, `Root: ${word}`, {
+export const getPieDeconstruction = (word: string, _d: string) => generateJson<PieResult>(MODELS.FLASH, `Root: ${word}`, {
   type: Type.OBJECT,
   properties: { pieRoot: { type: Type.STRING }, rootMeaning: { type: Type.STRING }, semanticTrace: { type: Type.ARRAY, items: { type: Type.STRING } }, modernConcept: { type: Type.STRING }, esotericImplication: { type: Type.STRING } },
   required: ['pieRoot', 'rootMeaning', 'semanticTrace', 'modernConcept', 'esotericImplication']
 }, 0, 'Trace PIE etymological roots.');
 
-export const getColorPalette = (i: string, m: string) => generateJson<ColorPaletteResult>(MODELS.FLASH, `Hue: ${i}`, {
+export const getColorPalette = (_i: string, m: string) => generateJson<ColorPaletteResult>(MODELS.FLASH, `Hue: ${_i}`, {
   type: Type.OBJECT,
   properties: { analysis: { type: Type.STRING }, deficiency: { type: Type.STRING }, colors: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { layer: { type: Type.STRING }, hex: { type: Type.STRING }, name: { type: Type.STRING }, reasoning: { type: Type.STRING } } } }, technicalSynthesis: { type: Type.STRING } },
   required: ['analysis', 'deficiency', 'colors', 'technicalSynthesis']
@@ -426,13 +445,13 @@ export const getBiorhythmInterpretation = (m: any) => generateJson<any>(MODELS.F
   required: ['brief', 'suggestion']
 }, 0, 'Interpret biorhythm data.');
 
-export const getBrainstormSuggestions = (p: string, i: string[], t: string) => generateJson<BrainstormResult>(MODELS.FLASH, `Storm: ${p}`, {
+export const getBrainstormSuggestions = (p: string, _i: string[], _t: string) => generateJson<BrainstormResult>(MODELS.FLASH, `Storm: ${p}`, {
   type: Type.OBJECT,
   properties: { suggestions: { type: Type.ARRAY, items: { type: Type.STRING } } },
   required: ['suggestions']
 }, 0, 'Generate creative brainstorm nodes.');
 
-export const generateCosmicMadLib = (i: any) => generateJson<RitualResult>(MODELS.FLASH, `Ritual: ${JSON.stringify(i)}`, {
+export const generateCosmicMadLib = (_i: any, _m: string) => generateJson<RitualResult>(MODELS.FLASH, `Ritual: ${JSON.stringify(_i)}`, {
   type: Type.OBJECT,
   properties: { title: { type: Type.STRING }, steps: { type: Type.ARRAY, items: { type: Type.STRING } }, revelation: { type: Type.STRING } },
   required: ['title', 'steps', 'revelation']
@@ -444,7 +463,7 @@ export const getNumerologyAnalysis = (name: string, birthday: string, system: st
   required: ['systemComparison', 'lifePath', 'destinyNumber', 'soulUrge', 'meaning', 'esotericInsight']
 }, 0, 'Calculate personal numerological paths.');
 
-export const getPsychometryAnalysis = (objectName: string, duration: number) => generateJson<PsychometryResult>(MODELS.PRO, `OBJ: ${objectName}`, {
+export const getPsychometryAnalysis = (objectName: string, _duration: number) => generateJson<PsychometryResult>(MODELS.PRO, `OBJ: ${objectName}`, {
   type: Type.OBJECT,
   properties: { vibrationalSignature: { type: Type.STRING }, imprintHistory: { type: Type.STRING }, primaryEnergy: { type: Type.STRING }, environmentalResonance: { type: Type.STRING }, actionableGuidance: { type: Type.STRING } },
   required: ['vibrationalSignature', 'imprintHistory', 'primaryEnergy', 'environmentalResonance', 'actionableGuidance']
@@ -456,7 +475,7 @@ export const getQuoteWall = (theme: string) => generateJson<string[]>(MODELS.FLA
 }, 0, 'Generate wisdom fragments.');
 
 // Interprets lithomancy charm casts using provided CharmData
-export const getCharmReading = (charms: CharmData[], intent: string) => generateJson<any>(MODELS.FLASH, `Cast: ${JSON.stringify(charms)}`, {
+export const getCharmReading = (charms: CharmData[], _intent: string) => generateJson<any>(MODELS.FLASH, `Cast: ${JSON.stringify(charms)}`, {
   type: Type.OBJECT,
   properties: { synthesis: { type: Type.STRING }, charmDetails: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { charm: { type: Type.STRING }, meaning: { type: Type.STRING } }, required: ['charm', 'meaning'] } }, keyInsight: { type: Type.STRING } },
   required: ['synthesis', 'charmDetails', 'keyInsight']

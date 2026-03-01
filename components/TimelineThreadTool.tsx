@@ -186,7 +186,7 @@ const TimelineThreadTool: React.FC<ToolProps> = ({ onBack }) => {
           <header className="space-y-4">
             <div className="flex items-center gap-3 text-marker-black">
               <span className="text-marker-blue text-[10px]">⚡</span>
-            <h2 className="heading-marker text-7xl text-marker-amber lowercase">Thread</h2>
+              <h2 className="heading-marker text-7xl text-marker-amber lowercase">Thread</h2>
             </div>
             <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest italic">Protocol: Past-Future Synthesis</p>
           </header>
