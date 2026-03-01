@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { model, prompt, stream = false, image } = req.body;
+    const { model, prompt, stream = false, image, systemInstruction, responseMimeType, responseSchema } = req.body;
 
     // Validate required fields
     if (!model || !prompt) {
@@ -21,9 +21,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'API key not configured' });
     }
 
-    // Make request to Gemini API
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    
+    // Build request body with JSON mode support
     const requestBody = {
       contents: [{
         parts: image 
@@ -32,6 +30,22 @@ export default async function handler(req, res) {
       }]
     };
 
+    // Add system instruction if provided
+    if (systemInstruction) {
+      requestBody.systemInstruction = systemInstruction;
+    }
+
+    // Add JSON mode configuration if provided
+    if (responseMimeType === 'application/json' && responseSchema) {
+      requestBody.generationConfig = {
+        responseMimeType: responseMimeType,
+        responseSchema: responseSchema
+      };
+    }
+
+    // Make request to Gemini API
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    
     const response = await fetch(geminiUrl, {
       method: 'POST',
       headers: {
@@ -59,9 +73,23 @@ export default async function handler(req, res) {
       res.write(`data: ${JSON.stringify({ text })}\n\n`);
       res.end();
     } else {
-      // Handle non-streaming response
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      res.status(200).json({ text });
+      // Handle response - return either structured JSON or plain text
+      const candidate = data.candidates?.[0];
+      
+      if (candidate?.content?.parts?.[0]?.text) {
+        const text = candidate.content.parts[0].text;
+        
+        // Try to parse as JSON first (for structured responses)
+        try {
+          const parsedJson = JSON.parse(text);
+          res.status(200).json({ response: parsedJson, text });
+        } catch (parseError) {
+          // If not valid JSON, return as plain text
+          res.status(200).json({ text });
+        }
+      } else {
+        res.status(200).json({ text: '' });
+      }
     }
 
   } catch (error) {
