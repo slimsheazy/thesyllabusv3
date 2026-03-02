@@ -9,14 +9,20 @@ class AudioManager {
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 44100 });
       this.noiseBuffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 2, this.ctx.sampleRate);
       const data = this.noiseBuffer.getChannelData(0);
-      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      for (let i = 0; i < data.length; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
     }
-    if (this.ctx.state === 'suspended') this.ctx.resume();
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
   }
 
   public stopPenScratch() {
     if (this.scratchSource) {
-      try { this.scratchSource.stop(); } catch {}
+      try {
+        this.scratchSource.stop();
+      } catch {}
       this.scratchSource = null;
     }
   }

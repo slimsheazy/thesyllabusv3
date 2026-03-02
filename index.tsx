@@ -7,6 +7,7 @@ import * as astrologyService from './services/astrologyService';
 import * as dbService from './services/dbService';
 import { useSyllabusStore } from './store';
 import { useResonance } from './hooks/useResonance';
+import './index.css';
 
 // Expose internals to window for dynamic/eval context access
 (window as any).esoteric = {
@@ -30,7 +31,7 @@ if ('serviceWorker' in navigator) {
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
+  throw new Error('Could not find root element to mount to');
 }
 
 const root = createRoot(rootElement);

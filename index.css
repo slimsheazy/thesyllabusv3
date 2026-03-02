@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+@theme {
+  /* Core Base Colors for CSS Variables and Tailwind */
+  --marker-black: #1a1c1e;
+  --marker-blue: #3b82f6;
+  --marker-green: #22c55e;
+  --marker-red: #ef4444;
+  --marker-orange: #f97316;
+  --marker-purple: #a855f7;
+  --marker-amber: #f59e0b;
+  --marker-pink: #ec4899;
+  --marker-emerald: #10b981;
+  --marker-teal: #14b8a6;
+  --marker-slate: #94a3b8;
+  --tactical-cyan: #0891b2;
+  --surface: #f5f5f5;
+  --wb-bg: #f5f5f5;
+
+  /* Tailwind Color Mapping */
+  --color-marker-black: var(--marker-black);
+  --color-marker-blue: var(--marker-blue);
+  --color-marker-green: var(--marker-green);
+  --color-marker-red: var(--marker-red);
+  --color-marker-orange: var(--marker-orange);
+  --color-marker-purple: var(--marker-purple);
+  --color-marker-amber: var(--marker-amber);
+  --color-marker-pink: var(--marker-pink);
+  --color-marker-emerald: var(--marker-emerald);
+  --color-marker-teal: var(--marker-teal);
+  --color-marker-slate: var(--marker-slate);
+  --color-tactical-cyan: var(--tactical-cyan);
+  --color-surface: var(--surface);
+  --color-wb-bg: var(--wb-bg);
+
+  /* Fonts */
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'Raleway', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--color-wb-bg);
+  font-family: var(--font-body);
+  color: var(--color-marker-black);
+  width: 100%;
+  overflow-x: hidden;
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  body { font-size: 16px; }
+}
+
+#root {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Component Classes */
+.heading-marker {
+  font-family: 'DM Serif Display', serif;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+
+.title-main {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  font-style: italic;
+}
+
+.handwritten {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+}
+
+.marker-border {
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.brutalist-button {
+  background: rgba(0,0,0,0.05);
+  color: var(--marker-black);
+  padding: 0.75rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border: 1.5px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.brutalist-button:hover {
+  background: var(--marker-black);
+  color: #fff;
+  border-color: var(--marker-black) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--marker-black); opacity: 0.3; }
+
+/* Animation Classes */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-from-top {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-in-from-left {
+  from { transform: translateX(-10px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes zoom-in-95 {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-in {
+  animation-duration: 700ms;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.slide-in-from-top-1 {
+  animation-name: slide-in-from-top;
+}
+
+.slide-in-from-top-4 {
+  animation-name: slide-in-from-top;
+}
+
+.slide-in-from-bottom-4 {
+  animation-name: slide-in-from-bottom;
+}
+
+.slide-in-from-left-4 {
+  animation-name: slide-in-from-left;
+}
+
+.zoom-in-95 {
+  animation-name: zoom-in-95;
+}
+
+/* Eclipse Mode Adjustments */
+.eclipse-mode {
+  --wb-bg: #0c0c0e;
+  --surface: #121214;
+  --marker-black: #e2e8f0;
+  --color-wb-bg: var(--wb-bg);
+  --color-surface: var(--surface);
+  --color-marker-black: var(--marker-black);
+}
+
+.eclipse-mode body {
+  background: var(--wb-bg);
+  color: var(--marker-black);
+}
+
+.eclipse-mode .marker-border {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.eclipse-mode .brutalist-button {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.eclipse-mode .brutalist-button:hover {
+  background: #fff;
+  color: #000;
+}
