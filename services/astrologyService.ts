@@ -4,8 +4,7 @@ import {
   Ecliptic,
   Equator,
   AstroTime,
-  SearchSunrise,
-  SearchSunset,
+  SearchRiseSet,
   Observer
 } from 'astronomy-engine';
 
@@ -164,8 +163,8 @@ export const calculatePlanetaryHours = (date: Date, lat: number, lon: number) =>
   const observer = new Observer(lat, lon, 0);
 
   // Get sunrise and sunset for current day
-  const sunrise = SearchSunrise(date, observer);
-  const sunset = SearchSunset(date, observer);
+  const sunrise = SearchRiseSet(Body.Sun, observer, 1, date, 1);
+  const sunset = SearchRiseSet(Body.Sun, observer, -1, date, 1);
 
   if (!sunrise || !sunset) {
     return null;
@@ -177,7 +176,7 @@ export const calculatePlanetaryHours = (date: Date, lat: number, lon: number) =>
 
   // Night hours calculation (sunset to next sunrise)
   const tomorrow = new Date(date.getTime() + 24 * 60 * 60 * 1000);
-  const nextSunrise = SearchSunrise(tomorrow, observer);
+  const nextSunrise = SearchRiseSet(Body.Sun, observer, 1, tomorrow, 1);
   const nightDurationMs = nextSunrise
     ? nextSunrise.date.getTime() - sunset.date.getTime()
     : 24 * 60 * 60 * 1000 - dayDurationMs;
