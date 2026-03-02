@@ -5,6 +5,9 @@ import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 
 export default [
+  {
+    ignores: ['dist/**', 'node_modules/**', '.vercel/**', 'public/**']
+  },
   js.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
@@ -36,17 +39,40 @@ export default [
         Uint8Array: 'readonly',
         ArrayBuffer: 'readonly',
         SharedArrayBuffer: 'readonly',
+        TextDecoder: 'readonly',
+        TextEncoder: 'readonly',
         // Web APIs
         Worker: 'readonly',
         MessageEvent: 'readonly',
         CustomEvent: 'readonly',
         AbortSignal: 'readonly',
+        AbortController: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
+        // DOM Elements and Types
+        HTMLDivElement: 'readonly',
+        HTMLCanvasElement: 'readonly',
+        HTMLVideoElement: 'readonly',
+        HTMLLabelElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLSelectElement: 'readonly',
+        CanvasRenderingContext2D: 'readonly',
+        AudioContext: 'readonly',
+        AudioBuffer: 'readonly',
+        AudioBufferSourceNode: 'readonly',
+        MediaStream: 'readonly',
+        DeviceOrientationEvent: 'readonly',
+        MouseEvent: 'readonly',
+        Node: 'readonly',
+        Element: 'readonly',
         // IndexedDB
         indexedDB: 'readonly',
         IDBDatabase: 'readonly',
         // Service Worker
         self: 'readonly',
         caches: 'readonly',
+        ExtendableEvent: 'readonly',
+        FetchEvent: 'readonly',
         // Node.js (for build scripts)
         process: 'readonly',
         __dirname: 'readonly'

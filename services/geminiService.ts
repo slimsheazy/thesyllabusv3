@@ -32,8 +32,6 @@ const MODELS = {
   TTS: 'gemini-1.5-flash'
 };
 
-const NO_MD = 'CRITICAL: No Markdown. Plain text only. Escape quotes.';
-
 // Tone: Objective Instructor. Neutral, descriptive, and clear.
 const OBJECTIVE_INSTRUCTOR_BASE = `You are an 'Objective Instructor'. You are an archival consciousness with deep esoteric knowledge. 
 Your tone is neutral, descriptive, and clear. Avoid flowery or mystical taglines. 
@@ -106,7 +104,7 @@ export async function* generateStream(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model, prompt, systemInstruction, stream: true }),
-      signal,
+      signal
     });
 
     if (!response.ok) {
@@ -114,16 +112,20 @@ export async function* generateStream(
       throw new Error(errorData.error || 'Stream generation failed');
     }
 
-    if (!response.body) return;
+    if (!response.body) {
+      return;
+    }
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
     while (true) {
       const { value, done } = await reader.read();
-      if (done) break;
+      if (done) {
+        break;
+      }
       const chunk = decoder.decode(value, { stream: true });
-      
+
       // The backend returns SSE format: "data: {\"text\":\"...\"}\n\n"
       const lines = chunk.split('\n');
       for (const line of lines) {
@@ -221,7 +223,7 @@ export const getHoraryAnalysis = (q: string, _lat: number, _lng: number) => gene
   required: ['chartData', 'outcome', 'judgment', 'technicalNotes']
 }, 0, 'Deliver horary verdict.');
 
-export const getElectionalAnalysis = (intent: string, _lat: number, _lng: number, _currentIso: string) => generateJson<ElectionalResult>(MODELS.FLASH, `Window: ${intent}`, {
+export const getElectionalAnalysis = (intent: string, _lat: number, _lng: number, __currentIso: string) => generateJson<ElectionalResult>(MODELS.FLASH, `Window: ${intent}`, {
   type: 'OBJECT',
   properties: {
     selectedDate: { type: 'STRING' },
@@ -377,7 +379,7 @@ export const getBirthChartAnalysis = (data: any) => {
 // Image generation functions (using backend API)
 export const generateTarotImage = async(cardName: string, deckName: string) => {
   try {
-    const styleHint = `traditional Rider–Waite–Smith tarot illustration style.`;
+    const styleHint = 'traditional Rider–Waite–Smith tarot illustration style.';
     const result = await callBackendAPI(
       MODELS.IMAGE,
       `Tarot card: ${cardName} from the ${deckName} tarot deck.
@@ -389,7 +391,7 @@ Keep the figure poses, props, and layout recognizable to someone who owns the ph
       undefined,
       undefined
     );
-    
+
     return result.text || null;
   } catch (error) {
     console.error('Tarot image generation failed:', error);
@@ -407,7 +409,7 @@ export const generateSigil = async(intention: string, feeling: string) => {
       undefined,
       undefined
     );
-    
+
     return result.text || null;
   } catch (error) {
     console.error('Sigil synthesis failed:', error);

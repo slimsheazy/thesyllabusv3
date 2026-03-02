@@ -29,7 +29,9 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const startTimeRef = useRef<number>(0);
 
   const calculateIdentity = async() => {
-    if (!name || !birthday) return;
+    if (!name || !birthday) {
+      return;
+    }
     setIdentityLoading(true);
     setIdentityResult(null);
     audioManager.playRustle();
@@ -45,7 +47,9 @@ const NumerologyTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   };
 
   const startContact = useCallback(() => {
-    if (!objectName || psychometryLoading) return;
+    if (!objectName || psychometryLoading) {
+      return;
+    }
     setIsTouching(true);
     startTimeRef.current = Date.now();
     audioManager.playPenScratch(2);

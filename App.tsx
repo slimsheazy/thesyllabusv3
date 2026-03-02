@@ -97,7 +97,7 @@ const App: React.FC = () => {
         (pos) => {
           setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         },
-        (err) => console.warn('Geolocation denied. Manual override available in tools.'),
+        (_err) => console.warn('Geolocation denied. Manual override available in tools.'),
         { enableHighAccuracy: false, timeout: 10000 }
       );
     }
