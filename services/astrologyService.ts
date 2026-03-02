@@ -57,8 +57,12 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
     const eclPlus = (Ecliptic as any)(body, timePlus);
 
     let diff = eclPlus.elon - ecl.elon;
-    if (diff > 180) diff -= 360;
-    if (diff < -180) diff += 360;
+    if (diff > 180) {
+      diff -= 360;
+    }
+    if (diff < -180) {
+      diff += 360;
+    }
 
     return {
       name: body.toString(),
@@ -81,7 +85,9 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
   );
 
   let asc = (ascRad * 180 / Math.PI) % 360;
-  if (asc < 0) asc += 360;
+  if (asc < 0) {
+    asc += 360;
+  }
 
   const mcRad = Math.atan2(
     Math.sin(ramcRad),
@@ -89,7 +95,9 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
   );
 
   let mc = (mcRad * 180 / Math.PI) % 360;
-  if (mc < 0) mc += 360;
+  if (mc < 0) {
+    mc += 360;
+  }
 
   const houses: CalculatedHouse[] = Array.from({ length: 12 }, (_, i) => {
     const long = (asc + i * 30) % 360;
@@ -125,8 +133,12 @@ export const calculateMapLines = (date: Date): MapLineData[] => {
     const decRad = (eq.dec * Math.PI) / 180;
 
     let mcLon = (eq.ra - gmst) * 15;
-    while (mcLon <= -180) mcLon += 360;
-    while (mcLon > 180) mcLon -= 360;
+    while (mcLon <= -180) {
+      mcLon += 360;
+    }
+    while (mcLon > 180) {
+      mcLon -= 360;
+    }
 
     const icLon = mcLon > 0 ? mcLon - 180 : mcLon + 180;
     const horizonPoints: [number, number][] = [];
@@ -150,12 +162,14 @@ const DAY_RULERS = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Satur
 
 export const calculatePlanetaryHours = (date: Date, lat: number, lon: number) => {
   const observer = new Observer(lat, lon, 0);
-  
+
   // Get sunrise and sunset for current day
   const sunrise = SearchSunrise(date, observer);
   const sunset = SearchSunset(date, observer);
 
-  if (!sunrise || !sunset) return null;
+  if (!sunrise || !sunset) {
+    return null;
+  }
 
   // Day hours calculation
   const dayDurationMs = sunset.date.getTime() - sunrise.date.getTime();
@@ -164,19 +178,19 @@ export const calculatePlanetaryHours = (date: Date, lat: number, lon: number) =>
   // Night hours calculation (sunset to next sunrise)
   const tomorrow = new Date(date.getTime() + 24 * 60 * 60 * 1000);
   const nextSunrise = SearchSunrise(tomorrow, observer);
-  const nightDurationMs = nextSunrise 
-    ? nextSunrise.date.getTime() - sunset.date.getTime() 
+  const nightDurationMs = nextSunrise
+    ? nextSunrise.date.getTime() - sunset.date.getTime()
     : 24 * 60 * 60 * 1000 - dayDurationMs;
   const nightHourLen = nightDurationMs / 12;
 
   // Determine the day ruler based on the day of the week (0=Sunday)
   // Day of week is based on sunrise (astrological day starts at sunrise)
-  const dayOfWeek = sunrise.date.getDay(); 
+  const dayOfWeek = sunrise.date.getDay();
   const dayRuler = DAY_RULERS[dayOfWeek];
   const startIndex = PLANETARY_CHALDEAN_ORDER.indexOf(dayRuler);
 
   const hours = [];
-  
+
   // 12 Day hours
   for (let i = 0; i < 12; i++) {
     const s = new Date(sunrise.date.getTime() + i * dayHourLen);
@@ -201,7 +215,9 @@ export const calculatePlanetaryHours = (date: Date, lat: number, lon: number) =>
   });
 
   // Fallback for edge cases (e.g. exactly at sunrise of next day)
-  if (!currentHour) currentHour = hours[0];
+  if (!currentHour) {
+    currentHour = hours[0];
+  }
 
   return { currentHour, allHours: hours, dayRuler };
 };
