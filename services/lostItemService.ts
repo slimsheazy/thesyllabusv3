@@ -52,7 +52,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Entry table', 'Mail pile', 'Coat rack', 'Front door mat', 'Sunlit window sill', 'Dashboard of car'],
     timing: 'Dawn / Morning Check',
     clues: 'Look where you first set things down upon entering. It is likely not covered.',
-    icon: '🌅'
+    icon: '[Rise]'
   },
   2: {
     direction: 'North (Private Area)',
@@ -65,7 +65,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Between cushions', 'Under the bed', 'Bedside drawer', 'Inside a pillowcase', 'Bathroom cabinet', 'Laundry hamper'],
     timing: 'Evening / Night Routine',
     clues: 'Search among soft items or tucked into a fold of fabric. It may be obscured by other items.',
-    icon: '🌙'
+    icon: '[Moon]'
   },
   3: {
     direction: 'Northeast (Social Area)',
@@ -78,7 +78,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Coffee table', 'Bookshelf', 'Near a computer/phone', 'Entertainment center', 'Stack of papers', 'Craft area'],
     timing: 'Active Hours / Daytime',
     clues: 'Check areas where you were recently talking or reading. It might be \'filed\' away by accident.',
-    icon: '📐'
+    icon: '[Angle]'
   },
   4: {
     direction: 'West (Utility Area)',
@@ -91,7 +91,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Bottom drawer', 'Garage workbench', 'Storage bin', 'Room corner', 'Floor near heavy furniture', 'Basement storage'],
     timing: 'Afternoon / Deep Search',
     clues: 'Look in the heavy, stationary parts of the house. It\'s likely in a \'bottom\' position.',
-    icon: '🔲'
+    icon: '[Box]'
   },
   5: {
     direction: 'Center (Transit Area)',
@@ -104,7 +104,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Hallway table', 'Stair landing', 'Car center console', 'Kitchen island', 'Coat pocket', 'Travel bag'],
     timing: 'Midday / Moving Around',
     clues: 'You likely dropped it while moving between rooms. Retrace your steps through the main thoroughfares.',
-    icon: '🌪️'
+    icon: '[Void]'
   },
   6: {
     direction: 'Northwest (Service Area)',
@@ -117,7 +117,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Kitchen counter', 'Pantry shelf', 'Dining room sideboard', 'Pet area', 'Medicine cabinet', 'Linen closet'],
     timing: 'Evening Prep / Cleaning',
     clues: 'Look near where you do daily chores or prepare food. Check inside decorative containers.',
-    icon: '🏠'
+    icon: '[Home]'
   },
   7: {
     direction: 'South (Quiet Area)',
@@ -130,7 +130,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Top of wardrobe', 'Behind a mirror', 'Private desk drawer', 'Attic corner', 'High kitchen cabinets', 'Inside a box'],
     timing: 'Night / Stillness',
     clues: 'It is likely high up or tucked behind something used for deep storage. Check vertical spaces.',
-    icon: '🕯️'
+    icon: '[Light]'
   },
   8: {
     direction: 'Southeast (Valuable Area)',
@@ -143,7 +143,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Safe', 'Wallet/Purse', 'Office desk', 'Walk-in closet', 'Near financial docs', 'Inside a jacket pocket'],
     timing: 'Working Hours / Morning',
     clues: 'Check among items of value or where you keep important documents. It is in an organized spot.',
-    icon: '💼'
+    icon: '[Case]'
   },
   9: {
     direction: 'Southwest (Boundary Area)',
@@ -156,7 +156,7 @@ const INTERPRETATIONS: Record<number, NumberInterpretation> = {
     specificSpots: ['Recycling bin', 'Junk drawer', 'Near the back door', 'Garden area', 'Outdoor shed', 'Laundry room floor'],
     timing: 'Twilight / End of Day',
     clues: 'Check the \'exit\' points of your home or areas where items are set aside to be thrown out.',
-    icon: '🏁'
+    icon: '[End]'
   }
 };
 
