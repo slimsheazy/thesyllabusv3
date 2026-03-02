@@ -119,7 +119,7 @@ export const TarotTool = ({ onBack }: { onBack: () => void }) => {
 
     try {
       let full = '';
-      const stream = generateStream('gemini-3-flash-preview', prompt, systemInstruction, signal);
+      const stream = generateStream('gemini-1.5-flash', prompt, systemInstruction, signal);
 
       let started = false;
       for await (const chunk of stream) {
@@ -136,7 +136,7 @@ export const TarotTool = ({ onBack }: { onBack: () => void }) => {
 
       if (!signal.aborted) {
         setLoading(false);
-        const parts = full.split('ADVICE:');
+        const parts = full.split('ANALYSIS:');
         const fr = { interpretation: parts[0].trim(), guidance: parts[1]?.trim() || 'Hard to say right now.' };
         setReading(fr);
         logCalculation('TAROT', `${spreadType}: ${question}`, { ...fr, cards: selected, theme: deckTheme });

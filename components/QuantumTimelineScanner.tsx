@@ -117,7 +117,7 @@ const TimelineNavigator = memo(({ quantumState, onSwitch }: { quantumState: Quan
         <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-gradient-to-b from-marker-black/5 via-marker-black/20 to-marker-black/5"></div>
         <div className="relative z-10 flex flex-col items-center gap-2">
           <div className="p-4 bg-white border border-marker-black rounded-full shadow-lg group hover:scale-110 transition-transform cursor-pointer" onClick={handleJump}>
-            {timelineIndex === 0 ? <span className="text-tactical-cyan text-[10px]">⚡</span> : <span className="text-marker-black/40 text-[10px]">↻</span>}
+            {timelineIndex === 0 ? <span className="text-tactical-cyan text-[10px]">♁</span> : <span className="text-marker-black/40 text-[10px]">↻</span>}
           </div>
           <span className="font-mono text-[8px] font-black uppercase tracking-[0.4em] opacity-30 italic">The Bridge</span>
         </div>
@@ -242,14 +242,14 @@ const QuantumTimelineScanner: React.FC<ToolProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen flex flex-col items-center py-12 px-6 md:px-12 relative max-w-7xl mx-auto">
       <button onClick={onBack} className="fixed top-6 right-6 brutalist-button !text-[10px] z-[100] flex items-center gap-2">
-        <span className="text-[10px]">←</span> Index
+        <span className="text-[10px]">&lt;-</span> Index
       </button>
 
       <div className="w-full flex flex-col lg:flex-row gap-16 items-start pt-16">
         <aside className="w-full lg:w-[350px] space-y-10 lg:sticky lg:top-12">
           <header className="space-y-4">
             <div className="flex items-center gap-3 text-tactical-cyan">
-              <span className="text-[10px]">⚡</span>
+              <span className="text-[10px]">♁</span>
               <h2 className="heading-marker text-7xl lowercase">Shifter</h2>
             </div>
             <p className="font-mono text-[10px] text-marker-black opacity-40 uppercase tracking-widest italic">Changing the vibe</p>

@@ -1,7 +1,9 @@
-
 const WORKER_CODE = `
 import initSqlJs from 'https://esm.sh/sql.js@1.13.0';
 let db = null;
+let isDirty = false;
+let persistTimeout = null;
+
 const init = async (data) => {
   try {
     const res = await fetch('https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.wasm');
@@ -13,13 +15,28 @@ const init = async (data) => {
     return true;
   } catch (e) { return false; }
 };
+
+const requestPersist = () => {
+  if (persistTimeout) clearTimeout(persistTimeout);
+  isDirty = true;
+  persistTimeout = setTimeout(() => {
+    if (db && isDirty) {
+      self.postMessage({ type: 'PERSIST', payload: db.export() });
+      isDirty = false;
+    }
+  }, 2000);
+};
+
 self.onmessage = async (e) => {
   const { id, type, payload } = e.data;
   try {
-    if (type === 'INIT') { await init(payload); self.postMessage({ id, type: 'SUCCESS' }); }
+    if (type === 'INIT') { 
+      await init(payload); 
+      self.postMessage({ id, type: 'SUCCESS' }); 
+    }
     else if (type === 'LOG') {
       db.run("INSERT INTO logs (module, query, result) VALUES (?, ?, ?)", [payload.module, payload.query, payload.result]);
-      self.postMessage({ type: 'PERSIST', payload: db.export() });
+      requestPersist();
       self.postMessage({ id, type: 'SUCCESS' });
     }
     else if (type === 'GET') {
@@ -29,11 +46,17 @@ self.onmessage = async (e) => {
     }
     else if (type === 'PRUNE') {
       db.run("DELETE FROM logs WHERE module != 'CURATOR_BOOKS' AND id NOT IN (SELECT id FROM logs WHERE module != 'CURATOR_BOOKS' ORDER BY timestamp DESC LIMIT ?)", [payload.keepCount || 20]);
-      self.postMessage({ type: 'PERSIST', payload: db.export() });
+      requestPersist();
       self.postMessage({ id, type: 'SUCCESS' });
     }
-    else if (type === 'EXPORT') { self.postMessage({ id, type: 'SUCCESS', payload: db.export() }); }
-    else if (type === 'CLEAR_ALL') { db.run("DELETE FROM logs"); self.postMessage({ type: 'PERSIST', payload: db.export() }); self.postMessage({ id, type: 'SUCCESS' }); }
+    else if (type === 'EXPORT') { 
+      self.postMessage({ id, type: 'SUCCESS', payload: db.export() }); 
+    }
+    else if (type === 'CLEAR_ALL') { 
+      db.run("DELETE FROM logs"); 
+      requestPersist();
+      self.postMessage({ id, type: 'SUCCESS' }); 
+    }
   } catch (err) { self.postMessage({ id, type: 'ERROR', error: err.message }); }
 };
 `;

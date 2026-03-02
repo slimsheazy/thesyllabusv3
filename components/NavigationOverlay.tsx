@@ -44,7 +44,8 @@ const MENU_CATEGORIES: MenuCategory[] = [
       { name: 'Pick the Best Time', page: Page.ELECTIONAL },
       { name: 'Where Should I Live?', page: Page.ASTRO_MAP },
       { name: 'Check Your Home\'s Vibe', page: Page.FLYING_STAR },
-      { name: 'The Four Pillars', page: Page.BAZI }
+      { name: 'The Four Pillars', page: Page.BAZI },
+      { name: 'Planetary Hours', page: Page.PLANETARY_HOURS }
     ]
   },
   {
@@ -179,114 +180,113 @@ export const NavigationOverlay = ({ isOpen, onClose, onNavigate }: { isOpen: boo
 
             {isEditingProfile ? (
               <div className="space-y-6 animate-in fade-in duration-300 relative z-10">
+              <div className="space-y-2">
+                <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
+                  [Identity] Who are you?
+                </label>
+                <input
+                  className="w-full bg-surface p-3 marker-border text-lg italic outline-none focus:border-marker-blue"
+                  value={userIdentity || ''}
+                  onChange={e => setUserIdentity(e.target.value)}
+                  placeholder="Name..."
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
-                    👤 Who are you?
+                    [Date] Arrival Date
                   </label>
                   <input
+                    type="date"
                     className="w-full bg-surface p-3 marker-border text-lg italic outline-none focus:border-marker-blue"
-                    value={userIdentity || ''}
-                    onChange={e => setUserIdentity(e.target.value)}
-                    placeholder="Name..."
+                    value={userBirthday || ''}
+                    onChange={e => setUserBirthday(e.target.value)}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
-                      📅 Arrival Date
-                    </label>
-                    <input
-                      type="date"
-                      className="w-full bg-surface p-3 marker-border text-lg italic outline-none focus:border-marker-blue"
-                      value={userBirthday || ''}
-                      onChange={e => setUserBirthday(e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
-                      <span className="text-lg">⏰</span> Time
-                    </label>
-                    <input
-                      type="time"
-                      className="w-full bg-surface p-3 marker-border text-lg italic outline-none focus:border-marker-blue"
-                      value={userBirthTime || '12:00'}
-                      onChange={e => setUserBirthTime(e.target.value)}
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black uppercase opacity-40 flex items-center gap-2">
+                    <span className="text-lg">[Time]</span> Time
+                  </label>
+                  <input
+                    type="time"
+                    className="w-full bg-surface p-3 marker-border text-lg italic outline-none focus:border-marker-blue"
+                    value={userBirthTime || '12:00'}
+                    onChange={e => setUserBirthTime(e.target.value)}
+                  />
                 </div>
-                <button
-                  onClick={() => {
-                    if ('geolocation' in navigator) {
-                      navigator.geolocation.getCurrentPosition(pos => {
-                        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude, name: 'Detected' });
-                      });
-                    }
-                  }}
-                  className="w-full brutalist-button !py-3 !text-[10px] flex items-center justify-center gap-2"
-                >
-                  <span className="text-lg">📍</span> {userLocation ? 'Update Coordinates' : 'Grab My Location'}
-                </button>
-                <button onClick={() => setIsEditingProfile(false)} className="w-full text-[10px] font-black uppercase opacity-40 hover:opacity-100">Save and Close</button>
               </div>
-            ) : (
+              <button
+                onClick={() => {
+                  if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                      setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude, name: 'Detected' });
+                    });
+                  }
+                }}
+                className="w-full brutalist-button !py-3 !text-[10px] flex items-center justify-center gap-2"
+              >
+                <span className="text-lg">♁</span> {userLocation ? 'Update Coordinates' : 'Grab My Location'}
+              </button>
+              <button onClick={() => setIsEditingProfile(false)} className="w-full text-[10px] font-black uppercase opacity-40 hover:opacity-100">Save and Close</button>
+              </div>
+              ) : (
               <div className="space-y-4 relative z-10">
-                <p className="handwritten text-2xl italic text-marker-black leading-tight">
-                  {userIdentity ? `Hi, ${userIdentity.split(' ')[0]}.` : 'Let\'s set your frequency.'}
-                </p>
-                <div className="flex flex-col gap-2">
-                  {userBirthday && (
-                    <span className="flex items-center gap-2 text-sm italic opacity-60">
-                      <span className="text-lg opacity-40">📅</span> Born: {userBirthday} {userBirthTime && `@ ${userBirthTime}`}
-                    </span>
-                  )}
-                  {userLocation && <span className="flex items-center gap-2 text-sm italic opacity-60"><span className="text-lg opacity-40">📍</span> Location: {userLocation.name || 'Synced'}</span>}
-                </div>
-                {isCalibrated && (
-                  <div className="flex items-center gap-2 text-[9px] font-black text-marker-green uppercase tracking-widest pt-2 border-t border-marker-black/5">
-                    <span className="text-lg">✓</span> Sync Locked ♁
-                  </div>
+              <p className="handwritten text-2xl italic text-marker-black leading-tight">
+                {userIdentity ? `Hi, ${userIdentity.split(' ')[0]}.` : 'Let\'s set your frequency.'}
+              </p>
+              <div className="flex flex-col gap-2">
+                {userBirthday && (
+                  <span className="flex items-center gap-2 text-sm italic opacity-60">
+                    <span className="text-lg opacity-40">[Date]</span> Born: {userBirthday} {userBirthTime && `@ ${userBirthTime}`}
+                  </span>
                 )}
+                {userLocation && <span className="flex items-center gap-2 text-sm italic opacity-60"><span className="text-lg opacity-40">♁</span> Location: {userLocation.name || 'Synced'}</span>}
               </div>
-            )}
-          </section>
+              {isCalibrated && (
+                <div className="flex items-center gap-2 text-[9px] font-black text-marker-green uppercase tracking-widest pt-2 border-t border-marker-black/5">
+                  <span className="text-lg">✓</span> Sync Locked ♁
+                </div>
+              )}
+              </div>
+              )}
+              </section>
 
-          <div className="flex justify-between items-center mb-10 pb-4 border-b border-marker-black/5">
-            <div className="space-y-1">
+              <div className="flex justify-between items-center mb-10 pb-4 border-b border-marker-black/5">
+              <div className="space-y-1">
               <div className="handwritten text-[10px] text-marker-black opacity-40 uppercase tracking-widest">Seeker Level</div>
               <div className="heading-marker text-xl">{grade}</div>
-            </div>
-            <div className="text-right">
+              </div>
+              <div className="text-right">
               <div className="handwritten text-[10px] text-marker-black opacity-40 uppercase tracking-widest">Checks Done</div>
               <div className="heading-marker text-xl">{calculationsRun}</div>
-            </div>
-          </div>
-
-          <div className="space-y-16">
-            {visibleCategories.map((cat, i) => (
-              <CategorySection key={i} cat={cat} onNavigate={onNavigate} />
-            ))}
-
-            {calculationsRun < 10 && (
-              <div className="p-6 border-2 border-dashed border-marker-black/10 rounded-xl bg-marker-black/[0.01]">
-                <div className="handwritten text-[10px] font-black uppercase tracking-widest mb-2 opacity-40 flex items-center gap-2">
-                  <span className="text-lg">♄</span> Deeper Layers Locked
-                </div>
-                <div className="handwritten text-sm italic opacity-60">Stick around for {10 - calculationsRun} more checks to see more stuff.</div>
               </div>
-            )}
+              </div>
 
-            <div className="pt-8 mt-8 border-t border-marker-black/5">
+              <div className="space-y-16">
+              {visibleCategories.map((cat, i) => (
+              <CategorySection key={i} cat={cat} onNavigate={onNavigate} />
+              ))}
+
+              {calculationsRun < 10 && (
+              <div className="p-6 border-2 border-dashed border-marker-black/10 rounded-xl bg-marker-black/[0.01]">
+              <div className="handwritten text-[10px] font-black uppercase tracking-widest mb-2 opacity-40 flex items-center gap-2">
+                <span className="text-lg">♄</span> Deeper Layers Locked
+              </div>
+              <div className="handwritten text-sm italic opacity-60">Stick around for {10 - calculationsRun} more checks to see more stuff.</div>
+              </div>
+              )}
+
+              <div className="pt-8 mt-8 border-t border-marker-black/5">
               <button onClick={toggleEclipseMode} className="w-full flex items-center justify-between group p-3 hover:bg-marker-black/5 rounded-xl transition-all">
-                <div className="flex items-center gap-3">
-                  {isEclipseMode ? <span className="text-2xl text-marker-purple">🌙</span> : <span className="text-2xl text-marker-red">☀️</span>}
-                  <span className="handwritten text-lg italic">{isEclipseMode ? 'Night Watch' : 'Day Watch'}</span>
-                </div>
-                <div className={`w-12 h-6 rounded-full border-2 relative transition-all ${isEclipseMode ? 'bg-marker-purple border-marker-purple' : 'bg-transparent border-marker-black/20'}`}>
-                  <div className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full transition-all duration-300 ${isEclipseMode ? 'left-[calc(100%-1.2rem)] bg-white' : 'left-1 bg-marker-black/40'}`}></div>
-                </div>
+              <div className="flex items-center gap-3">
+                {isEclipseMode ? <span className="text-2xl text-marker-purple">☾</span> : <span className="text-2xl text-marker-red">☉</span>}
+                <span className="handwritten text-lg italic">{isEclipseMode ? 'Night Watch' : 'Day Watch'}</span>
+              </div>
+              <div className={`w-12 h-6 rounded-full border-2 relative transition-all ${isEclipseMode ? 'bg-marker-purple border-marker-purple' : 'bg-transparent border-marker-black/20'}`}>
+                <div className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full transition-all duration-300 ${isEclipseMode ? 'left-[calc(100%-1.2rem)] bg-white' : 'left-1 bg-marker-black/40'}`}></div>
+              </div>
               </button>
-            </div>
-          </div>
+              </div>          </div>
         </div>
       </div>
     </div>

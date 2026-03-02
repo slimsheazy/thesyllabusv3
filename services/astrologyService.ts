@@ -3,7 +3,10 @@ import {
   SiderealTime,
   Ecliptic,
   Equator,
-  AstroTime
+  AstroTime,
+  SearchSunrise,
+  SearchSunset,
+  Observer
 } from 'astronomy-engine';
 
 export interface CalculatedPlanet {
@@ -48,21 +51,14 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
   const time = new AstroTime(date);
 
   const planets: CalculatedPlanet[] = bodies.map(body => {
-    // Correct: Ecliptic(body, AstroTime)
     const ecl = (Ecliptic as any)(body, time);
-
-    // Retrograde check via 6-hour delta
     const datePlus = new Date(date.getTime() + 6 * 60 * 60 * 1000);
     const timePlus = new AstroTime(datePlus);
     const eclPlus = (Ecliptic as any)(body, timePlus);
 
     let diff = eclPlus.elon - ecl.elon;
-    if (diff > 180) {
-      diff -= 360;
-    }
-    if (diff < -180) {
-      diff += 360;
-    }
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
 
     return {
       name: body.toString(),
@@ -71,43 +67,30 @@ export const calculateAstroData = (date: Date, lat: number, lon: number) => {
     };
   });
 
-  // Precise Ascendant and Midheaven calculation
   const gmst = SiderealTime(date);
   const lst = (gmst + (lon / 15.0)) % 24;
   const ramc = (lst * 15.0) % 360;
-  const eps = 23.43929; // Obliquity
-
+  const eps = 23.43929;
   const latRad = (lat * Math.PI) / 180;
   const ramcRad = (ramc * Math.PI) / 180;
   const epsRad = (eps * Math.PI) / 180;
 
-  // Ascendant
   const ascRad = Math.atan2(
     Math.cos(ramcRad),
     -(Math.sin(ramcRad) * Math.cos(epsRad) + Math.tan(latRad) * Math.sin(epsRad))
   );
 
   let asc = (ascRad * 180 / Math.PI) % 360;
-  if (asc < 0) {
-    asc += 360;
-  }
+  if (asc < 0) asc += 360;
 
-  // Midheaven (MC)
   const mcRad = Math.atan2(
     Math.sin(ramcRad),
     Math.cos(ramcRad) * Math.cos(epsRad)
   );
 
   let mc = (mcRad * 180 / Math.PI) % 360;
-  if (mc < 0) {
-    mc += 360;
-  }
+  if (mc < 0) mc += 360;
 
-  /**
-   * House System Calculation (Placidus Approximation)
-   * For the visual wheel, we use a calculated projection of 12 segments
-   * based on the relationship between Ascendant and Midheaven.
-   */
   const houses: CalculatedHouse[] = Array.from({ length: 12 }, (_, i) => {
     const long = (asc + i * 30) % 360;
     return {
@@ -142,15 +125,10 @@ export const calculateMapLines = (date: Date): MapLineData[] => {
     const decRad = (eq.dec * Math.PI) / 180;
 
     let mcLon = (eq.ra - gmst) * 15;
-    while (mcLon <= -180) {
-      mcLon += 360;
-    }
-    while (mcLon > 180) {
-      mcLon -= 360;
-    }
+    while (mcLon <= -180) mcLon += 360;
+    while (mcLon > 180) mcLon -= 360;
 
     const icLon = mcLon > 0 ? mcLon - 180 : mcLon + 180;
-
     const horizonPoints: [number, number][] = [];
 
     for (let lon = -180; lon <= 180; lon += 2) {
@@ -165,4 +143,65 @@ export const calculateMapLines = (date: Date): MapLineData[] => {
 
     return { name: body.toString(), mcLon, icLon, horizonPoints };
   });
+};
+
+const PLANETARY_CHALDEAN_ORDER = ['Saturn', 'Jupiter', 'Mars', 'Sun', 'Venus', 'Mercury', 'Moon'];
+const DAY_RULERS = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'];
+
+export const calculatePlanetaryHours = (date: Date, lat: number, lon: number) => {
+  const observer = new Observer(lat, lon, 0);
+  
+  // Get sunrise and sunset for current day
+  const sunrise = SearchSunrise(date, observer);
+  const sunset = SearchSunset(date, observer);
+
+  if (!sunrise || !sunset) return null;
+
+  // Day hours calculation
+  const dayDurationMs = sunset.date.getTime() - sunrise.date.getTime();
+  const dayHourLen = dayDurationMs / 12;
+
+  // Night hours calculation (sunset to next sunrise)
+  const tomorrow = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+  const nextSunrise = SearchSunrise(tomorrow, observer);
+  const nightDurationMs = nextSunrise 
+    ? nextSunrise.date.getTime() - sunset.date.getTime() 
+    : 24 * 60 * 60 * 1000 - dayDurationMs;
+  const nightHourLen = nightDurationMs / 12;
+
+  // Determine the day ruler based on the day of the week (0=Sunday)
+  // Day of week is based on sunrise (astrological day starts at sunrise)
+  const dayOfWeek = sunrise.date.getDay(); 
+  const dayRuler = DAY_RULERS[dayOfWeek];
+  const startIndex = PLANETARY_CHALDEAN_ORDER.indexOf(dayRuler);
+
+  const hours = [];
+  
+  // 12 Day hours
+  for (let i = 0; i < 12; i++) {
+    const s = new Date(sunrise.date.getTime() + i * dayHourLen);
+    const e = new Date(s.getTime() + dayHourLen);
+    const ruler = PLANETARY_CHALDEAN_ORDER[(startIndex + i) % 7];
+    hours.push({ hourNumber: i + 1, ruler, startTime: s.toISOString(), endTime: e.toISOString(), isNight: false });
+  }
+
+  // 12 Night hours
+  for (let i = 0; i < 12; i++) {
+    const s = new Date(sunset.date.getTime() + i * nightHourLen);
+    const e = new Date(s.getTime() + nightHourLen);
+    const ruler = PLANETARY_CHALDEAN_ORDER[(startIndex + 12 + i) % 7];
+    hours.push({ hourNumber: i + 13, ruler, startTime: s.toISOString(), endTime: e.toISOString(), isNight: true });
+  }
+
+  const now = date.getTime();
+  let currentHour = hours.find(h => {
+    const s = new Date(h.startTime).getTime();
+    const e = new Date(h.endTime).getTime();
+    return now >= s && now < e;
+  });
+
+  // Fallback for edge cases (e.g. exactly at sunrise of next day)
+  if (!currentHour) currentHour = hours[0];
+
+  return { currentHour, allHours: hours, dayRuler };
 };

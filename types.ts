@@ -63,7 +63,23 @@ export enum Page {
   AMA = 'AMA',
   PODCAST_REQUESTS = 'PODCAST_REQUESTS',
   PHOTO_SCRYER = 'PHOTO_SCRYER',
-  SHADOW_WORK = 'SHADOW_WORK'
+  SHADOW_WORK = 'SHADOW_WORK',
+  PLANETARY_HOURS = 'PLANETARY_HOURS'
+}
+
+export interface PlanetaryHour {
+  hourNumber: number;
+  ruler: string;
+  startTime: string;
+  endTime: string;
+  isNight: boolean;
+}
+
+export interface PlanetaryHoursResult {
+  currentHour: PlanetaryHour;
+  allDayHours: PlanetaryHour[];
+  dayRuler: string;
+  magicalInstruction: string;
 }
 
 export interface SpreadPosition {

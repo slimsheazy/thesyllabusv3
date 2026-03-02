@@ -82,7 +82,7 @@ const ThreadRecallSection = memo(({ recall }: { recall: AkashicResult }) => (
 const ThreadProjectionSection = memo(({ projection }: { projection: QuantumTimelineResult }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-32">
     <div className="flex items-center gap-3 border-b border-marker-black/10 pb-4">
-      <span className="text-tactical-cyan text-[10px]">⚡</span>
+      <span className="text-tactical-cyan text-[10px]">♁</span>
       <span className="font-mono text-[10px] font-black uppercase tracking-[0.4em] text-tactical-cyan">Projected Vector (Target Reality)</span>
     </div>
 
@@ -178,14 +178,14 @@ const TimelineThreadTool: React.FC<ToolProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen flex flex-col items-center py-12 px-6 md:px-12 relative max-w-7xl mx-auto">
       <button onClick={onBack} className="fixed top-6 right-6 brutalist-button !text-[10px] z-[100] flex items-center gap-2">
-        <span className="text-[10px]">←</span> Index
+        <span className="text-[10px]">&lt;-</span> Index
       </button>
 
       <div className="w-full flex flex-col lg:flex-row gap-16 items-start pt-16">
         <aside className="w-full lg:w-[350px] space-y-10 lg:sticky lg:top-12">
           <header className="space-y-4">
             <div className="flex items-center gap-3 text-marker-black">
-              <span className="text-marker-blue text-[10px]">⚡</span>
+              <span className="text-marker-blue text-[10px]">♁</span>
               <h2 className="heading-marker text-7xl text-marker-amber lowercase">Thread</h2>
             </div>
             <p className="font-mono text-[10px] opacity-40 uppercase tracking-widest italic">Protocol: Past-Future Synthesis</p>
@@ -237,7 +237,7 @@ const TimelineThreadTool: React.FC<ToolProps> = ({ onBack }) => {
                 <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px border-l-2 border-dashed border-marker-black/10"></div>
                 <div className="relative z-10 flex flex-col items-center gap-6">
                   <div className="p-6 bg-white border-2 border-marker-black rounded-full shadow-2xl group animate-bounce">
-                    <span className="text-marker-red text-[10px]">↓</span>
+                    <span className="text-marker-red text-[10px]">v</span>
                   </div>
                   <div className="bg-white p-6 marker-border border-marker-red shadow-xl text-center space-y-2 max-w-sm">
                     <span className="font-mono text-[10px] font-black uppercase text-marker-red tracking-widest">Behavioral Delta (The Catalyst)</span>

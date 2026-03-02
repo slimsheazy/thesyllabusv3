@@ -42,6 +42,7 @@ const AMATool = lazy(() => import('./components/AMATool'));
 const PodcastSuggestionsTool = lazy(() => import('./components/PodcastSuggestionsTool'));
 const PhotoScryer = lazy(() => import('./components/PhotoScryer'));
 const ShadowWorkTool = lazy(() => import('./components/ShadowWorkTool'));
+const PlanetaryHoursTool = lazy(() => import('./components/PlanetaryHoursTool'));
 
 type ToolComponent = React.ComponentType<ToolProps>;
 
@@ -77,7 +78,8 @@ const TOOL_COMPONENTS: Record<Exclude<Page, Page.HOME>, ToolComponent> = {
   [Page.AMA]: AMATool,
   [Page.PODCAST_REQUESTS]: PodcastSuggestionsTool,
   [Page.PHOTO_SCRYER]: PhotoScryer,
-  [Page.SHADOW_WORK]: ShadowWorkTool
+  [Page.SHADOW_WORK]: ShadowWorkTool,
+  [Page.PLANETARY_HOURS]: PlanetaryHoursTool
 };
 
 const App: React.FC = () => {
@@ -120,11 +122,11 @@ const App: React.FC = () => {
 
   return (
     <GlossaryProvider>
-      <div className="min-h-screen w-full relative selection:bg-marker-green/10 selection:text-marker-green">
+      <div className="flex flex-col min-h-screen w-full relative selection:bg-marker-green/10 selection:text-marker-green">
         <MenuButton isOpen={isMenuOpen} toggle={() => setIsMenuOpen(!isMenuOpen)} />
         <NavigationOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} onNavigate={handleNavigate} />
-        <main className="min-h-full w-full">
-          <div key={currentPage} className="min-h-full animate-in fade-in duration-500">
+        <main className="flex-grow w-full flex flex-col">
+          <div key={currentPage} className="flex-grow animate-in fade-in duration-500">
             {currentPage === Page.HOME ? (
               <HomeView onEnter={() => setIsMenuOpen(true)} />
             ) : CurrentToolComponent ? (

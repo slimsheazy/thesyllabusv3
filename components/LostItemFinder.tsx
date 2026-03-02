@@ -172,7 +172,7 @@ const LostItemFinder: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                   value={inputs.itemName}
                   onChange={e => setInputs({ ...inputs, itemName: e.target.value })}
                 />
-                <span className="absolute right-6 top-1/2 -translate-y-1/2 opacity-20" size={24}>🔍</span>
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 opacity-20" size={24}>♁</span>
               </div>
             </div>
 
@@ -258,19 +258,19 @@ const LostItemFinder: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               {/* Archetype Breakdown */}
               <div className="p-8 marker-border border-marker-black/10 bg-black/[0.02] grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">📍</span> Elevation</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">♁</span> Elevation</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.height}</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">📦</span> Container Type</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">[Box]</span> Container Type</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.containers}</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">⏰</span> Search Timing</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">[Clock]</span> Search Timing</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.timing}</p>
                 </div>
                 <div className="space-y-1">
-                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">📚</span> Local Material</span>
+                  <span className="font-mono text-[8px] uppercase opacity-40 flex items-center gap-1"><span className="text-lg">☊</span> Local Material</span>
                   <p className="handwritten text-sm font-bold italic">{result.interpretation.materials}</p>
                 </div>
               </div>

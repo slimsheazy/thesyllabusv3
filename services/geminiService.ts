@@ -26,10 +26,10 @@ import {
 const API_BASE_URL = '/api/gemini';
 
 const MODELS = {
-  FLASH: 'gemini-3-flash-preview',
-  PRO: 'gemini-3-pro-preview',
-  IMAGE: 'gemini-2.5-flash-image',
-  TTS: 'gemini-2.5-flash-preview-tts'
+  FLASH: 'gemini-1.5-flash',
+  PRO: 'gemini-1.5-pro',
+  IMAGE: 'gemini-1.5-flash', // Flash can handle simple image prompts if backend supports it, but usually gemini-pro-vision or similar
+  TTS: 'gemini-1.5-flash'
 };
 
 const NO_MD = 'CRITICAL: No Markdown. Plain text only. Escape quotes.';
@@ -92,6 +92,58 @@ async function generateJson<T>(
   } catch (error) {
     console.error('JSON generation failed:', error);
     throw error;
+  }
+}
+
+export async function* generateStream(
+  model: string,
+  prompt: string,
+  systemInstruction: string,
+  signal: AbortSignal
+): AsyncGenerator<string, void, undefined> {
+  try {
+    const response = await fetch(API_BASE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, prompt, systemInstruction, stream: true }),
+      signal,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Stream generation failed');
+    }
+
+    if (!response.body) return;
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      
+      // The backend returns SSE format: "data: {\"text\":\"...\"}\n\n"
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.text) {
+              yield data.text;
+            }
+          } catch (e) {
+            console.error('Error parsing SSE line:', e);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      return; // Exit gracefully on abort
+    }
+    throw error; // Re-throw other errors
   }
 }
 
@@ -385,7 +437,16 @@ export const generateSpeech = async(text: string) => {
   }
 };
 
-// ... (rest of the code remains the same)
+export const getPlanetaryHoursAnalysis = (ruler: string, isNight: boolean, dayRuler: string) => generateJson<any>(MODELS.FLASH, `Analyze Planetary Hour. Ruler: ${ruler}. Period: ${isNight ? 'Night' : 'Day'}. Day Ruler: ${dayRuler}.`, {
+  type: 'OBJECT',
+  properties: {
+    governance: { type: 'STRING' },
+    magicalInstruction: { type: 'STRING' },
+    archivalNote: { type: 'STRING' }
+  },
+  required: ['governance', 'magicalInstruction', 'archivalNote']
+}, 0, 'Provide analytical planetary hour insight.');
+
 // Additional functions that need specific implementations
 export const getBirthChart = (data: { name: string; date: string; time: string; location: string; lat: number; lng: number; currentIso?: string }) => generateJson<BirthChartResult>(MODELS.PRO, `Birth Chart: ${data.name} born ${data.date} at ${data.time} in ${data.location}`, {
   type: 'OBJECT',

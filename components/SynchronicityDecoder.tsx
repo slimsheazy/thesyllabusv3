@@ -77,8 +77,7 @@ const SynchronicityEntry = memo(({
         </>
       ) : (
         <>
-          Sparkle
-          Initialize Deep Decode
+          ♁ Initialize Deep Decode
         </>
       )}
     </button>
@@ -112,7 +111,7 @@ const SynchronicityLog = memo(({ synchs }: { synchs: Synchronicity[] }) => (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="p-6 bg-marker-blue/5 marker-border border-marker-blue/10 space-y-4 group">
               <div className="flex items-center gap-2 font-mono text-[10px] font-bold text-marker-blue uppercase tracking-widest border-b border-marker-blue/10 pb-2">
-                   🌍 Astrological Flux
+                   ♁ Astrological Flux
               </div>
               <p className="handwritten text-base italic text-marker-black/80 leading-relaxed group-hover:text-marker-black transition-colors">
                 {s.astrologicalResonance || 'Scanning celestial transits...'}
@@ -130,7 +129,7 @@ const SynchronicityLog = memo(({ synchs }: { synchs: Synchronicity[] }) => (
 
             <div className="p-6 bg-marker-red/5 marker-border border-marker-red/10 space-y-4 group">
               <div className="flex items-center gap-2 font-mono text-[10px] font-bold text-marker-red uppercase tracking-widest border-b border-marker-red/10 pb-2">
-                   Info Actionable insight
+                   [!] Actionable insight
               </div>
               <p className="handwritten text-base italic font-bold text-marker-black leading-snug">
                 {s.actionableInsight || 'Awaiting behavioral catalyst...'}
@@ -227,7 +226,7 @@ const SynchronicityDecoder: React.FC<ToolProps> = ({ onBack }) => {
         <aside className="w-full lg:w-[400px] space-y-12 lg:sticky lg:top-12">
           <header className="space-y-4">
             <div className="flex items-center gap-3 text-marker-indigo">
-               Search
+              <span className="text-4xl">♁</span>
               <h2 className="heading-marker text-7xl lowercase leading-none">Sync</h2>
             </div>
             <p className="handwritten text-xl opacity-40 uppercase tracking-widest italic">Cross-Domain Coincidence Mapper</p>
@@ -235,8 +234,8 @@ const SynchronicityDecoder: React.FC<ToolProps> = ({ onBack }) => {
 
           <nav className="flex flex-col gap-2">
             {[
-              { id: 'register', icon: 'Lightning', label: 'Capture Coincidence' },
-              { id: 'chronos', icon: 'Library', label: 'Archival Chronos' }
+              { id: 'register', icon: '♁', label: 'Capture Coincidence' },
+              { id: 'chronos', icon: '☊', label: 'Archival Chronos' }
             ].map(m => (
               <button
                 key={m.id}

@@ -125,7 +125,7 @@ const SpreadGeneratorTool: React.FC<ToolProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen flex flex-col bg-surface p-6 md:p-12 max-w-7xl mx-auto overflow-hidden text-marker-black">
       <button onClick={onBack} className="fixed top-6 right-6 z-[100] brutalist-button !text-[10px] flex items-center gap-2">
-        <span className="text-[10px]">←</span> Index
+        <span className="text-[10px]">&lt;-</span> Index
       </button>
 
       <div className="w-full flex-grow flex flex-col items-center justify-start pt-12">
@@ -148,7 +148,7 @@ const SpreadGeneratorTool: React.FC<ToolProps> = ({ onBack }) => {
                 disabled={loadingSpread || !inquiry.trim()}
                 className="brutalist-button w-full !py-8 !text-2xl !bg-marker-black !text-surface flex items-center justify-center gap-4"
               >
-                {loadingSpread ? 'Architecting...' : <>Generate Layout ✨</>}
+                {loadingSpread ? 'Architecting...' : <>Generate Layout [S]</>}
               </button>
             </div>
           </div>
@@ -178,7 +178,7 @@ const SpreadGeneratorTool: React.FC<ToolProps> = ({ onBack }) => {
 
             <div className="pt-12 flex flex-col sm:flex-row gap-4">
               <button onClick={handleDrawCards} className="brutalist-button flex-grow !py-6 !text-2xl !bg-marker-purple !text-white !border-marker-purple flex items-center justify-center gap-4">
-                Cast Cards ⚡
+                Cast Cards ♁
               </button>
               <button onClick={() => setView('input')} className="brutalist-button !py-6 !px-8 hover:!bg-marker-red hover:!text-white hover:!border-marker-red">
                 Reset
@@ -196,7 +196,7 @@ const SpreadGeneratorTool: React.FC<ToolProps> = ({ onBack }) => {
                     <img src={card.imageUrl} className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700" alt={card.name} />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center animate-pulse opacity-20">
-                      <span className="text-[10px]">📚</span>
+                      <span className="text-[10px]">☊</span>
                     </div>
                   )}
                   <div className="absolute inset-0 p-4 flex flex-col justify-between pointer-events-none">

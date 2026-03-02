@@ -134,7 +134,7 @@ const BaziResultDisplay = memo(({ result, onPillarClick }: { result: BaziResult,
             }}
             className="p-6 marker-border border-marker-black/10 bg-white flex flex-col items-center text-center group hover:border-marker-red transition-all hover:scale-[1.02] shadow-sm hover:shadow-xl relative"
           >
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-20 transition-opacity"><span className="text-xs">ℹ️</span></div>
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-20 transition-opacity"><span className="text-xs">[i]</span></div>
             <span className="handwritten text-[10px] font-bold uppercase text-marker-black/30 mb-4">{p.type} Node</span>
             <div className="heading-marker text-3xl text-marker-black lowercase group-hover:text-marker-red transition-colors">{p.stem}</div>
             <div className="w-full h-px bg-marker-black/5 my-2"></div>
