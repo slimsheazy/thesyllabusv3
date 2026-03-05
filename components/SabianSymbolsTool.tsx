@@ -1,39 +1,52 @@
-import React, { useState, useMemo } from 'react';
-import { SABIAN_SYMBOLS, SIGNS } from '../data/sabianData';
+import React, { useState, useMemo, useEffect } from 'react';
+import { loadSabianSymbols } from '../data/sabianDataLazy';
 import { GlossaryTerm } from './GlossaryEngine';
 import { useSyllabusStore } from '../store';
 import { logCalculation } from '../services/dbService';
 import { SymbolCard } from './Sabian/SymbolCard';
 import { audioManager } from './AudioManager';
 
-function getDailySunDegree() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 2, 21);
-  const day = Math.floor((now.getTime() - start.getTime()) / 86400000);
-  let absDeg = day % 360;
-  if (absDeg < 0) absDeg += 360;
-  const signIdx = Math.floor(absDeg / 30);
-  const degree = absDeg % 30;
-  return { sign: SIGNS[signIdx], degree, label: `${degree}° ${SIGNS[signIdx]}` };
-}
-
 export const SabianSymbolsTool = ({ onBack }: { onBack: () => void }) => {
   const [viewMode, setViewMode] = useState<'daily' | 'oracle' | 'lookup'>('daily');
-  const [question, setQuestion] = useState('');
+  const [question, setQuestion] = useState('Current life circumstances and guidance');
   const [results, setResults] = useState<any[]>([]);
-  const [lookupSign, setLookupSign] = useState(SIGNS[0]);
+  const [lookupSign, setLookupSign] = useState('Aries');
   const [lookupDegree, setLookupDegree] = useState(0);
+  const [sabianData, setSabianData] = useState<any>(null);
+  const [signs, setSigns] = useState<string[]>([]);
 
-  const daily = useMemo(() => getDailySunDegree(), []);
+  const daily = useMemo(() => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 2, 21);
+    const day = Math.floor((now.getTime() - start.getTime()) / 86400000);
+    let absDeg = day % 360;
+    if (absDeg < 0) {
+      absDeg += 360;
+    }
+    const signIdx = Math.floor(absDeg / 30);
+    const degree = absDeg % 30;
+    return { sign: signs[signIdx] || 'Aries', degree, label: `${degree}° ${signs[signIdx] || 'Aries'}` };
+  }, [signs]);
+
   const { recordCalculation } = useSyllabusStore();
 
+  useEffect(() => {
+    loadSabianSymbols().then(data => {
+      setSabianData(data);
+      setSigns(Object.keys(data));
+    });
+  }, []);
+
   const draw = () => {
-    if (!question.trim()) return;
+    if (!question.trim() || !sabianData) {
+      return;
+    }
     audioManager.playRustle();
     const idx = Math.floor(Math.random() * 360);
     const signIdx = Math.floor(idx / 30);
     const deg = idx % 30;
-    const res = { sign: SIGNS[signIdx], degree: deg, phrase: SABIAN_SYMBOLS[SIGNS[signIdx]][deg] };
+    const signName = signs[signIdx];
+    const res = { sign: signName, degree: deg, phrase: sabianData[signName]?.[deg] || '' };
     setResults([res]);
     recordCalculation();
     logCalculation('SABIAN_ORACLE', question, res);
@@ -45,7 +58,7 @@ export const SabianSymbolsTool = ({ onBack }: { onBack: () => void }) => {
       <div className="w-full flex flex-col lg:flex-row gap-12 items-start">
         <aside className="w-full lg:w-[350px] space-y-12 lg:sticky lg:top-20">
           <header className="space-y-4">
-            <h2 className="heading-marker text-7xl text-marker-black lowercase leading-none">Sabian <GlossaryTerm word="Oracle">Symbols</GlossaryTerm></h2>
+            <h2 className="heading-marker text-7xl text-marker-sky lowercase leading-none">Sabian <GlossaryTerm word="Oracle">Symbols</GlossaryTerm></h2>
             <p className="handwritten text-lg opacity-40 uppercase tracking-widest italic">The 360 Degrees of Wisdom</p>
           </header>
           <nav className="flex flex-col gap-2">
@@ -54,9 +67,11 @@ export const SabianSymbolsTool = ({ onBack }: { onBack: () => void }) => {
               { id: 'oracle', label: 'THE ORACLE', tag: 'INQUIRY' },
               { id: 'lookup', label: 'THE ARCHIVE', tag: 'LOOKUP' }
             ].map(m => (
-              <button 
-                key={m.id} 
-                onClick={() => { setViewMode(m.id as any); audioManager.playRustle(); }} 
+              <button
+                key={m.id}
+                onClick={() => {
+                  setViewMode(m.id as any); audioManager.playRustle();
+                }}
                 className={`flex items-center justify-between p-6 marker-border text-left transition-all ${viewMode === m.id ? 'bg-marker-black text-surface shadow-xl' : 'bg-surface opacity-50 hover:opacity-100'}`}
               >
                 <span className="font-bold tracking-widest">{m.label}</span>
@@ -66,15 +81,15 @@ export const SabianSymbolsTool = ({ onBack }: { onBack: () => void }) => {
           </nav>
         </aside>
         <main className="flex-1 w-full min-h-[600px] pb-32">
-          {viewMode === 'daily' && <SymbolCard sign={daily.sign} degree={daily.degree} phrase={SABIAN_SYMBOLS[daily.sign][daily.degree]} />}
+          {viewMode === 'daily' && <SymbolCard sign={daily.sign} degree={daily.degree} phrase={sabianData?.[daily.sign]?.[daily.degree] || ''} />}
           {viewMode === 'oracle' && (
             <div className="space-y-12 animate-in fade-in duration-500">
               <div className="p-8 marker-border bg-surface shadow-sm space-y-4">
-                <textarea 
-                  value={question} 
-                  onChange={e => setQuestion(e.target.value)} 
-                  placeholder="Define the node of inquiry..." 
-                  className="w-full p-8 marker-border bg-surface text-3xl italic outline-none bg-transparent" 
+                <textarea
+                  value={question}
+                  onChange={e => setQuestion(e.target.value)}
+                  placeholder="Define the node of inquiry..."
+                  className="w-full p-8 marker-border bg-surface text-3xl italic outline-none bg-transparent"
                 />
                 <button onClick={draw} className="brutalist-button w-full !py-6 !text-2xl !bg-marker-black text-surface shadow-xl">Draw From Field</button>
               </div>
@@ -87,8 +102,10 @@ export const SabianSymbolsTool = ({ onBack }: { onBack: () => void }) => {
                 <div className="space-y-4">
                   <label className="handwritten text-[10px] uppercase font-bold text-marker-black/40 tracking-widest block">Select Zodiacal Sign</label>
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                    {SIGNS.map(s => (
-                      <button key={s} onClick={() => { setLookupSign(s); audioManager.playPenScratch(0.05); }} className={`p-2 marker-border text-[10px] font-bold uppercase transition-all ${lookupSign === s ? 'bg-marker-black text-surface' : 'bg-surface opacity-40 hover:opacity-100'}`}>{s.slice(0, 3)}</button>
+                    {signs.map(s => (
+                      <button key={s} onClick={() => {
+                        setLookupSign(s); audioManager.playPenScratch(0.05);
+                      }} className={`p-2 marker-border text-[10px] font-bold uppercase transition-all ${lookupSign === s ? 'bg-marker-black text-surface' : 'bg-surface opacity-40 hover:opacity-100'}`}>{s.slice(0, 3)}</button>
                     ))}
                   </div>
                 </div>
@@ -100,7 +117,7 @@ export const SabianSymbolsTool = ({ onBack }: { onBack: () => void }) => {
                   <input type="range" min="0" max="29" value={lookupDegree} onChange={e => setLookupDegree(parseInt(e.target.value))} className="w-full accent-marker-black" />
                 </div>
               </div>
-              <SymbolCard key={`${lookupSign}-${lookupDegree}`} sign={lookupSign} degree={lookupDegree} phrase={SABIAN_SYMBOLS[lookupSign][lookupDegree]} />
+              <SymbolCard key={`${lookupSign}-${lookupDegree}`} sign={lookupSign} degree={lookupDegree} phrase={sabianData?.[lookupSign]?.[lookupDegree] || ''} />
             </div>
           )}
         </main>

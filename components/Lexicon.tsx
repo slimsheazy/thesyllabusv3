@@ -6,7 +6,7 @@ import { GlossaryTerm } from './GlossaryEngine';
 import { audioManager } from './AudioManager';
 
 const COMMON_TERMS = [
-  "Heuristic", "Eudaimonia", "Archetype", "Synthesis", "Framework", "Entropy", "Gnosis", "Lexicon"
+  'Heuristic', 'Eudaimonia', 'Archetype', 'Synthesis', 'Framework', 'Entropy', 'Gnosis', 'Lexicon'
 ];
 
 const Lexicon: React.FC<{ onBack: () => void }> = ({ onBack }) => {
@@ -24,7 +24,7 @@ const Lexicon: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     total: Object.keys(unlockedTerms).length,
     foundThisSession: (Object.values(unlockedTerms) as Array<{ discoveredAt: string }>).filter(t => {
       const discovered = new Date(t.discoveredAt).getTime();
-      const sessionStart = Date.now() - (1000 * 60 * 60); 
+      const sessionStart = Date.now() - (1000 * 60 * 60);
       return discovered > sessionStart;
     }).length
   }), [unlockedTerms]);
@@ -36,7 +36,7 @@ const Lexicon: React.FC<{ onBack: () => void }> = ({ onBack }) => {
       <header className="mb-20 text-center space-y-8 w-full max-w-3xl">
         <h1 className="title-main !text-6xl md:!text-9xl text-marker-blue leading-none">archive <GlossaryTerm word="Lexicon">glossary</GlossaryTerm></h1>
         <p className="handwritten text-xl opacity-60 italic max-w-lg mx-auto">An archival record of identified esoteric concepts and heuristics.</p>
-        
+
         <div className="flex justify-center gap-8 mt-10">
           <div className="text-center">
             <div className="heading-marker text-5xl text-marker-blue">{stats.total}</div>
@@ -49,8 +49,8 @@ const Lexicon: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         </div>
 
         <div className="pt-10 w-full">
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Filter Lexical Nodes..."
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -67,14 +67,16 @@ const Lexicon: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               {termList.length === 0 ? (
                 <div className="col-span-full py-10 opacity-40 italic text-sm">No specific terms discovered yet. Explore other tools to unlock nodes.</div>
               ) : (termList as Array<[string, { etymology?: string, definition: string, discoveredAt: string }]>).map(([word, data]) => (
-                <button 
+                <button
                   key={word}
-                  onClick={() => { setSelectedTerm(word); audioManager.playRustle(); }}
+                  onClick={() => {
+                    setSelectedTerm(word); audioManager.playRustle();
+                  }}
                   className={`p-5 marker-border text-left transition-all group ${selectedTerm === word ? 'bg-marker-blue text-white shadow-xl translate-x-2' : 'bg-surface hover:border-marker-blue'}`}
                 >
                   <div className="flex justify-between items-center">
-                     <span className="heading-marker text-2xl lowercase">{word}</span>
-                     <span className={`text-[9px] font-mono opacity-30 ${selectedTerm === word ? 'opacity-100' : ''}`}>[{data.etymology?.slice(0,3) || 'LEX'}]</span>
+                    <span className="heading-marker text-2xl lowercase">{word}</span>
+                    <span className={`text-[9px] font-mono opacity-30 ${selectedTerm === word ? 'opacity-100' : ''}`}>[{data.etymology?.slice(0,3) || 'LEX'}]</span>
                   </div>
                 </button>
               ))}
@@ -85,11 +87,11 @@ const Lexicon: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <div className="p-8 marker-border border-dashed border-marker-black/10 bg-marker-black/[0.01]">
               <span className="handwritten text-[10px] font-bold uppercase tracking-widest text-marker-black/30 block mb-6">Common Frameworks (Suggested)</span>
               <div className="flex flex-wrap gap-2">
-                 {COMMON_TERMS.map(term => (
-                   <GlossaryTerm key={term} word={term}>
-                     <span className="px-3 py-1 bg-surface marker-border text-xs hover:border-marker-blue transition-colors">{term}</span>
-                   </GlossaryTerm>
-                 ))}
+                {COMMON_TERMS.map(term => (
+                  <GlossaryTerm key={term} word={term}>
+                    <span className="px-3 py-1 bg-surface marker-border text-xs hover:border-marker-blue transition-colors">{term}</span>
+                  </GlossaryTerm>
+                ))}
               </div>
             </div>
           )}
@@ -106,21 +108,21 @@ const Lexicon: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 </div>
                 <ReadAloudButton text={`${selectedTerm}. ${unlockedTerms[selectedTerm].definition}`} className="!py-1 !px-2 !text-[10px]" />
               </div>
-              
+
               <div className="space-y-6">
                 <p className="handwritten text-lg md:text-xl text-marker-black/80 leading-relaxed italic font-medium relative z-10">
                   {unlockedTerms[selectedTerm].definition}
                 </p>
                 <div className="pt-8 flex justify-between items-center opacity-20 text-[9px] font-mono uppercase tracking-tighter">
-                   <span>Archival Date: {new Date(unlockedTerms[selectedTerm].discoveredAt).toLocaleDateString()}</span>
-                   <span>Status: IDENTIFIED</span>
+                  <span>Archival Date: {new Date(unlockedTerms[selectedTerm].discoveredAt).toLocaleDateString()}</span>
+                  <span>Status: IDENTIFIED</span>
                 </div>
               </div>
             </div>
           ) : (
             <div className="sticky top-24 flex flex-col items-center justify-center py-40 opacity-[0.05] border-2 border-dashed border-marker-black/20 rounded-xl">
-               <div className="text-[12rem] heading-marker">?</div>
-               <p className="handwritten text-2xl uppercase tracking-[0.4em]">Select Node</p>
+              <div className="text-[12rem] heading-marker">?</div>
+              <p className="handwritten text-2xl uppercase tracking-[0.4em]">Select Node</p>
             </div>
           )}
         </section>

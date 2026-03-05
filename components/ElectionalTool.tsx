@@ -9,18 +9,18 @@ import { audioManager } from './AudioManager';
 import { ReadAloudButton } from './ReadAloudButton';
 import { ZodiacWheel } from './ZodiacWheel';
 
-const InputSection = memo(({ 
-  intent, 
-  setIntent, 
-  onConsult, 
+const InputSection = memo(({
+  intent,
+  setIntent,
+  onConsult,
   loading,
   location,
   onDetect,
   detecting
-}: { 
-  intent: string, 
-  setIntent: (v: string) => void, 
-  onConsult: () => void, 
+}: {
+  intent: string,
+  setIntent: (v: string) => void,
+  onConsult: () => void,
   loading: boolean,
   location: { lat: number, lng: number } | null,
   onDetect: () => void,
@@ -29,7 +29,7 @@ const InputSection = memo(({
   <div className="space-y-6">
     <div className="space-y-2">
       <label className="handwritten text-[10px] uppercase font-bold text-marker-black/40 tracking-widest ml-1">The Objective</label>
-      <textarea 
+      <textarea
         value={intent}
         onChange={e => setIntent(e.target.value)}
         placeholder="What action do you seek the perfect time for? (e.g. Starting a project, signing a contract...)"
@@ -39,7 +39,7 @@ const InputSection = memo(({
 
     <div className="space-y-2">
       <label className="handwritten text-[10px] uppercase font-bold text-marker-black/40 tracking-widest ml-1">Coordinate Lock</label>
-      <button 
+      <button
         onClick={onDetect}
         disabled={detecting}
         className={`w-full p-4 marker-border flex items-center justify-center gap-3 transition-all ${location ? 'bg-marker-teal/5 border-marker-teal text-marker-teal' : 'bg-surface hover:bg-marker-black/5'}`}
@@ -54,7 +54,7 @@ const InputSection = memo(({
       </button>
     </div>
 
-    <button 
+    <button
       onClick={onConsult}
       disabled={loading || !intent.trim() || !location}
       className={`brutalist-button w-full !py-6 !text-2xl transition-all ${!intent.trim() || !location ? 'opacity-30' : '!bg-marker-teal text-white shadow-xl hover:scale-[1.02]'}`}
@@ -65,7 +65,7 @@ const InputSection = memo(({
 ));
 
 const ResultCard = memo(({ result }: { result: any }) => {
-  const SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+  const SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
   const processedPlanets = result.chartData.planets.map((p: any) => ({
     name: p.name,
     degree: p.degree % 30,
@@ -94,11 +94,11 @@ const ResultCard = memo(({ result }: { result: any }) => {
       </section>
 
       <section className="space-y-6">
-         <span className="handwritten text-[10px] font-bold uppercase text-marker-black/50 tracking-[0.4em] block border-b border-marker-black/5 pb-2 italic">Auspicious Geometry</span>
-         <ZodiacWheel 
-            planets={processedPlanets} 
-            ascendantDegree={result.chartData.ascendant}
-         />
+        <span className="handwritten text-[10px] font-bold uppercase text-marker-black/50 tracking-[0.4em] block border-b border-marker-black/5 pb-2 italic">Auspicious Geometry</span>
+        <ZodiacWheel
+          planets={processedPlanets}
+          ascendantDegree={result.chartData.ascendant}
+        />
       </section>
 
       <div className="grid grid-cols-1 gap-8">
@@ -123,12 +123,12 @@ const ElectionalTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [detecting, setDetecting] = useState(false);
-  
+
   const { recordCalculation, userLocation, setUserLocation } = useSyllabusStore();
 
   const handleDetectLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      alert("Temporal positioning unavailable.");
+      alert('Temporal positioning unavailable.');
       return;
     }
     setDetecting(true);
@@ -140,15 +140,17 @@ const ElectionalTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
         audioManager.playRustle();
       },
       (err) => {
-        alert("Coordinate lock failed.");
+        alert('Coordinate lock failed.');
         setDetecting(false);
       },
       { timeout: 10000 }
     );
   }, [setUserLocation]);
 
-  const handleConsult = useCallback(async () => {
-    if (!intent.trim() || !userLocation) return;
+  const handleConsult = useCallback(async() => {
+    if (!intent.trim() || !userLocation) {
+      return;
+    }
     setLoading(true);
     setResult(null);
     audioManager.playRustle();
@@ -156,9 +158,9 @@ const ElectionalTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     try {
       const now = new Date();
       const currentIso = now.toISOString();
-      
+
       let analysis = await getElectionalAnalysis(intent, userLocation.lat, userLocation.lng, currentIso);
-      
+
       if (analysis) {
         let returnedDate = new Date(analysis.isoDate);
         if (isNaN(returnedDate.getTime()) || returnedDate <= now) {
@@ -171,11 +173,11 @@ const ElectionalTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           recordCalculation();
           logCalculation('ELECTIONAL', intent, analysis);
         } else {
-          alert("Temporal noise is too high. Please refine your inquiry.");
+          alert('Temporal noise is too high. Please refine your inquiry.');
         }
       }
     } catch (err) {
-      alert("Systemic error during epoch selection.");
+      alert('Systemic error during epoch selection.');
     } finally {
       setLoading(false);
     }
@@ -192,10 +194,10 @@ const ElectionalTool: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <p className="handwritten text-lg sm:text-xl text-marker-teal opacity-40 font-bold uppercase tracking-widest italic">Kairic Window Selection</p>
           </header>
 
-          <InputSection 
-            intent={intent} 
-            setIntent={setIntent} 
-            onConsult={handleConsult} 
+          <InputSection
+            intent={intent}
+            setIntent={setIntent}
+            onConsult={handleConsult}
             loading={loading}
             location={userLocation}
             onDetect={handleDetectLocation}

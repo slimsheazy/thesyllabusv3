@@ -36,43 +36,51 @@ export const GlossaryProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       if (left + tooltipWidth > screenWidth) {
         left = x - tooltipWidth - offsetX;
-        if (left < 10) left = Math.max(10, screenWidth - tooltipWidth - 10);
+        if (left < 10) {
+          left = Math.max(10, screenWidth - tooltipWidth - 10);
+        }
       }
       if (top + tooltipHeight > screenHeight) {
         top = y - tooltipHeight - offsetY;
-        if (top < 10) top = 10;
+        if (top < 10) {
+          top = 10;
+        }
       }
       tooltipRef.current.style.left = `${left}px`;
       tooltipRef.current.style.top = `${top}px`;
     }
   }, []);
 
-  const inspectWord = useCallback(async (word: string) => {
+  const inspectWord = useCallback(async(word: string) => {
     if (hideTimerRef.current) {
       window.clearTimeout(hideTimerRef.current);
       hideTimerRef.current = null;
     }
-    if (activeTerm?.word === word && isVisible) return;
+    if (activeTerm?.word === word && isVisible) {
+      return;
+    }
 
     setIsVisible(true);
     setCopied(false);
 
     if (activeTerm?.word !== word) {
-       setLoading(true);
-       setActiveTerm({ word, definition: 'Resolving...' });
-       const data = await getWordDefinition(word);
-       if (data) {
-         setActiveTerm(data);
-         unlockTerm(data.word, data.definition, data.etymology);
-       } else {
-         setActiveTerm({ word, definition: 'Definition signal lost.' });
-       }
-       setLoading(false);
+      setLoading(true);
+      setActiveTerm({ word, definition: 'Resolving...' });
+      const data = await getWordDefinition(word);
+      if (data) {
+        setActiveTerm(data);
+        unlockTerm(data.word, data.definition, data.etymology);
+      } else {
+        setActiveTerm({ word, definition: 'Definition signal lost.' });
+      }
+      setLoading(false);
     }
   }, [activeTerm, isVisible, unlockTerm]);
 
   const hideInspector = useCallback(() => {
-    if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+    if (hideTimerRef.current) {
+      window.clearTimeout(hideTimerRef.current);
+    }
     hideTimerRef.current = window.setTimeout(() => {
       setIsVisible(false);
       setActiveTerm(null);
@@ -100,52 +108,52 @@ export const GlossaryProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   return (
     <GlossaryContext.Provider value={{ inspectWord, updatePosition, hideInspector, cancelHide }}>
       {children}
-      <div 
+      <div
         ref={tooltipRef}
         className="fixed z-[9999] pointer-events-auto transition-opacity duration-300 ease-out max-w-[92vw] w-[340px]"
-        style={{ 
+        style={{
           opacity: isVisible ? 1 : 0,
           visibility: isVisible ? 'visible' : 'hidden',
-          left: 0, 
-          top: 0 
+          left: 0,
+          top: 0
         }}
         onMouseEnter={cancelHide}
         onMouseLeave={hideInspector}
         onTouchStart={cancelHide}
       >
         {activeTerm && (
-           <div className="w-full backdrop-blur-xl bg-white/95 border border-white/50 shadow-[0_8px_32px_rgba(15,23,42,0.15)] rounded-2xl p-6 relative overflow-hidden animate-in fade-in zoom-in-95 duration-300">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-marker-blue/0 via-marker-blue/30 to-marker-blue/0"></div>
-              <div className="flex justify-between items-start mb-3">
-                 <div className="flex-1 pr-2">
-                    <div className="handwritten text-[10px] uppercase tracking-[0.2em] text-marker-blue/70 font-bold mb-1 flex items-center gap-2">
-                       <span>{activeTerm.etymology || 'Lexicon'}</span>
-                    </div>
-                    <h4 className="heading-marker text-3xl text-marker-black lowercase leading-none break-words">
-                       {activeTerm.word}
-                    </h4>
-                 </div>
-                 <button 
-                   onClick={handleCopy}
-                   className="p-2 hover:bg-marker-black/5 rounded-xl transition-all group active:scale-95 shrink-0"
-                 >
-                   {copied ? (
-                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--marker-green)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                   ) : (
-                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-marker-black/30 group-hover:text-marker-blue transition-colors"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                   )}
-                 </button>
+          <div className="w-full backdrop-blur-xl bg-white/95 border border-white/50 shadow-[0_8px_32px_rgba(15,23,42,0.15)] rounded-2xl p-6 relative overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-marker-blue/0 via-marker-blue/30 to-marker-blue/0"></div>
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex-1 pr-2">
+                <div className="handwritten text-[10px] uppercase tracking-[0.2em] text-marker-blue/70 font-bold mb-1 flex items-center gap-2">
+                  <span>{activeTerm.etymology || 'Lexicon'}</span>
+                </div>
+                <h4 className="heading-marker text-3xl text-marker-black lowercase leading-none break-words">
+                  {activeTerm.word}
+                </h4>
               </div>
-              <div className="w-8 h-0.5 bg-marker-black/10 mb-4 rounded-full"></div>
-              <p className="handwritten text-xl leading-relaxed text-marker-black/80 font-medium">
-                 {loading && activeTerm.definition.includes('Resolving') ? (
-                   <span className="animate-pulse opacity-60 italic">{activeTerm.definition}</span>
-                 ) : (
-                   activeTerm.definition
-                 )}
-              </p>
-              <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-gradient-to-br from-marker-blue/5 to-marker-purple/5 rounded-full blur-2xl pointer-events-none"></div>
-           </div>
+              <button
+                onClick={handleCopy}
+                className="p-2 hover:bg-marker-black/5 rounded-xl transition-all group active:scale-95 shrink-0"
+              >
+                {copied ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--marker-green)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-marker-black/30 group-hover:text-marker-blue transition-colors"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                )}
+              </button>
+            </div>
+            <div className="w-8 h-0.5 bg-marker-black/10 mb-4 rounded-full"></div>
+            <p className="handwritten text-xl leading-relaxed text-marker-black/80 font-medium">
+              {loading && activeTerm.definition.includes('Resolving') ? (
+                <span className="animate-pulse opacity-60 italic">{activeTerm.definition}</span>
+              ) : (
+                activeTerm.definition
+              )}
+            </p>
+            <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-gradient-to-br from-marker-blue/5 to-marker-purple/5 rounded-full blur-2xl pointer-events-none"></div>
+          </div>
         )}
       </div>
       <style>{`
@@ -183,7 +191,9 @@ export const GlossaryProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
 export const useGlossary = () => {
   const context = useContext(GlossaryContext);
-  if (!context) throw new Error("useGlossary must be used within a GlossaryProvider");
+  if (!context) {
+    throw new Error('useGlossary must be used within a GlossaryProvider');
+  }
   return context;
 };
 
@@ -198,7 +208,7 @@ export const GlossaryTerm: React.FC<{ word: string, children: React.ReactNode }>
     updatePosition(e.clientX, e.clientY);
   };
   return (
-    <span 
+    <span
       className="glossary-term"
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}

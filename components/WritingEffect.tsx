@@ -10,14 +10,30 @@ interface WritingEffectProps {
   playAudio?: boolean;
 }
 
-const sanitize = (t: string) => t.replace(/[*#`[\]()]/g, '').trim();
+const sanitize = (t: string) => {
+  return t
+    // Remove markdown headers
+    .replace(/^#{1,6}\s+/gm, '')
+    // Remove bold/italic
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    // Remove inline code
+    .replace(/`(.*?)`/g, '$1')
+    // Remove links
+    .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+    // Remove brackets
+    .replace(/[\[\]{}()]/g, '')
+    // Clean up extra whitespace
+    .replace(/\s+/g, ' ')
+    .trim();
+};
 
-export const WritingEffect: React.FC<WritingEffectProps> = memo(({ 
-  text, 
-  className = "", 
-  speed = 15, 
+export const WritingEffect: React.FC<WritingEffectProps> = memo(({
+  text,
+  className = '',
+  speed = 3,
   onComplete,
-  playAudio = true 
+  playAudio = true
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
@@ -31,22 +47,28 @@ export const WritingEffect: React.FC<WritingEffectProps> = memo(({
     setDisplayedText('');
     setIsComplete(false);
     indexRef.current = 0;
-    if (playAudio && cleanText.current.length > 0) audioManager.playPenScratch(0.1);
+    if (playAudio && cleanText.current.length > 0) {
+      audioManager.playPenScratch(0.1);
+    }
 
     const step = (time: number) => {
-      if (!lastTimeRef.current) lastTimeRef.current = time;
+      if (!lastTimeRef.current) {
+        lastTimeRef.current = time;
+      }
       const progress = time - lastTimeRef.current;
 
       if (progress >= speed) {
         if (indexRef.current < cleanText.current.length) {
-          const chunk = Math.random() > 0.9 ? 2 : 1;
+          const chunk = Math.random() > 0.7 ? 4 : 3;
           const next = cleanText.current.slice(0, indexRef.current + chunk);
           setDisplayedText(next);
           indexRef.current += chunk;
           lastTimeRef.current = time;
         } else {
           setIsComplete(true);
-          if (onComplete) onComplete();
+          if (onComplete) {
+            onComplete();
+          }
           return;
         }
       }
@@ -56,7 +78,9 @@ export const WritingEffect: React.FC<WritingEffectProps> = memo(({
     rafRef.current = requestAnimationFrame(step);
     return () => {
       cancelAnimationFrame(rafRef.current);
-      if (playAudio) audioManager.stopPenScratch();
+      if (playAudio) {
+        audioManager.stopPenScratch();
+      }
     };
   }, [text, speed, onComplete, playAudio]);
 
